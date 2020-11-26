@@ -32,6 +32,7 @@ Sub Globals
 	Private edtFind As EditText
 	Private lblMagni As Label
 	Private pnlFind As Panel
+	Private edtDummyForFocus As EditText
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -42,7 +43,7 @@ Sub Activity_Create(FirstTime As Boolean)
 	PCLV.Initialize(Me, "PCLV", clvStation)
 	PCLV.ShowScrollBar = False
 	PCLV.NumberOfSteps=50
-	
+	edtFind.InputType = Bit.Or(edtFind.InputType, 0x00080000)
 	GetStation
 
 End Sub
@@ -63,15 +64,15 @@ End Sub
 Sub IME_HandleAction As Boolean
 	Dim e As EditText
 	e = Sender
-	If e.Text.StartsWith("a") = False Then
-		ToastMessageShow("Text must start with 'a'.", True)
-		'Consume the event.
-		'The keyboard will not be closed
-		Return True
-	Else
+'	If e.Text.StartsWith("a") = False Then
+'		ToastMessageShow("Text must start with 'a'.", True)
+'		'Consume the event.
+'		'The keyboard will not be closed
+'		Return True
+'	Else
 		edtFind_EnterPressed
 		Return False 'will close the keyboard
-	End If
+ '	End If
 End Sub
 
 Sub clvStation_ItemClick (Index As Int, Value As Object)
@@ -147,17 +148,34 @@ Sub pnlUrl_Click
 End Sub
 
 Sub edtFind_EnterPressed
-	lblMagni.RequestFocus
+	edtDummyForFocus.RequestFocus
 	If edtFind.Text = "" Then
 	Dim lstStation As List = clsDb.GetStationList
 		Else
 	Dim lstStation As List = clsDb.GetFindStationList(edtFind.Text)
 	End If
+	ime.HideKeyboard
 	FindStation(lstStation)	
 End Sub
 
 Sub lblMagni_Click
-	lblMagni.RequestFocus
+	'IN FIND
+	If lblMagni.Text = Chr(0xf156) Then
+		edtFind.Text = ""
+		ime.HideKeyboard
+		lblMagni.Text = Chr(0xf349)
+		edtDummyForFocus.RequestFocus
+		Return
+	End If
+	'GO FIND
+	If lblMagni.Text = Chr(0xf349) Then
+		lblMagni.Text = Chr(0xf156)
+		ime.ShowKeyboard(edtFind)
+		edtFind.RequestFocus
+		Return
+	End If
+	
+	edtDummyForFocus.RequestFocus
 	If edtFind.Text = "" Then
 		Dim lstStation As List = clsDb.GetStationList
 	Else
@@ -165,6 +183,7 @@ Sub lblMagni_Click
 	End If
 	FindStation(lstStation)
 End Sub
+
 Sub FindStation(lstStation As List)
 	If lstStation.Size < 1 Then
 		GenFunctions.createCustomToast("Niets gevonden..", Colors.Red)
@@ -177,4 +196,10 @@ Sub FindStation(lstStation As List)
 	Next
 	
 	PCLV.Commit
+End Sub
+
+Sub edtFind_TextChanged (Old As String, New As String)
+	If New.Length > 0 Then
+		lblMagni.Text = Chr(0xf156)
+	End If
 End Sub
