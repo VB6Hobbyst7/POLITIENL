@@ -14,6 +14,7 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
+	Dim ime As IME
 	Private clsDb As dbFunctions
 	Private clvStation As CustomListView
 	Private PCLV As PreoptimizedCLV
@@ -36,6 +37,8 @@ End Sub
 Sub Activity_Create(FirstTime As Boolean)
 	clsDb.Initialize
 	Activity.LoadLayout("stationMain")
+	ime.Initialize("IME")
+	ime.AddHandleActionEvent(edtFind)
 	PCLV.Initialize(Me, "PCLV", clvStation)
 	PCLV.ShowScrollBar = False
 	PCLV.NumberOfSteps=50
@@ -52,6 +55,24 @@ Sub Activity_Pause (UserClosed As Boolean)
 
 End Sub
 
+Sub IME_HeightChanged(NewHeight As Int, OldHeight As Int)
+'	btnHideKeyboard.Top = NewHeight - btnHideKeyboard.Height
+'	EditText1.Height = btnHideKeyboard.Top - EditText1.Top
+End Sub
+
+Sub IME_HandleAction As Boolean
+	Dim e As EditText
+	e = Sender
+	If e.Text.StartsWith("a") = False Then
+		ToastMessageShow("Text must start with 'a'.", True)
+		'Consume the event.
+		'The keyboard will not be closed
+		Return True
+	Else
+		edtFind_EnterPressed
+		Return False 'will close the keyboard
+	End If
+End Sub
 
 Sub clvStation_ItemClick (Index As Int, Value As Object)
 	'Dim map As station = Value
@@ -145,6 +166,10 @@ Sub lblMagni_Click
 	FindStation(lstStation)
 End Sub
 Sub FindStation(lstStation As List)
+	If lstStation.Size < 1 Then
+		GenFunctions.createCustomToast("Niets gevonden..", Colors.Red)
+		Return
+	End If
 	clvStation.Clear
 	
 	For Each st As station In lstStation

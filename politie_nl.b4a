@@ -1,14 +1,16 @@
 ﻿Build1=Default,nl.pdeg.politie_nl
-File1=clvStation.bal
-File2=Main.bal
-File3=materialdesignicons-webfont.ttf
-File4=politie.db
-File5=stationMain.bal
+File1=arial.ttf
+File2=clvStation.bal
+File3=Main.bal
+File4=materialdesignicons-webfont.ttf
+File5=politie.db
+File6=stationMain.bal
 FileGroup1=Default Group
 FileGroup2=Default Group
 FileGroup3=Default Group
 FileGroup4=Default Group
 FileGroup5=Default Group
+FileGroup6=Default Group
 Group=Default Group
 Library1=core
 Library2=xui
@@ -18,21 +20,22 @@ Library5=okhttputils2
 Library6=json
 Library7=xui views
 Library8=preoptimizedclv
-ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: https://www.b4x.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="14" android:targetSdkVersion="29"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~CreateResourceFromFile(Macro, Themes.LightTheme)~\n~'End of default text.~\n~
+Library9=ime
+ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: https://www.b4x.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="14" android:targetSdkVersion="29"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~CreateResourceFromFile(Macro, Themes.LightTheme)~\n~'End of default text.~\n~SetActivityAttribute(stationMain, android:windowSoftInputMode, adjustResize|stateHidden)
 Module1=dbFunctions
 Module2=GenFunctions
 Module3=GetPoliceStations
 Module4=Starter
 Module5=stationMain
-NumberOfFiles=5
-NumberOfLibraries=8
+NumberOfFiles=6
+NumberOfLibraries=9
 NumberOfModules=5
 Version=10.2
 @EndOfDesignText@
 #Region  Project Attributes 
 	#ApplicationLabel: Politie Nl
 	#VersionCode: 1
-	#VersionName: 
+	#VersionName: v0.10
 	'SupportedOrientations possible values: unspecified, landscape or portrait.
 	#SupportedOrientations: unspecified
 	#CanInstallToExternalStorage: False
