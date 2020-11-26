@@ -23,3 +23,26 @@ Sub UUIDv4 As String
 	Next
 	Return sb.ToString.ToLowerCase
 End Sub
+
+Sub createCustomToast(txt As String, color As String)
+	Dim cs As CSBuilder
+	cs.Initialize.Typeface(Typeface.LoadFromAssets("Arial.ttf")).Color(Colors.White).Size(16).Append(txt).PopAll
+	ShowCustomToast(cs, False, color)
+End Sub
+
+Sub ShowCustomToast(Text As Object, LongDuration As Boolean, BackgroundColor As Int)
+	Dim ctxt As JavaObject
+	ctxt.InitializeContext
+	Dim duration As Int
+	If LongDuration Then duration = 1 Else duration = 0
+	Dim toast As JavaObject
+	toast = toast.InitializeStatic("android.widget.Toast").RunMethod("makeText", Array(ctxt, Text, duration))
+	Dim v As View = toast.RunMethod("getView", Null)
+	Dim cd As ColorDrawable
+	cd.Initialize(BackgroundColor, 20dip)
+	v.Background = cd
+	'uncomment to show toast in the center:
+	'  toast.RunMethod("setGravity", Array( _
+	' Bit.Or(Gravity.CENTER_HORIZONTAL, Gravity.CENTER_VERTICAL), 0, 0))
+	toast.RunMethod("show", Null)
+End Sub
