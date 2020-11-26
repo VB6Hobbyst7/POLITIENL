@@ -1,0 +1,155 @@
+﻿B4A=true
+Group=Default Group
+ModulesStructureVersion=1
+Type=Activity
+Version=10.2
+@EndOfDesignText@
+#Region  Activity Attributes 
+	#FullScreen: False
+	#IncludeTitle: false
+#End Region
+
+Sub Process_Globals
+	Dim xui As XUI
+End Sub
+
+Sub Globals
+	Private clsDb As dbFunctions
+	Private clvStation As CustomListView
+	Private PCLV As PreoptimizedCLV
+	Private pnlStation As Panel
+	Private lblStationName As Label
+	Private lblAddress As Label
+	Private lblZip As Label
+	Private lblCity As Label
+	Private pnlTwitter As Panel
+	Private pnlFacebook As Panel
+	Private pnlUrl As Panel
+	Private lblTwitter As Label
+	Private lblFacebook As Label
+	Private lblUrl As Label
+	Private edtFind As EditText
+	Private lblMagni As Label
+	Private pnlFind As Panel
+End Sub
+
+Sub Activity_Create(FirstTime As Boolean)
+	clsDb.Initialize
+	Activity.LoadLayout("stationMain")
+	PCLV.Initialize(Me, "PCLV", clvStation)
+	PCLV.ShowScrollBar = False
+	PCLV.NumberOfSteps=50
+	
+	GetStation
+
+End Sub
+
+Sub Activity_Resume
+
+End Sub
+
+Sub Activity_Pause (UserClosed As Boolean)
+
+End Sub
+
+
+Sub clvStation_ItemClick (Index As Int, Value As Object)
+	'Dim map As station = Value
+	
+End Sub
+
+Sub GetStation
+	clvStation.Clear
+	Dim lstStation As List = clsDb.GetStationList
+	
+	For Each st As station In lstStation
+		PCLV.AddItem(180dip, xui.Color_White, st)
+	Next
+	
+	PCLV.Commit
+End Sub
+
+Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
+	For Each i As Int In PCLV.VisibleRangeChanged(FirstIndex, LastIndex)
+		Dim item As CLVItem = clvStation.GetRawListItem(i)
+		Dim station As station = item.Value
+		
+		Dim pnl As B4XView = xui.CreatePanel("")
+		item.Panel.AddView(pnl, 0, 0, clvStation.AsView.Width, 180dip)
+		'Create the item layout
+		pnl.LoadLayout("clvStation")
+		
+		lblStationName.Text = station.name
+		lblAddress.Text = station.address
+		lblZip.Text = station.postalcode
+		lblCity.Text = $"${station.postalcode} ${station.city}"$
+'		If lblAddress.Text.Length < 5 Then 
+'			lblAddress.TextColor = Colors.Red
+'			lblAddress.Text = "Onbekend"
+'		End If
+		If lblCity.Text.Length < 5 Then 
+			lblCity.Text = "Adresgevens van dit bureau niet beschikbaar"
+			lblCity.TextColor = Colors.Red
+		End If
+		If station.url.Length > 2 Then
+			pnlUrl.Tag = station.url
+		Else
+			pnlUrl.Enabled = False
+			lblUrl.TextColor = Colors.Gray
+		End If
+		If station.twitter.Length > 2 Then
+			pnlTwitter.Tag = station.twitter
+		Else
+			pnlTwitter.Enabled = False
+			lblTwitter.TextColor = Colors.Gray
+		End If
+		If station.facebook.Length > 2 Then
+			pnlFacebook.Tag = station.facebook
+		Else
+			pnlFacebook.Enabled = False
+			lblFacebook.TextColor = Colors.Gray
+		End If
+		
+	Next
+End Sub
+
+Sub pnlTwitter_Click
+	
+End Sub
+
+Sub pnlFacebook_Click
+	
+End Sub
+
+Sub pnlUrl_Click
+	
+End Sub
+
+Sub edtFind_EnterPressed
+	lblMagni.RequestFocus
+	If edtFind.Text = "" Then
+	Dim lstStation As List = clsDb.GetStationList
+		Else
+	Dim lstStation As List = clsDb.GetFindStationList(edtFind.Text)
+	End If
+	FindStation(lstStation)	
+End Sub
+
+Sub lblMagni_Click
+	lblMagni.RequestFocus
+	If edtFind.Text = "" Then
+		Dim lstStation As List = clsDb.GetStationList
+	Else
+		Dim lstStation As List =clsDb.GetFindStationList(edtFind.Text)
+	End If
+	FindStation(lstStation)
+End Sub
+Sub FindStation(lstStation As List)
+	clvStation.Clear
+	
+	For Each st As station In lstStation
+		PCLV.AddItem(180dip, xui.Color_White, st)
+	Next
+	
+	PCLV.Commit
+End Sub
