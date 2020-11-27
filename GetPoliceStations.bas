@@ -8,11 +8,13 @@ Sub Class_Globals
 	Dim psOffset As Int = 0
 	Dim parser As JSONParser
 	Dim clsdb As dbFunctions
+	Dim clsWijkAgent As ParseWijkAgent
 End Sub
 
 'Initializes the object. You can add parameters to this method if needed.
 Public Sub Initialize
 	clsdb.Initialize
+	clsWijkAgent.Initialize
 End Sub
 
 Sub GetStationList
@@ -135,4 +137,27 @@ Public Sub CreatepsAdress (psId As String, addressTypes As String, address As St
 	t1.postcode = postcode
 	t1.city = city
 	Return t1
+End Sub
+
+Public Sub GetWijkAgent(latitude As Double, longtitude As Double) As ResumableSub
+	Private jsonData As String
+	Private strWijkAgentUrl As String
+	Private job As HttpJob
+	Private lstWijkAgent As List
+	
+	strWijkAgentUrl = $"https://api.politie.nl/v4/wijkagenten?language=nl&lat=${latitude}&lon=${longtitude}&radius=5.0&maxnumberofitems=10&offset=0"$
+	
+	job.Initialize("", Me)
+	job.Download(strWijkAgentUrl)
+	
+	Wait For (job) jobDone(jobDone As HttpJob)
+	
+	If jobDone.Success Then
+		jsonData = job.GetString
+		job.Release
+	End If
+	clsWijkAgent.ParseWijkAgentJson(jsonData)
+	
+	lstWijkAgent = clsWijkAgent.lstWijkAgent
+	Return lstWijkAgent
 End Sub

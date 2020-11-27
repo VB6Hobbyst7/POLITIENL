@@ -17,6 +17,8 @@ Sub Globals
 	Dim ime As IME
 	Private clsDb As dbFunctions
 	Private clvStation As CustomListView
+	Private clsStationData As GetPoliceStations
+	
 	Private PCLV As PreoptimizedCLV
 	Private pnlStation As Panel
 	Private lblStationName As Label
@@ -33,10 +35,13 @@ Sub Globals
 	Private lblMagni As Label
 	Private pnlFind As Panel
 	Private edtDummyForFocus As EditText
+	Private pnlWijkAgent As Panel
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
 	clsDb.Initialize
+	clsStationData.Initialize
+	
 	Activity.LoadLayout("stationMain")
 	ime.Initialize("IME")
 	ime.AddHandleActionEvent(edtFind)
@@ -202,4 +207,23 @@ Sub edtFind_TextChanged (Old As String, New As String)
 	If New.Length > 0 Then
 		lblMagni.Text = Chr(0xf156)
 	End If
+End Sub
+
+Sub pnlWijkAgent_Click
+	Dim pnl As Panel = Sender
+'	Dim lbl As Label = Sender
+	Dim stationData As station
+	Dim index As Int
+	Dim lstWijkAgent As List
+'	Dim longtitude, latitude As Double DEZE STAAN VERKEERD OM
+	
+'	pnl = lbl.Parent
+	index = clvStation.GetItemFromView(pnl)
+'	Log(index)
+	stationData = clvStation.GetValue(index)
+	
+	lstWijkAgent = clsStationData.GetWijkAgent(stationData.longtitude, stationData.latitude)
+	
+'	longtitude = stationData.longtitude
+'	latitude = stationData.latitude
 End Sub

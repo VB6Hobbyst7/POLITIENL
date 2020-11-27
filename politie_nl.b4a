@@ -25,11 +25,12 @@ ManifestCode='This code will be applied to the manifest file during compilation.
 Module1=dbFunctions
 Module2=GenFunctions
 Module3=GetPoliceStations
-Module4=Starter
-Module5=stationMain
+Module4=ParseWijkAgent
+Module5=Starter
+Module6=stationMain
 NumberOfFiles=6
 NumberOfLibraries=9
-NumberOfModules=5
+NumberOfModules=6
 Version=10.2
 @EndOfDesignText@
 #Region  Project Attributes 
@@ -53,6 +54,7 @@ Sub Process_Globals
 	Type station(ps_id As String, name As String, longtitude As Double, latitude As Double, address As String, _
 	postalcode As String, city As String, _
 	url As String, twitter As String, facebook As String)
+	type wijkAgent(naam as String, afbeelding as Bitmap, werkGebied as String, publicatieDatum as String)
 	
 	Private xui As XUI
 	Private clsPStations As GetPoliceStations
@@ -75,6 +77,8 @@ End Sub
 Sub Activity_Pause (UserClosed As Boolean)
 
 End Sub
+
+
 
 
 

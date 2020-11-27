@@ -1,0 +1,98 @@
+﻿B4A=true
+Group=Default Group
+ModulesStructureVersion=1
+Type=Class
+Version=10.2
+@EndOfDesignText@
+Sub Class_Globals
+	Private afbeeldingAgent As Bitmap
+	Dim lstWijkAgent As List
+End Sub
+
+'Initializes the object. You can add parameters to this method if needed.
+Public Sub Initialize
+	
+End Sub
+
+Public Sub GetWijkAgent(wijkAgentData As String) As List
+	ParseWijkAgentJson(wijkAgentData)
+	Return lstWijkAgent
+End Sub
+
+Public Sub ParseWijkAgentJson(wijkAgentData As String) As ResumableSub
+	
+	Dim parser As JSONParser
+	Dim afbUrl As String
+	
+	lstWijkAgent.Initialize
+	parser.Initialize(wijkAgentData)
+	
+	
+	Dim root As Map = parser.NextObject
+'	Dim iterator As Map = root.Get("iterator")
+'	Dim last As String = iterator.Get("last")
+'	Dim offset As Int = iterator.Get("offset")
+	Dim wijkagenten As List = root.Get("wijkagenten")
+	For Each colwijkagenten As Map In wijkagenten
+		Dim publicatiedatum As String = colwijkagenten.Get("publicatiedatum")
+'		Dim displayName As String = colwijkagenten.Get("displayName")
+'		Dim locaties As List = colwijkagenten.Get("locaties")
+'		For Each collocaties As Map In locaties
+'			Dim latitude As Double = collocaties.Get("latitude")
+'			Dim longitude As Double = collocaties.Get("longitude")
+'		Next
+		Dim naam As String = colwijkagenten.Get("naam")
+'		Dim url As String = colwijkagenten.Get("url")
+		Dim werkgebied As String = colwijkagenten.Get("werkgebied")
+'		Dim uid As String = colwijkagenten.Get("uid")
+'		Dim twitter As Map = colwijkagenten.Get("twitter")
+'		Dim accountnaam As String = twitter.Get("accountnaam")
+'		Dim list As String = twitter.Get("list")
+'		Dim title As String = twitter.Get("title")
+'		Dim facebookurl As String = colwijkagenten.Get("facebookurl")
+'		Dim werkgebiedpolygoon As String = colwijkagenten.Get("werkgebiedpolygoon")
+'		Dim instagramurl As String = colwijkagenten.Get("instagramurl")
+		Dim afbeelding As Map = colwijkagenten.Get("afbeelding")
+'		Dim alttext As String = afbeelding.Get("alttext")
+'		Dim url As String = afbeelding.Get("url")
+'		Dim links As String = colwijkagenten.Get("links")
+'		Dim telefoon As String = colwijkagenten.Get("telefoon")
+'		Dim extrainformatie As String = colwijkagenten.Get("extrainformatie")
+'		Dim availabletranslations As String = colwijkagenten.Get("availabletranslations")
+		
+		afbUrl = afbeelding.Get("url")
+		If afbUrl.Length > 10 Then
+			wait for (GetAfbeelding(afbeelding.Get("url"))) Complete(done As Boolean)
+		End If
+		lstWijkAgent.Add(CreatewijkAgent(naam, afbeeldingAgent, werkgebied, publicatiedatum))
+		Log($"- NAAM : ${naam}"$)
+		Log($"- WG : ${werkgebied}"$)
+		Log($"- AB : ${afbeeldingAgent}"$)
+	Next
+	Return lstWijkAgent
+End Sub
+
+Private Sub GetAfbeelding(afbeeldingUrl As String) As ResumableSub
+	Dim job As HttpJob
+	
+	job.Initialize("", Me)
+	job.Download(afbeeldingUrl)
+	
+	Wait For (job) jobDone(jobDone As HttpJob)
+	
+	If jobDone.Success Then
+		afbeeldingAgent = job.GetBitmapResize(150, 150, True)
+		job.Release
+	End If
+	Return True	
+End Sub
+
+Public Sub CreatewijkAgent (naam As String, afbeelding As Bitmap, werkGebied As String, publicatieDatum As String) As wijkAgent
+	Dim t1 As wijkAgent
+	t1.Initialize
+	t1.naam = naam
+	t1.afbeelding = afbeelding
+	t1.werkGebied = werkGebied
+	t1.publicatieDatum = publicatieDatum
+	Return t1
+End Sub
