@@ -67,17 +67,8 @@ Sub IME_HeightChanged(NewHeight As Int, OldHeight As Int)
 End Sub
 
 Sub IME_HandleAction As Boolean
-	Dim e As EditText
-	e = Sender
-'	If e.Text.StartsWith("a") = False Then
-'		ToastMessageShow("Text must start with 'a'.", True)
-'		'Consume the event.
-'		'The keyboard will not be closed
-'		Return True
-'	Else
-		edtFind_EnterPressed
-		Return False 'will close the keyboard
- '	End If
+	edtFind_EnterPressed
+	Return False 'will close the keyboard
 End Sub
 
 Sub clvStation_ItemClick (Index As Int, Value As Object)
@@ -141,14 +132,24 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 End Sub
 
 Sub pnlTwitter_Click
+	Dim p As Panel = Sender
+	Dim stationData As station = GetStationData(p)
 	
+	GenFunctions.OpenUrl(stationData.twitter)
 End Sub
 
 Sub pnlFacebook_Click
+	Dim p As Panel = Sender
+	Dim stationData As station = GetStationData(p)
 	
+	GenFunctions.OpenUrl(stationData.facebook)
 End Sub
 
 Sub pnlUrl_Click
+	Dim p As Panel = Sender
+	Dim stationData As station = GetStationData(p)
+	
+	GenFunctions.OpenUrl(stationData.url)
 	
 End Sub
 
@@ -201,6 +202,7 @@ Sub FindStation(lstStation As List)
 	Next
 	
 	PCLV.Commit
+	clvStation.ScrollToItem(0)
 End Sub
 
 Sub edtFind_TextChanged (Old As String, New As String)
@@ -211,19 +213,21 @@ End Sub
 
 Sub pnlWijkAgent_Click
 	Dim pnl As Panel = Sender
-'	Dim lbl As Label = Sender
 	Dim stationData As station
-	Dim index As Int
-	Dim lstWijkAgent As List
-'	Dim longtitude, latitude As Double DEZE STAAN VERKEERD OM
 	
-'	pnl = lbl.Parent
-	index = clvStation.GetItemFromView(pnl)
-'	Log(index)
-	stationData = clvStation.GetValue(index)
+	ProgressDialogShow2("Ophalen gegevens wijkagent(en)..", False)
+	Sleep(300)	
+	stationData = clvStation.GetValue(clvStation.GetItemFromView(pnl))
+	Wait For (clsStationData.GetWijkAgent(stationData.longtitude, stationData.latitude)) Complete (lstWijkAgent As List)
+	ProgressDialogHide
 	
-	lstWijkAgent = clsStationData.GetWijkAgent(stationData.longtitude, stationData.latitude)
+	If lstWijkAgent.Size > 0 Then
+		StartActivity(wijkAgentMain)
+		CallSubDelayed3(wijkAgentMain, "GetWijkAgent", lstWijkAgent, stationData.name)
+	End If
 	
-'	longtitude = stationData.longtitude
-'	latitude = stationData.latitude
+End Sub
+
+Sub GetStationData(p As Panel) As station
+	Return clvStation.GetValue(clvStation.GetItemFromView(p))
 End Sub

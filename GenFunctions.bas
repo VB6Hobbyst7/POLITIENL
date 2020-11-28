@@ -8,7 +8,7 @@ Sub Process_Globals
 
 End Sub
 
-Sub UUIDv4 As String
+Sub UUIDv4 As String 'ignore
 	Dim sb As StringBuilder
 	sb.Initialize
 	For Each stp As Int In Array(8, 4, 4, 4, 12)
@@ -45,4 +45,10 @@ Sub ShowCustomToast(Text As Object, LongDuration As Boolean, BackgroundColor As 
 	'  toast.RunMethod("setGravity", Array( _
 	' Bit.Or(Gravity.CENTER_HORIZONTAL, Gravity.CENTER_VERTICAL), 0, 0))
 	toast.RunMethod("show", Null)
+End Sub
+
+Sub OpenUrl(url As String)
+	Dim i As Intent
+	i.Initialize(i.ACTION_VIEW, url)
+	StartActivity(i)
 End Sub

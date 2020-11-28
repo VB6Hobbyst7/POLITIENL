@@ -5,7 +5,6 @@ Type=Class
 Version=10.2
 @EndOfDesignText@
 Sub Class_Globals
-	Private afbeeldingAgent As Bitmap
 	Dim lstWijkAgent As List
 End Sub
 
@@ -28,7 +27,9 @@ Public Sub ParseWijkAgentJson(wijkAgentData As String) As ResumableSub
 	parser.Initialize(wijkAgentData)
 	
 	
+	
 	Dim root As Map = parser.NextObject
+	
 '	Dim iterator As Map = root.Get("iterator")
 '	Dim last As String = iterator.Get("last")
 '	Dim offset As Int = iterator.Get("offset")
@@ -42,7 +43,7 @@ Public Sub ParseWijkAgentJson(wijkAgentData As String) As ResumableSub
 '			Dim longitude As Double = collocaties.Get("longitude")
 '		Next
 		Dim naam As String = colwijkagenten.Get("naam")
-'		Dim url As String = colwijkagenten.Get("url")
+		Dim url As String = colwijkagenten.Get("url")
 		Dim werkgebied As String = colwijkagenten.Get("werkgebied")
 '		Dim uid As String = colwijkagenten.Get("uid")
 '		Dim twitter As Map = colwijkagenten.Get("twitter")
@@ -62,18 +63,18 @@ Public Sub ParseWijkAgentJson(wijkAgentData As String) As ResumableSub
 		
 		afbUrl = afbeelding.Get("url")
 		If afbUrl.Length > 10 Then
-			wait for (GetAfbeelding(afbeelding.Get("url"))) Complete(done As Boolean)
+			wait for (GetAfbeelding(afbeelding.Get("url"))) Complete (img As Bitmap)
+		'	If done Then
+				lstWijkAgent.Add(CreatewijkAgent(naam, img, werkgebied, publicatiedatum, url))
+		'	End If
 		End If
-		lstWijkAgent.Add(CreatewijkAgent(naam, afbeeldingAgent, werkgebied, publicatiedatum))
-		Log($"- NAAM : ${naam}"$)
-		Log($"- WG : ${werkgebied}"$)
-		Log($"- AB : ${afbeeldingAgent}"$)
 	Next
 	Return lstWijkAgent
 End Sub
 
 Private Sub GetAfbeelding(afbeeldingUrl As String) As ResumableSub
 	Dim job As HttpJob
+	Dim bm As Bitmap
 	
 	job.Initialize("", Me)
 	job.Download(afbeeldingUrl)
@@ -81,18 +82,19 @@ Private Sub GetAfbeelding(afbeeldingUrl As String) As ResumableSub
 	Wait For (job) jobDone(jobDone As HttpJob)
 	
 	If jobDone.Success Then
-		afbeeldingAgent = job.GetBitmapResize(150, 150, True)
+		bm = job.GetBitmapResize(150, 150, True)
 		job.Release
 	End If
-	Return True	
+	Return bm	
 End Sub
 
-Public Sub CreatewijkAgent (naam As String, afbeelding As Bitmap, werkGebied As String, publicatieDatum As String) As wijkAgent
+Public Sub CreatewijkAgent (naam As String, afbeelding As Bitmap, werkGebied As String, publicatieDatum As String, url As String) As wijkAgent
 	Dim t1 As wijkAgent
 	t1.Initialize
 	t1.naam = naam
 	t1.afbeelding = afbeelding
 	t1.werkGebied = werkGebied
 	t1.publicatieDatum = publicatieDatum
+	t1.url = url
 	Return t1
 End Sub
