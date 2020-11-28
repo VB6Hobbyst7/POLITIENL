@@ -5,7 +5,6 @@ Type=Class
 Version=10.2
 @EndOfDesignText@
 Sub Class_Globals
-	Dim psOffset As Int = 0
 	Dim parser As JSONParser
 	Dim clsdb As dbFunctions
 	Dim clsWijkAgent As ParseWijkAgent
@@ -17,15 +16,16 @@ Public Sub Initialize
 	clsWijkAgent.Initialize
 End Sub
 
-Sub GetStationList
+Sub GetStationList As ResumableSub 'ignore
 	Log($"$Time{DateTime.now} Start"$)
-	Private psUrl As String = $"https://api.politie.nl/v4/politiebureaus/all?offset=${psOffset}"$
+	Private psUrl As String = $"https://api.politie.nl/v4/politiebureaus/all?offset=0"$
 	wait for (RetrieveStation(psUrl)) Complete (done As Boolean)
 	wait for (RetrieveStation($"https://api.politie.nl/v4/politiebureaus/all?offset=100"$)) Complete (done As Boolean)
 	wait for (RetrieveStation($"https://api.politie.nl/v4/politiebureaus/all?offset=200"$)) Complete (done As Boolean)
 	wait for (RetrieveStation($"https://api.politie.nl/v4/politiebureaus/all?offset=300"$)) Complete (done As Boolean)
 	wait for (RetrieveStation($"https://api.politie.nl/v4/politiebureaus/all?offset=400"$)) Complete (done As Boolean)
 	Log($"$Time{DateTime.now} Done"$)
+	Return True
 End Sub
 
 Private Sub RetrieveStation(url As String) As ResumableSub
@@ -53,9 +53,9 @@ Private Sub ParsePsData(data As String) As ResumableSub
 	parser.Initialize(data)
 
 	Dim root As Map = parser.NextObject
-	Dim iterator As Map = root.Get("iterator")
-	Dim last As String = iterator.Get("last")
-	Dim offset As Int = iterator.Get("offset")
+'	Dim iterator As Map = root.Get("iterator")
+'	Dim last As String = iterator.Get("last")
+'	Dim offset As Int = iterator.Get("offset")
 	Dim politiebureaus As List = root.Get("politiebureaus")
 	For Each colpolitiebureaus As Map In politiebureaus
 '		Dim publicatiedatum As String = colpolitiebureaus.Get("publicatiedatum")
@@ -139,11 +139,10 @@ Public Sub CreatepsAdress (psId As String, addressTypes As String, address As St
 	Return t1
 End Sub
 
-Public Sub GetWijkAgent(latitude As Double, longtitude As Double) As ResumableSub
+Public Sub GetWijkAgent(longtitude As Double, latitude As Double) As ResumableSub
 	Private jsonData As String
 	Private strWijkAgentUrl As String
 	Private job As HttpJob
-	Private lstWijkAgent As List
 	
 	strWijkAgentUrl = $"https://api.politie.nl/v4/wijkagenten?language=nl&lat=${latitude}&lon=${longtitude}&radius=5.0&maxnumberofitems=10&offset=0"$
 	
@@ -156,8 +155,7 @@ Public Sub GetWijkAgent(latitude As Double, longtitude As Double) As ResumableSu
 		jsonData = job.GetString
 		job.Release
 	End If
-	clsWijkAgent.ParseWijkAgentJson(jsonData)
+	wait for (clsWijkAgent.ParseWijkAgentJson(jsonData)) Complete (lst As List)
+	Return lst	
 	
-	lstWijkAgent = clsWijkAgent.lstWijkAgent
-	Return lstWijkAgent
 End Sub

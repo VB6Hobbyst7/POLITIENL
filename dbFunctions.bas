@@ -20,6 +20,27 @@ Sub dbInitialized
 	End If
 End Sub
 
+#Region ClearDbs
+Sub CleanPoliceDb
+	dbInitialized
+	qry = $"DELETE FROM police"$
+	Starter.sql.ExecNonQuery(qry)
+End Sub
+
+Sub CleanSocialMediaDb
+	dbInitialized
+	qry = $"DELETE FROM socialmedia"$
+	Starter.sql.ExecNonQuery(qry)
+End Sub
+
+Sub CleanAddressDb
+	dbInitialized
+	qry = $"DELETE FROM address"$
+	Starter.sql.ExecNonQuery(qry)
+End Sub
+
+#End Region
+
 Sub AddPoliceStations(lstPsStation As List)
 	dbInitialized
 	
@@ -28,9 +49,9 @@ Sub AddPoliceStations(lstPsStation As List)
 		If CheckRecordExists(station.uid,"police", "ps_id") = 1 Then
 			Continue
 		End If
-		qry = $"INSERT INTO police (ps_id, naam, longtitude, latitude) VALUES (?, ?, ?, ?)"$
+		qry = $"INSERT INTO police (ps_id, name, longtitude, latitude) VALUES (?, ?, ?, ?)"$
 		
-		Starter.sql.ExecNonQuery2(qry, Array As String(station.uid, station.naam, station.latitude, station.longtitude))
+		Starter.sql.ExecNonQuery2(qry, Array As String(station.uid, station.naam, station.longtitude, station.latitude))
 	Next
 	Starter.sql.TransactionSuccessful
 	Starter.sql.EndTransaction
@@ -112,6 +133,7 @@ End Sub
 Sub GetFindStationList(hint As String) As List
 	dbInitialized
 	Dim lstStation As List
+	Dim searchStr As String = $"%${hint}%"$
 	
 	qry = $"SELECT pc.ps_id as id, pc.name as name, pc.latitude as lat, pc.longtitude as long
 ,ad.address, ad.postalcode, ad.city
@@ -121,9 +143,10 @@ Sub GetFindStationList(hint As String) As List
 FROM police pc
 inner join address ad on
 ad.ps_id = pc.ps_id
-WHERE ad.adress_type = 'visit' And name LIKE ?
+WHERE ad.adress_type = 'visit' And pc.name LIKE ? OR ad.city LIKE ?
 ORDER BY pc.name"$
-	rs = Starter.sql.ExecQuery2(qry, Array As String($"%${hint}%"$))
+
+	rs = Starter.sql.ExecQuery2(qry, Array As String(searchStr, searchStr))
 
 	lstStation.Initialize	
 	Do While rs.NextRow
