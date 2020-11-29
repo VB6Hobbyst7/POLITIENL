@@ -1,22 +1,27 @@
 ﻿Build1=Default,nl.pdeg.politie_nl
 File1=arial.ttf
+File10=wijkAgentMain.bal
 File2=clvStation.bal
-File3=Main.bal
-File4=materialdesignicons-webfont.ttf
-File5=pnlWijkAgent.bal
-File6=politie.db
-File7=stationMain.bal
-File8=wijkAgentMain.bal
+File3=lokaalNieuwsMain.bal
+File4=Main.bal
+File5=materialdesignicons-webfont.ttf
+File6=pnlNewsLocalHeadline.bal
+File7=pnlWijkAgent.bal
+File8=politie.db
+File9=stationMain.bal
 FileGroup1=files
+FileGroup10=forms
 FileGroup2=forms
 FileGroup3=forms
-FileGroup4=files
-FileGroup5=forms
-FileGroup6=files
+FileGroup4=forms
+FileGroup5=files
+FileGroup6=forms
 FileGroup7=forms
-FileGroup8=forms
+FileGroup8=files
+FileGroup9=forms
 Group=Default Group
 Library1=core
+Library10=accessibility
 Library2=xui
 Library3=runtimepermissions
 Library4=sql
@@ -28,14 +33,16 @@ Library9=ime
 ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: https://www.b4x.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="14" android:targetSdkVersion="29"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~CreateResourceFromFile(Macro, Themes.LightTheme)~\n~'End of default text.~\n~SetActivityAttribute(stationMain, android:windowSoftInputMode, adjustResize|stateHidden)~\n~AddPermission(android.permission.INTERNET)
 Module1=dbFunctions
 Module2=GenFunctions
-Module3=GetPoliceStations
-Module4=ParseWijkAgent
-Module5=Starter
-Module6=stationMain
-Module7=wijkAgentMain
-NumberOfFiles=8
-NumberOfLibraries=9
-NumberOfModules=7
+Module3=GetLocalNews
+Module4=GetPoliceStations
+Module5=lokaalNieuws
+Module6=ParseWijkAgent
+Module7=Starter
+Module8=stationMain
+Module9=wijkAgentMain
+NumberOfFiles=10
+NumberOfLibraries=10
+NumberOfModules=9
 Version=10.2
 @EndOfDesignText@
 #Region  Project Attributes 
@@ -59,7 +66,8 @@ Sub Process_Globals
 	Type station(ps_id As String, name As String, longtitude As Double, latitude As Double, address As String, _
 	postalcode As String, city As String, _
 	url As String, twitter As String, facebook As String)
-	Type wijkAgent(naam As String, afbeelding As Bitmap, werkGebied As String, publicatieDatum As String, url as String)
+	Type wijkAgent(naam As String, afbeelding As Bitmap, werkGebied As String, publicatieDatum As String, url As String)
+	Type localNewsHeadline(area As String, pubDate As String, title As String, uid As String, newsUrl as String)
 	
 	Private xui As XUI
 	Private clsPStations As GetPoliceStations
@@ -92,7 +100,5 @@ Sub CleanDbs 'ignore
 	clsDb.CleanAddressdb
 	clsDb.CleanSocialMediadb
 End Sub
-
-
 
 
