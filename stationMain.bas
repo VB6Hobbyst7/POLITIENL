@@ -50,7 +50,7 @@ Sub Activity_Create(FirstTime As Boolean)
 	ime.AddHandleActionEvent(edtFind)
 	PCLV.Initialize(Me, "PCLV", clvStation)
 	PCLV.ShowScrollBar = False
-	PCLV.NumberOfSteps=50
+'	PCLV.NumberOfSteps=100
 	edtFind.InputType = Bit.Or(edtFind.InputType, 0x00080000)
 	GenFunctions.ResetUserFontScale(Activity)
 	GetStation
@@ -85,7 +85,7 @@ Sub GetStation
 	Dim lstStation As List = clsDb.GetStationList
 	
 	For Each st As station In lstStation
-		PCLV.AddItem(180dip, xui.Color_White, st)
+		PCLV.AddItem(160dip, xui.Color_White, st)
 	Next
 	
 	PCLV.Commit
@@ -97,7 +97,7 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 		Dim station As station = item.Value
 		
 		Dim pnl As B4XView = xui.CreatePanel("")
-		item.Panel.AddView(pnl, 0, 0, clvStation.AsView.Width, 180dip)
+		item.Panel.AddView(pnl, 0, 0, clvStation.AsView.Width, 160dip)
 		'Create the item layout
 		pnl.LoadLayout("clvStation")
 		
