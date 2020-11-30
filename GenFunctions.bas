@@ -5,6 +5,8 @@ Type=StaticCode
 Version=10.2
 @EndOfDesignText@
 Sub Process_Globals
+	Dim stationData As station
+	Private access as Accessibility
 
 End Sub
 
@@ -51,4 +53,32 @@ Sub OpenUrl(url As String)
 	Dim i As Intent
 	i.Initialize(i.ACTION_VIEW, url)
 	StartActivity(i)
+End Sub
+
+Sub ParseStringDate(strDate As String) As String
+	Dim dateStr() As String = Regex.Split(" ", strDate)
+	Dim dateAsString, timeAsString As String
+	Dim parsedDate As Long
+	
+	dateAsString = dateStr(0)
+	timeAsString = dateStr(1)
+	
+	DateTime.DateFormat = "yy-MM-dd"
+	parsedDate = DateTime.DateParse(dateAsString)
+	DateTime.DateFormat = "dd MMMM yyyy"
+	Return $"$Date{parsedDate} ${timeAsString.SubString2(0,5)}"$
+End Sub
+
+Sub ResetUserFontScale(p As Panel)
+	For Each v As View In p
+		If v Is Panel Then
+			ResetUserFontScale(v)
+		Else If v Is Label Then
+			Dim lbl As Label = v
+			lbl.TextSize = lbl.TextSize / access.GetUserFontScale
+		Else If v Is Spinner Then
+			Dim s As Spinner = v
+			s.TextSize = s.TextSize / access.GetUserFontScale
+		End If
+	Next
 End Sub

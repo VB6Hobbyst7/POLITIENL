@@ -18,6 +18,7 @@ Sub Globals
 	Private clsDb As dbFunctions
 	Private clvStation As CustomListView
 	Private clsStationData As GetPoliceStations
+	Private clsLocalNews As GetLocalNews
 	
 	Private PCLV As PreoptimizedCLV
 	Private pnlStation As Panel
@@ -36,19 +37,22 @@ Sub Globals
 	Private pnlFind As Panel
 	Private edtDummyForFocus As EditText
 	Private pnlWijkAgent As Panel
+	Private pnlLocalNews As Panel
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
 	clsDb.Initialize
 	clsStationData.Initialize
+	clsLocalNews.Initialize
 	
 	Activity.LoadLayout("stationMain")
 	ime.Initialize("IME")
 	ime.AddHandleActionEvent(edtFind)
 	PCLV.Initialize(Me, "PCLV", clvStation)
 	PCLV.ShowScrollBar = False
-	PCLV.NumberOfSteps=50
+'	PCLV.NumberOfSteps=100
 	edtFind.InputType = Bit.Or(edtFind.InputType, 0x00080000)
+	GenFunctions.ResetUserFontScale(Activity)
 	GetStation
 
 End Sub
@@ -81,7 +85,7 @@ Sub GetStation
 	Dim lstStation As List = clsDb.GetStationList
 	
 	For Each st As station In lstStation
-		PCLV.AddItem(180dip, xui.Color_White, st)
+		PCLV.AddItem(160dip, xui.Color_White, st)
 	Next
 	
 	PCLV.Commit
@@ -93,7 +97,7 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 		Dim station As station = item.Value
 		
 		Dim pnl As B4XView = xui.CreatePanel("")
-		item.Panel.AddView(pnl, 0, 0, clvStation.AsView.Width, 180dip)
+		item.Panel.AddView(pnl, 0, 0, clvStation.AsView.Width, 160dip)
 		'Create the item layout
 		pnl.LoadLayout("clvStation")
 		
@@ -127,7 +131,7 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 			pnlFacebook.Enabled = False
 			lblFacebook.TextColor = Colors.Gray
 		End If
-		
+		GenFunctions.ResetUserFontScale(pnl)
 	Next
 End Sub
 
@@ -230,4 +234,10 @@ End Sub
 
 Sub GetStationData(p As Panel) As station
 	Return clvStation.GetValue(clvStation.GetItemFromView(p))
+End Sub
+
+Sub pnlLocalNews_Click
+	Dim pnl As Panel = Sender
+	GenFunctions.stationData = clvStation.GetValue(clvStation.GetItemFromView(pnl))
+	StartActivity(lokaalNieuws)	
 End Sub

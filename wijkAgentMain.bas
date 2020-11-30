@@ -28,6 +28,7 @@ End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
 	Activity.LoadLayout("wijkAgentMain")
+	GenFunctions.ResetUserFontScale(Activity)
 End Sub
 
 Sub Activity_Resume
@@ -69,6 +70,7 @@ Sub GenWijkAgent(wijkAgent As wijkAgent) As Panel
 	If wijkAgent.url.Length < 10 Then
 		lblUrl.TextColor = Colors.Gray
 	End If
+	GenFunctions.ResetUserFontScale(pnl)
 	Return pnl
 End Sub
 
