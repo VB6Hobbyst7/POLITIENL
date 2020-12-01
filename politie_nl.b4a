@@ -1,26 +1,38 @@
 ﻿Build1=Default,nl.pdeg.politie_nl
-File1=arial.ttf
-File10=stationMain.bal
-File11=wijkAgentMain.bal
-File2=clvStation.bal
-File3=lokaalNieuwsMain.bal
-File4=Main.bal
-File5=materialdesignicons-webfont.ttf
-File6=pnlNewsLocalHeadline.bal
-File7=pnlWijkAgent.bal
-File8=politie.db
-File9=politie_logo.png
-FileGroup1=files
+File1=123.bal
+File10=Main.bal
+File11=materialdesignicons-webfont.ttf
+File12=pnlNewsLocalHeadline.bal
+File13=pnlWijkAgent.bal
+File14=politie.db
+File15=politie_logo.png
+File16=stationMain.bal
+File17=wijkAgentMain.bal
+File2=1492608060-4-google-news-data-newspaaper-newsfeed-service-daily_83370.png
+File3=190womanpoliceofficer2_100628.png
+File4=5294-twitter-i_102511.png
+File5=arial.ttf
+File6=clvStation.bal
+File7=Facebook_icon-icons.com_66805.png
+File8=internet_102151.png
+File9=lokaalNieuwsMain.bal
+FileGroup1=Default Group
 FileGroup10=forms
-FileGroup11=forms
-FileGroup2=forms
-FileGroup3=forms
-FileGroup4=forms
+FileGroup11=files
+FileGroup12=forms
+FileGroup13=forms
+FileGroup14=files
+FileGroup15=icons
+FileGroup16=forms
+FileGroup17=forms
+FileGroup2=icons
+FileGroup3=icons
+FileGroup4=icons
 FileGroup5=files
 FileGroup6=forms
-FileGroup7=forms
-FileGroup8=files
-FileGroup9=Default Group
+FileGroup7=icons
+FileGroup8=icons
+FileGroup9=forms
 Group=Default Group
 Library1=core
 Library2=runtimepermissions
@@ -41,7 +53,7 @@ Module6=ParseWijkAgent
 Module7=Starter
 Module8=stationMain
 Module9=wijkAgentMain
-NumberOfFiles=11
+NumberOfFiles=17
 NumberOfLibraries=9
 NumberOfModules=9
 Version=10.2
@@ -68,7 +80,7 @@ Sub Process_Globals
 	postalcode As String, city As String, _
 	url As String, twitter As String, facebook As String)
 	Type wijkAgent(naam As String, afbeelding As Bitmap, werkGebied As String, publicatieDatum As String, url As String)
-	Type localNewsHeadline(area As String, pubDate As String, title As String, uid As String, newsUrl as String)
+	Type localNewsHeadline(area As String, pubDate As String, title As String, uid As String, newsUrl As String)
 	
 	Private xui As XUI
 	Private clsPStations As GetPoliceStations

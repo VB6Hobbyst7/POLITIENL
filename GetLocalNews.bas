@@ -50,31 +50,31 @@ Private Sub ParseLocalNewsData(data As String) As List
 	Dim nieuwsberichten As List = root.Get("nieuwsberichten")
 	For Each colnieuwsberichten As Map In nieuwsberichten
 		Dim publicatiedatum As String = colnieuwsberichten.Get("publicatiedatum")
-		Dim alineas As List = colnieuwsberichten.Get("alineas")
-		For Each colalineas As Map In alineas
-			Dim coltitel As String = colalineas.Get("titel")
-			Dim alineatype As String = colalineas.Get("alineatype")
-			Dim opgemaaktetekst As String = colalineas.Get("opgemaaktetekst")
-			Dim bestanden As String = colalineas.Get("bestanden")
-		Next
+'		Dim alineas As List = colnieuwsberichten.Get("alineas")
+'		For Each colalineas As Map In alineas
+''			Dim coltitel As String = colalineas.Get("titel")
+''			Dim alineatype As String = colalineas.Get("alineatype")
+''			Dim opgemaaktetekst As String = colalineas.Get("opgemaaktetekst")
+''			Dim bestanden As String = colalineas.Get("bestanden")
+'		Next
 		Dim gebied As String = colnieuwsberichten.Get("gebied")
-		Dim displayName As String = colnieuwsberichten.Get("displayName")
-		Dim locaties As List = colnieuwsberichten.Get("locaties")
-		For Each collocaties As Map In locaties
-			Dim latitude As Double = collocaties.Get("latitude")
-			Dim longitude As Double = collocaties.Get("longitude")
-		Next
+'		Dim displayName As String = colnieuwsberichten.Get("displayName")
+'		Dim locaties As List = colnieuwsberichten.Get("locaties")
+'		For Each collocaties As Map In locaties
+''			Dim latitude As Double = collocaties.Get("latitude")
+''			Dim longitude As Double = collocaties.Get("longitude")
+'		Next
 		Dim colnieuwsurl As String = colnieuwsberichten.Get("url")
 		Dim uid As String = colnieuwsberichten.Get("uid")
 		Dim colnewstitel As String = colnieuwsberichten.Get("titel")
-		Dim introductie As String = colnieuwsberichten.Get("introductie")
-		Dim afbeelding As Map = colnieuwsberichten.Get("afbeelding")
-		Dim alttext As String = afbeelding.Get("alttext")
-		Dim url As String = afbeelding.Get("url")
-		Dim links As String = colnieuwsberichten.Get("links")
-		Dim availabletranslations As String = colnieuwsberichten.Get("availabletranslations")
-		Dim uidtipformulier As String = colnieuwsberichten.Get("uidtipformulier")
-		Dim urltipformulier As String = colnieuwsberichten.Get("urltipformulier")
+'		Dim introductie As String = colnieuwsberichten.Get("introductie")
+'		Dim afbeelding As Map = colnieuwsberichten.Get("afbeelding")
+'		Dim alttext As String = afbeelding.Get("alttext")
+'		Dim url As String = afbeelding.Get("url")
+'		Dim links As String = colnieuwsberichten.Get("links")
+'		Dim availabletranslations As String = colnieuwsberichten.Get("availabletranslations")
+'		Dim uidtipformulier As String = colnieuwsberichten.Get("uidtipformulier")
+'		Dim urltipformulier As String = colnieuwsberichten.Get("urltipformulier")
 		
 '		Log($"PUB DATE : ${GenFunctions.ParseStringDate(publicatiedatum)}"$)
 '		Log(colnieuwsurl)
