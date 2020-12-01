@@ -14,13 +14,14 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
+	Private PCLV As PreoptimizedCLV
+	Private CardLayoutsCache As List
 	Dim ime As IME
 	Private clsDb As dbFunctions
 	Private clvStation As CustomListView
 	Private clsStationData As GetPoliceStations
 	Private clsLocalNews As GetLocalNews
 	
-	Private PCLV As PreoptimizedCLV
 	Private pnlStation As Panel
 	Private lblStationName As Label
 	Private lblAddress As Label
@@ -44,14 +45,15 @@ Sub Activity_Create(FirstTime As Boolean)
 	clsDb.Initialize
 	clsStationData.Initialize
 	clsLocalNews.Initialize
+	CardLayoutsCache.Initialize
 	
 	Activity.LoadLayout("stationMain")
 	
 '	GetStation
 	PCLV.Initialize(Me, "PCLV", clvStation)
 '	PCLV.ShowScrollBar = True
-	PCLV.NumberOfSteps=10
-	PCLV.Commit
+'	PCLV.NumberOfSteps=10
+'	PCLV.Commit
 	GetStation
 	
 	ime.Initialize("IME")
@@ -87,12 +89,15 @@ End Sub
 Sub GetStation
 	Dim stime As Long = DateTime.Now
 	Dim lstStation As List = clsDb.GetStationList
-	Dim width As Int = clvStation.AsView.Width
+	
 	
 	clvStation.Clear
 '	For i = 0 To lstStation.Size -1
 '		Dim data As station = lstStation.Get(i)
-'		clvStation.Add(GenList(lstStation.Get(i), width), data)
+'		'clvStation.Add(GenList(lstStation.Get(i), width), data)
+'		Dim p As B4XView = xui.CreatePanel("")
+'		p.SetLayoutAnimated(0, 0, 0, clvStation.AsView.Width, 160dip)
+'		clvStation.Add(p, data)
 '	Next
 	
 	For Each st As station In lstStation
@@ -144,22 +149,25 @@ End Sub
 'End Sub
 
 Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
+	Dim stime As Long = DateTime.Now
+	dim width as int = clvStation.AsView.Width
+		
 	For Each i As Int In PCLV.VisibleRangeChanged(FirstIndex, LastIndex)
 		Dim item As CLVItem = clvStation.GetRawListItem(i)
 		Dim station As station = item.Value
-		
 		Dim pnl As B4XView = xui.CreatePanel("")
-		item.Panel.AddView(pnl, 0, 0, clvStation.AsView.Width, 160dip)
+	
+		item.Panel.AddView(pnl, 0, 0, width, 160dip)
 		pnl.LoadLayout("clvStation")
 		
 		lblStationName.Text = station.name
 		lblAddress.Text = station.address
 		lblZip.Text = station.postalcode
 		lblCity.Text = $"${station.postalcode} ${station.city}"$
-'		If lblAddress.Text.Length < 5 Then 
-'			lblAddress.TextColor = Colors.Red
-'			lblAddress.Text = "Onbekend"
-'		End If
+		'		If lblAddress.Text.Length < 5 Then
+		'			lblAddress.TextColor = Colors.Red
+		'			lblAddress.Text = "Onbekend"
+		'		End If
 		If lblCity.Text.Length < 5 Then
 			lblCity.Text = "Adresgevens van dit bureau niet beschikbaar"
 			lblCity.TextColor = Colors.Red
@@ -184,6 +192,7 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 		End If
 		GenFunctions.ResetUserFontScale(pnl)
 	Next
+'	Log($"${DateTime.Now-stime} ms"$)
 End Sub
 
 Sub pnlTwitter_Click
@@ -262,7 +271,7 @@ Sub FindStation(lstStation As List)
 		PCLV.AddItem(180dip, xui.Color_White, st)
 	Next
 '	
-'	PCLV.Commit
+	PCLV.Commit
 	clvStation.ScrollToItem(0)
 End Sub
 
