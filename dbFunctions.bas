@@ -143,7 +143,7 @@ Sub GetFindStationList(hint As String) As List
 FROM police pc
 inner join address ad on
 ad.ps_id = pc.ps_id
-WHERE ad.adress_type = 'visit' And pc.name LIKE ? OR ad.city LIKE ?
+WHERE ad.adress_type = 'visit' And (pc.name LIKE ? OR ad.city LIKE ?)
 ORDER BY pc.name"$
 
 	rs = Starter.sql.ExecQuery2(qry, Array As String(searchStr, searchStr))
