@@ -1,24 +1,26 @@
 ﻿Build1=Default,nl.pdeg.politie_nl
 File1=arial.ttf
-File10=wijkAgentMain.bal
-File2=clvStation.bal
-File3=lokaalNieuwsMain.bal
-File4=Main.bal
-File5=materialdesignicons-webfont.ttf
-File6=pnlNewsLocalHeadline.bal
-File7=pnlWijkAgent.bal
-File8=politie.db
-File9=stationMain.bal
+File10=stationMain.bal
+File11=wijkAgentMain.bal
+File2=cartman.jpg
+File3=clvStation.bal
+File4=lokaalNieuwsMain.bal
+File5=Main.bal
+File6=materialdesignicons-webfont.ttf
+File7=pnlNewsLocalHeadline.bal
+File8=pnlWijkAgent.bal
+File9=politie.db
 FileGroup1=files
 FileGroup10=forms
-FileGroup2=forms
+FileGroup11=forms
+FileGroup2=Default Group
 FileGroup3=forms
 FileGroup4=forms
-FileGroup5=files
-FileGroup6=forms
+FileGroup5=forms
+FileGroup6=files
 FileGroup7=forms
-FileGroup8=files
-FileGroup9=forms
+FileGroup8=forms
+FileGroup9=files
 Group=Default Group
 Library1=core
 Library2=runtimepermissions
@@ -39,7 +41,7 @@ Module6=ParseWijkAgent
 Module7=Starter
 Module8=stationMain
 Module9=wijkAgentMain
-NumberOfFiles=10
+NumberOfFiles=11
 NumberOfLibraries=9
 NumberOfModules=9
 Version=10.2
@@ -47,15 +49,15 @@ Version=10.2
 #Region  Project Attributes 
 	#ApplicationLabel: Politie Nl
 	#VersionCode: 1
-	#VersionName: v0.10
+	#VersionName: v0.30
 	'SupportedOrientations possible values: unspecified, landscape or portrait.
-	#SupportedOrientations: unspecified
+	#SupportedOrientations: portrait
 	#CanInstallToExternalStorage: False
 #End Region
 
 #Region  Activity Attributes 
 	#FullScreen: False
-	#IncludeTitle: True
+	#IncludeTitle: False
 #End Region
 
 Sub Process_Globals
@@ -74,16 +76,15 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
+	Private btnContinue As Button
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
 	clsPStations.Initialize
 	clsDb.Initialize
 '	CleanDbs
-	Sleep(500)
 	Activity.LoadLayout("Main")
 '	Wait For (clsPStations.GetStationList) Complete (done As Boolean)
-	StartActivity(stationMain)
 End Sub
 
 Sub Activity_Resume
@@ -101,3 +102,9 @@ Sub CleanDbs 'ignore
 End Sub
 
 
+
+
+Sub btnContinue_Click
+	StartActivity(stationMain)
+	Activity.Finish
+End Sub
