@@ -6,7 +6,6 @@ Version=10.2
 @EndOfDesignText@
 Sub Class_Globals
 	Dim parser As JSONParser
-	
 End Sub
 
 Public Sub Initialize
@@ -15,7 +14,7 @@ End Sub
 
 Sub GetLocalNewsHeadlines As ResumableSub
 	Private lst As List
-	Private jsonData, data As String
+	Private data As String
 	Private strLocalNewsUrl As String
 	Private latitude As Double, longtitude As Double
 	Private job As HttpJob

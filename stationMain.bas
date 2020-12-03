@@ -83,9 +83,7 @@ Sub clvStation_ItemClick (Index As Int, Value As Object)
 End Sub
 
 Sub GetStation
-	Dim stime As Long = DateTime.Now
 	Dim lstStation As List = clsDb.GetStationList
-	Dim width As Int = clvStation.AsView.Width
 	
 	clvStation.Clear
 
@@ -94,7 +92,6 @@ Sub GetStation
 	Next
 	
 	PCLV.Commit
-	Log($"${DateTime.Now-stime} ms"$)
 End Sub
 
 Sub PCLV_HintRequested (Index As Int) As Object
@@ -103,7 +100,6 @@ Sub PCLV_HintRequested (Index As Int) As Object
 End Sub
 
 Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
-	Dim stime As Long = DateTime.Now
 	Dim width As Int = clvStation.AsView.Width
 		
 	For Each i As Int In PCLV.VisibleRangeChanged(FirstIndex, LastIndex)
@@ -143,7 +139,6 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 		End If
 		GenFunctions.ResetUserFontScale(pnl)
 	Next
-'	Log($"${DateTime.Now-stime} ms"$)
 End Sub
 
 Sub pnlTwitter_Click
@@ -207,18 +202,11 @@ Sub FindStation(lstStation As List)
 		GenFunctions.createCustomToast("Niets gevonden..", Colors.Red)
 		Return
 	End If
-	Dim width As Int = clvStation.AsView.Width
 	clvStation.Clear
-	
-'	For i = 0 To lstStation.Size -1
-'		Dim data As station = lstStation.Get(i)
-'		clvStation.Add(GenList(lstStation.Get(i), width), data)
-'	Next
 	
 	For Each st As station In lstStation
 		PCLV.AddItem(180dip, xui.Color_White, st)
 	Next
-'	
 	PCLV.Commit
 	clvStation.ScrollToItem(0)
 End Sub
