@@ -6,7 +6,7 @@ Version=10.2
 @EndOfDesignText@
 Sub Process_Globals
 	Dim stationData As station
-	Private access as Accessibility
+	Private access As Accessibility
 
 End Sub
 
@@ -81,4 +81,16 @@ Sub ResetUserFontScale(p As Panel)
 			s.TextSize = s.TextSize / access.GetUserFontScale
 		End If
 	Next
+End Sub
+
+Sub ShowLocationOnGoogleMaps(lat As Double, lon As Double)
+	Dim gMapIntent As Intent
+	Dim uri As String
+	
+	uri = $"geo:${lat}, ${lon}?q=${lat}, ${lon},18z/data=!5m1!1e1"$
+	
+	gMapIntent.Initialize(gMapIntent.ACTION_VIEW,uri)
+	gMapIntent.SetComponent("googlemaps")
+	StartActivity(gMapIntent)
+	
 End Sub

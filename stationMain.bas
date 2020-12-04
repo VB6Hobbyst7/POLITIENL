@@ -243,3 +243,12 @@ Sub pnlLocalNews_Click
 	GenFunctions.stationData = clvStation.GetValue(clvStation.GetItemFromView(pnl))
 	StartActivity(lokaalNieuws)	
 End Sub
+
+Sub lblLocation_Click
+	Dim lbl As Label = Sender
+	Dim stationData As station
+	
+	stationData = clvStation.GetValue(clvStation.GetItemFromView(lbl.Parent))
+	
+	GenFunctions.ShowLocationOnGoogleMaps(stationData.latitude, stationData.longtitude)
+End Sub
