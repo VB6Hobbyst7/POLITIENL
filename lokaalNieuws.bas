@@ -50,7 +50,6 @@ Private Sub GetLocalNewsItems
 	
 	For Each item As localNewsHeadline In lstNews
 		clvLocalNews.Add(GenNewsList(item), item)
-		
 	Next
 	
 End Sub
@@ -68,15 +67,20 @@ Private Sub GenNewsList(item As localNewsHeadline) As Panel
 	Return pnl
 End Sub
 
-
-
 Sub pnlOpenUrl_Click
 	Dim pnl As Panel = Sender
 	Dim data As localNewsHeadline = clvLocalNews.GetValue(clvLocalNews.GetItemFromView(pnl))
-	
-	GenFunctions.OpenUrl(data.newsUrl)
+	InitNews(data)
 End Sub
 
 Sub pnlReadItem_Click
 	GenFunctions.OpenUrl("https://www.politie.nl/contact/contactformulier.html")
+End Sub
+
+Sub InitNews(data As localNewsHeadline)
+	Wait For (clsLocalNews.GetLocalNewsDetail(data.latitude, data.longtitude, data.uid)) Complete (parsedData As String)
+	
+	StartActivity(newsDetail)
+	
+	CallSubDelayed2(newsDetail, "SetNewsText", parsedData)
 End Sub

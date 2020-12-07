@@ -5,7 +5,7 @@ Type=Activity
 Version=10.2
 @EndOfDesignText@
 #Region  Activity Attributes 
-	#FullScreen: True
+	#FullScreen: False
 	#IncludeTitle: False	
 #End Region
 
@@ -24,6 +24,11 @@ Sub Globals
 	Private pnlUrl As Panel
 	Private pnlImg As Panel
 	Private lblUrl As Label
+	Private pnlFacebook As Panel
+	Private lblFacebook As Label
+	Private pnlTwitter As Panel
+	Private lblTwitter As Label
+	Private lblInstagram As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -51,25 +56,35 @@ Sub GetWijkAgent(lst As List, stationName As String)
 End Sub
 
 Sub GenWijkAgent(wijkAgent As wijkAgent) As Panel
-	Dim publicationDate As Long
+	Dim publicationDate As Long 'ignore
 	DateTime.DateFormat = "yyyy-MM-dd"
 	publicationDate = $"${DateTime.DateParse(wijkAgent.publicatieDatum.SubString2(0,10)}"$)
 	DateTime.DateFormat = "dd-MMM-yyyy"
 
 	Dim pnl As B4XView = xui.CreatePanel("")
 	
-	pnl.SetLayoutAnimated(0, 0, 0, clvAgent.AsView.Width, 280dip)
+	pnl.SetLayoutAnimated(0, 0, 0, clvAgent.AsView.Width, 200dip)
 	pnl.LoadLayout("pnlWijkAgent")
 	
 	
 	imgAgent.SetBackgroundImage(wijkAgent.afbeelding)
 	lblAgentNaam.Text = wijkAgent.naam
 	lblWerkGebied.Text = wijkAgent.werkGebied
-	lblPubDate.Text = $"Pub. datum $Date{publicationDate}"$
+	lblPubDate.Text = ""' $"Pub. datum $Date{publicationDate}"$
 	
 	If wijkAgent.url.Length < 10 Then
 		lblUrl.TextColor = Colors.Gray
 	End If
+	If wijkAgent.twitter = "http://twitter.com//" Then
+		lblTwitter.TextColor = Colors.Gray
+	End If
+	If wijkAgent.instagram = "" Then
+		lblInstagram.TextColor = Colors.Gray
+	End If
+	If wijkAgent.facebook = "" Then
+		lblFacebook.TextColor = Colors.Gray
+	End If
+	
 	GenFunctions.ResetUserFontScale(pnl)
 	Return pnl
 End Sub
@@ -80,4 +95,28 @@ Sub pnlUrl_Click
 	Dim wijkAgent As wijkAgent = clvAgent.GetValue(clvAgent.GetItemFromView(p))
 	GenFunctions.OpenUrl(wijkAgent.url)
 	
+End Sub
+
+Sub pnlFacebook_Click
+	Dim p As Panel = Sender
+	Dim wijkAgent As wijkAgent = clvAgent.GetValue(clvAgent.GetItemFromView(p))
+	If wijkAgent.facebook.Length > 10 Then
+		GenFunctions.OpenUrl(wijkAgent.facebook)
+	End If
+End Sub
+
+Sub pnlTwitter_Click
+	Dim p As Panel = Sender
+	Dim wijkAgent As wijkAgent = clvAgent.GetValue(clvAgent.GetItemFromView(p))
+	If wijkAgent.twitter <> "http://twitter.com//" Then
+		GenFunctions.OpenUrl(wijkAgent.twitter)
+	End If
+End Sub
+
+Sub pnlInstagram_Click
+	Dim p As Panel = Sender
+	Dim wijkAgent As wijkAgent = clvAgent.GetValue(clvAgent.GetItemFromView(p))
+	If wijkAgent.instagram.Length > 10 Then
+		GenFunctions.OpenUrl(wijkAgent.instagram)
+	End If
 End Sub
