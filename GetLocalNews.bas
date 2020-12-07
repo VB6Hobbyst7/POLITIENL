@@ -106,7 +106,6 @@ Private Sub ParseLocalNewsDetail(data As String, uidNewsItem As String) As Strin
 	Dim titleFound As Boolean
 	
 	parser.Initialize(data)
-	File.WriteString(Starter.filePath, "json.txt", data)
 	
 	Dim root As Map = parser.NextObject
 	
@@ -133,10 +132,12 @@ Private Sub ParseLocalNewsDetail(data As String, uidNewsItem As String) As Strin
 		Dim availabletranslations As String = colnieuwsberichten.Get("availabletranslations")
 		Dim uidtipformulier As String = colnieuwsberichten.Get("uidtipformulier")
 		Dim urltipformulier As String = colnieuwsberichten.Get("urltipformulier")
+		
 		If uid = uidNewsItem Then
 			For Each colalineas As Map In alineas
 				Dim al_titel As String = colalineas.Get("titel")
 				Dim al_opgemaaktetekst As String = colalineas.Get("opgemaaktetekst")
+				
 				alineasText = alineasText & GenFunctions.ParseHtmlTextBlock(al_titel, al_opgemaaktetekst)
 				alineasText = alineasText & CRLF& CRLF
 			Next

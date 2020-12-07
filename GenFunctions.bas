@@ -98,15 +98,10 @@ Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String) As String
 	Dim newText As String = alTextBlock
 	
 	If alTitle <> "" Then
-		newText = $"[b]${alTitle}[/b]${CRLF}"$
+		newText = newText & $"[b]${alTitle}[/b]${CRLF}"$
 	End If
 	
-	newText = newText & alTextBlock
-	
 	newText = newText.Replace($"align="bottom""$, "")
-	
-	newText =  GetAHref(newText)
-	newText = GetAHref(newText)
 	newText = GetAHref(newText)
 	newText = newText.Replace("<p>", "") ' & alTextBlock.Replace("<p>", "")
 	newText = newText.Replace("</p>", "")
@@ -125,6 +120,7 @@ Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String) As String
 	newText = newText.Replace("<b>", "[b]")
 	newText = newText.Replace("</b>", "[/b]")
 	newText = newText.Replace($"-&gt;"$, "")
+	
 	newText = GetImageFromText(newText)
 	
 	Return newText
@@ -156,11 +152,14 @@ End Sub
 
 Sub GetAHref(alTextBlock As String) As String
 	Dim startPosList, endPosList As Int
-	Dim ahrefString, endAhRefTag, url, linkTitle As String
+	Dim ahrefString, endAhRefTag, startARefTag, url, linkTitle As String
+	Dim changedText As String
 	
+	startARefTag = "<a href"
 	endAhRefTag = "</a>"
-	startPosList = alTextBlock.IndexOf("<a href")
-	endPosList = alTextBlock.IndexOf("</a>")
+	
+	startPosList = alTextBlock.IndexOf(startARefTag)
+	endPosList = alTextBlock.IndexOf(endAhRefTag)
 
 	If startPosList = -1 Then
 		Return alTextBlock
@@ -177,7 +176,7 @@ Sub GetAHref(alTextBlock As String) As String
 		End If
 	Next
 	
-	'GET LINK TITLE BETWEEN THE 2 "
+	
 	startPosList = ahrefString.IndexOf($">"$)
 	
 	For i = startPosList+2 To ahrefString.Length - 1
@@ -187,12 +186,17 @@ Sub GetAHref(alTextBlock As String) As String
 		End If
 	Next
 	
+	
 	'GET COMPLETE URL START END
-	alTextBlock = alTextBlock.Replace(ahrefString, $"${CRLF}[url=${url}]${linkTitle}[/url]"$)
-'	If alTextBlock.IndexOf("<a href") <> -1 Then
-'		GetAHref(alTextBlock)
-'	End If
-	Return alTextBlock
+	changedText = alTextBlock.Replace(ahrefString, $"${CRLF}[url=${url}]${linkTitle}[/url]"$)
+	
+	'FIND MORE <a href
+	If changedText.IndexOf(startARefTag) <> -1 Then
+		Return GetAHref(changedText)
+	End If
+
+	Return changedText
+
 End Sub
 
 Sub GetImageFromText(alTextBlock As String) As String
@@ -215,13 +219,16 @@ Sub GetImageFromText(alTextBlock As String) As String
 		End If
 	Next
 	If imgTextNew.IndexOf("http") = -1 Then Return alTextBlock
+	
 	imgTextNew.Replace($" "$, "")
 	Dim bbString As String = $"[alignment=left][img url=${imgTextNew} width = 150, height=200/][/alignment]${CRLF}"$
 	
-	Log(bbString)
 	
 	alTextBlock =alTextBlock.Replace(imgText, bbString)
 	
+	If alTextBlock.IndexOf("<img") <> -1 Then
+		Return GetImageFromText(alTextBlock)
+	End If
 	
 	Return alTextBlock
 	

@@ -38,3 +38,7 @@ Sub SetNewsText(newsDetailText As String)
 	bbNewsDetail.Text = newsDetailText
 	GenFunctions.ResetUserFontScale(Activity)
 End Sub
+
+Sub bbNewsDetail_LinkClicked(url As String)
+	GenFunctions.OpenUrl(url)
+End Sub

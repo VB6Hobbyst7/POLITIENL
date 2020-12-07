@@ -172,6 +172,7 @@ Sub edtFind_EnterPressed
 	End If
 	ime.HideKeyboard
 	FindStation(lstStation)	
+	clvStation.ScrollToItem(0)
 End Sub
 
 Sub lblMagni_Click

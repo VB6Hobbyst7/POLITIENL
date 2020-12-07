@@ -5,7 +5,7 @@ Type=Activity
 Version=10.2
 @EndOfDesignText@
 #Region  Activity Attributes 
-	#FullScreen: True
+	#FullScreen: False
 	#IncludeTitle: False	
 #End Region
 
@@ -24,6 +24,11 @@ Sub Globals
 	Private pnlUrl As Panel
 	Private pnlImg As Panel
 	Private lblUrl As Label
+	Private pnlFacebook As Panel
+	Private lblFacebook As Label
+	Private pnlTwitter As Panel
+	Private lblTwitter As Label
+	Private lblInstagram As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -58,7 +63,7 @@ Sub GenWijkAgent(wijkAgent As wijkAgent) As Panel
 
 	Dim pnl As B4XView = xui.CreatePanel("")
 	
-	pnl.SetLayoutAnimated(0, 0, 0, clvAgent.AsView.Width, 280dip)
+	pnl.SetLayoutAnimated(0, 0, 0, clvAgent.AsView.Width, 200dip)
 	pnl.LoadLayout("pnlWijkAgent")
 	
 	
@@ -70,6 +75,16 @@ Sub GenWijkAgent(wijkAgent As wijkAgent) As Panel
 	If wijkAgent.url.Length < 10 Then
 		lblUrl.TextColor = Colors.Gray
 	End If
+	If wijkAgent.twitter = "http://twitter.com//" Then
+		lblTwitter.TextColor = Colors.Gray
+	End If
+	If wijkAgent.instagram = "" Then
+		lblInstagram.TextColor = Colors.Gray
+	End If
+	If wijkAgent.facebook = "" Then
+		lblFacebook.TextColor = Colors.Gray
+	End If
+	
 	GenFunctions.ResetUserFontScale(pnl)
 	Return pnl
 End Sub
@@ -80,4 +95,28 @@ Sub pnlUrl_Click
 	Dim wijkAgent As wijkAgent = clvAgent.GetValue(clvAgent.GetItemFromView(p))
 	GenFunctions.OpenUrl(wijkAgent.url)
 	
+End Sub
+
+Sub pnlFacebook_Click
+	Dim p As Panel = Sender
+	Dim wijkAgent As wijkAgent = clvAgent.GetValue(clvAgent.GetItemFromView(p))
+	If wijkAgent.facebook.Length > 10 Then
+		GenFunctions.OpenUrl(wijkAgent.facebook)
+	End If
+End Sub
+
+Sub pnlTwitter_Click
+	Dim p As Panel = Sender
+	Dim wijkAgent As wijkAgent = clvAgent.GetValue(clvAgent.GetItemFromView(p))
+	If wijkAgent.twitter <> "http://twitter.com//" Then
+		GenFunctions.OpenUrl(wijkAgent.twitter)
+	End If
+End Sub
+
+Sub pnlInstagram_Click
+	Dim p As Panel = Sender
+	Dim wijkAgent As wijkAgent = clvAgent.GetValue(clvAgent.GetItemFromView(p))
+	If wijkAgent.instagram.Length > 10 Then
+		GenFunctions.OpenUrl(wijkAgent.instagram)
+	End If
 End Sub

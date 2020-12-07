@@ -20,7 +20,7 @@ FileGroup3=forms
 FileGroup4=forms
 FileGroup5=forms
 FileGroup6=files
-FileGroup7=Default Group
+FileGroup7=forms
 FileGroup8=forms
 FileGroup9=forms
 Group=Default Group
@@ -71,16 +71,17 @@ Sub Process_Globals
 	Type station(ps_id As String, name As String, longtitude As Double, latitude As Double, address As String, _
 	postalcode As String, city As String, _
 	url As String, twitter As String, facebook As String)
-	Type wijkAgent(naam As String, afbeelding As Bitmap, werkGebied As String, publicatieDatum As String, url As String)
+	Type wijkAgent(naam As String, afbeelding As Bitmap, werkGebied As String, publicatieDatum As String, _
+	url As String, instagram As String, twitter As String, facebook As String)
 	Type localNewsHeadline(area As String, pubDate As String, title As String, uid As String, newsUrl As String, _
 	latitude As Double, longtitude As Double)
 	
 	Private xui As XUI
-	Private clsPStations As GetPoliceStations
-	Private clsDb As dbFunctions
 End Sub
 
 Sub Globals
+	Private clsDb As dbFunctions
+	Private clsPStations As GetPoliceStations
 	Private btnContinue As Button
 End Sub
 
@@ -113,3 +114,4 @@ Sub btnContinue_Click
 	StartActivity(stationMain)
 	Activity.Finish
 End Sub
+
