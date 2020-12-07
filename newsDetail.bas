@@ -10,8 +10,6 @@ Version=10.2
 #End Region
 
 Sub Process_Globals
-	'These global variables will be declared once when the application starts.
-	'These variables can be accessed from all modules.
 
 End Sub
 

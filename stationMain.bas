@@ -78,7 +78,6 @@ Sub IME_HandleAction As Boolean
 End Sub
 
 Sub clvStation_ItemClick (Index As Int, Value As Object)
-	'Dim map As station = Value
 	
 End Sub
 
@@ -112,7 +111,6 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 		
 		lblStationName.Text = station.name
 		lblAddress.Text = station.address
-'		lblZip.Text = station.postalcode
 		lblCity.Text = $"${station.postalcode} ${station.city}"$
 		
 		If lblCity.Text.Length < 5 Then

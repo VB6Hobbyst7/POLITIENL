@@ -56,7 +56,7 @@ Sub GetWijkAgent(lst As List, stationName As String)
 End Sub
 
 Sub GenWijkAgent(wijkAgent As wijkAgent) As Panel
-	Dim publicationDate As Long
+	Dim publicationDate As Long 'ignore
 	DateTime.DateFormat = "yyyy-MM-dd"
 	publicationDate = $"${DateTime.DateParse(wijkAgent.publicatieDatum.SubString2(0,10)}"$)
 	DateTime.DateFormat = "dd-MMM-yyyy"
@@ -70,7 +70,7 @@ Sub GenWijkAgent(wijkAgent As wijkAgent) As Panel
 	imgAgent.SetBackgroundImage(wijkAgent.afbeelding)
 	lblAgentNaam.Text = wijkAgent.naam
 	lblWerkGebied.Text = wijkAgent.werkGebied
-	lblPubDate.Text = $"Pub. datum $Date{publicationDate}"$
+	lblPubDate.Text = ""' $"Pub. datum $Date{publicationDate}"$
 	
 	If wijkAgent.url.Length < 10 Then
 		lblUrl.TextColor = Colors.Gray

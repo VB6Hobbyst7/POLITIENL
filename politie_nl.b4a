@@ -53,7 +53,7 @@ Version=10.2
 #Region  Project Attributes 
 	#ApplicationLabel: Politie Nl
 	#VersionCode: 1
-	#VersionName: v0.30
+	#VersionName: v0.40
 	'SupportedOrientations possible values: unspecified, landscape or portrait.
 	#SupportedOrientations: portrait
 	#CanInstallToExternalStorage: False
@@ -106,9 +106,6 @@ Sub CleanDbs 'ignore
 	clsDb.CleanAddressdb
 	clsDb.CleanSocialMediadb
 End Sub
-
-
-
 
 Sub btnContinue_Click
 	StartActivity(stationMain)

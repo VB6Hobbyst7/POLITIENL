@@ -71,18 +71,10 @@ Sub pnlOpenUrl_Click
 	Dim pnl As Panel = Sender
 	Dim data As localNewsHeadline = clvLocalNews.GetValue(clvLocalNews.GetItemFromView(pnl))
 	InitNews(data)
-'	GenFunctions.OpenUrl(data.newsUrl)
 End Sub
 
 Sub pnlReadItem_Click
 	GenFunctions.OpenUrl("https://www.politie.nl/contact/contactformulier.html")
-End Sub
-
-Sub GetNewsDetails
-	Dim pnl As Panel = Sender
-	Dim data As localNewsHeadline = clvLocalNews.GetValue(clvLocalNews.GetItemFromView(pnl))
-	
-	InitNews(data)
 End Sub
 
 Sub InitNews(data As localNewsHeadline)

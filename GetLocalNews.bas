@@ -79,7 +79,7 @@ Public Sub CreatelocalNewsHeadline (area As String, pubDate As String, title As 
 End Sub
 
 Sub GetLocalNewsDetail(latitude As Double, longtitude As Double, uid As String) As ResumableSub
-	Private data, parsedData As String
+	Private data As String
 	Private strLocalNewsUrl As String
 	Private latitude As Double, longtitude As Double
 	Private job As HttpJob
@@ -111,27 +111,27 @@ Private Sub ParseLocalNewsDetail(data As String, uidNewsItem As String) As Strin
 	
 	Dim nieuwsberichten As List = root.Get("nieuwsberichten")
 	For Each colnieuwsberichten As Map In nieuwsberichten
-		Dim publicatiedatum As String = colnieuwsberichten.Get("publicatiedatum")
+'		Dim publicatiedatum As String = colnieuwsberichten.Get("publicatiedatum")
 		Dim alineas As List = colnieuwsberichten.Get("alineas")
 
-		Dim gebied As String = colnieuwsberichten.Get("gebied")
-		Dim displayName As String = colnieuwsberichten.Get("displayName")
+'		Dim gebied As String = colnieuwsberichten.Get("gebied")
+'		Dim displayName As String = colnieuwsberichten.Get("displayName")
 		Dim locaties As List = colnieuwsberichten.Get("locaties")
 		For Each collocaties As Map In locaties
-			Dim latitude As Double = collocaties.Get("latitude")
-			Dim longitude As Double = collocaties.Get("longitude")
+'			Dim latitude As Double = collocaties.Get("latitude")
+'			Dim longitude As Double = collocaties.Get("longitude")
 		Next
-		Dim url As String = colnieuwsberichten.Get("url")
+'		Dim url As String = colnieuwsberichten.Get("url")
 		Dim uid As String = colnieuwsberichten.Get("uid")
 		Dim coltitel As String = colnieuwsberichten.Get("titel")
-		Dim introductie As String = colnieuwsberichten.Get("introductie")
-		Dim afbeelding As Map = colnieuwsberichten.Get("afbeelding")
-		Dim alttext As String = afbeelding.Get("alttext")
-		Dim url As String = afbeelding.Get("url")
-		Dim links As String = colnieuwsberichten.Get("links")
-		Dim availabletranslations As String = colnieuwsberichten.Get("availabletranslations")
-		Dim uidtipformulier As String = colnieuwsberichten.Get("uidtipformulier")
-		Dim urltipformulier As String = colnieuwsberichten.Get("urltipformulier")
+'		Dim introductie As String = colnieuwsberichten.Get("introductie")
+'		Dim afbeelding As Map = colnieuwsberichten.Get("afbeelding")
+'		Dim alttext As String = afbeelding.Get("alttext")
+'		Dim url As String = afbeelding.Get("url")
+'		Dim links As String = colnieuwsberichten.Get("links")
+'		Dim availabletranslations As String = colnieuwsberichten.Get("availabletranslations")
+'		Dim uidtipformulier As String = colnieuwsberichten.Get("uidtipformulier")
+'		Dim urltipformulier As String = colnieuwsberichten.Get("urltipformulier")
 		
 		If uid = uidNewsItem Then
 			For Each colalineas As Map In alineas

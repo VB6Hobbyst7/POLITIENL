@@ -6,11 +6,8 @@ Version=10.2
 @EndOfDesignText@
 Sub Class_Globals
 	Dim lstWijkAgent As List
-	Private pnlInstagram As Panel
-	Private lblInstagram As Label
 End Sub
 
-'Initializes the object. You can add parameters to this method if needed.
 Public Sub Initialize
 	
 End Sub
@@ -21,14 +18,11 @@ Public Sub GetWijkAgent(wijkAgentData As String) As List
 End Sub
 
 Public Sub ParseWijkAgentJson(wijkAgentData As String) As ResumableSub
-	
 	Dim parser As JSONParser
 	Dim afbUrl As String
 	
 	lstWijkAgent.Initialize
 	parser.Initialize(wijkAgentData)
-	
-	
 	
 	Dim root As Map = parser.NextObject
 	
@@ -59,15 +53,11 @@ Public Sub ParseWijkAgentJson(wijkAgentData As String) As ResumableSub
 '		Dim telefoon As String = colwijkagenten.Get("telefoon")
 '		Dim extrainformatie As String = colwijkagenten.Get("extrainformatie")
 '		Dim availabletranslations As String = colwijkagenten.Get("availabletranslations")
-		Log(facebookurl)
-		Log (twitterAccount)		
-		Log(instagramurl)
+		
 		afbUrl = afbeelding.Get("url")
 		If afbUrl.Length > 10 Then
 			wait for (GetAfbeelding(afbeelding.Get("url"))) Complete (img As Bitmap)
-		'	If done Then
-				lstWijkAgent.Add(CreatewijkAgent(naam, img, werkgebied, publicatiedatum, url, instagramurl, twitterAccount, facebookurl))
-		'	End If
+			lstWijkAgent.Add(CreatewijkAgent(naam, img, werkgebied, publicatiedatum, url, instagramurl, twitterAccount, facebookurl))
 		End If
 	Next
 	Return lstWijkAgent
