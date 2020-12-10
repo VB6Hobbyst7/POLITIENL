@@ -137,8 +137,10 @@ Private Sub ParseLocalNewsDetail(data As String, uidNewsItem As String) As Strin
 			For Each colalineas As Map In alineas
 				Dim al_titel As String = colalineas.Get("titel")
 				Dim al_opgemaaktetekst As String = colalineas.Get("opgemaaktetekst")
-				
-				alineasText = alineasText & GenFunctions.ParseHtmlTextBlock(al_titel, al_opgemaaktetekst)
+				If al_opgemaaktetekst = "null" Or al_titel = "null" Then
+					Continue
+				End If
+				alineasText = alineasText & GenFunctions.ParseHtmlTextBlock(al_titel.Replace(CRLF, ""), al_opgemaaktetekst)
 				alineasText = alineasText & CRLF& CRLF
 			Next
 			If titleFound = False Then

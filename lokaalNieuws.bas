@@ -82,5 +82,6 @@ Sub InitNews(data As localNewsHeadline)
 	
 	StartActivity(newsDetail)
 	
+	CallSubDelayed2(newsDetail, "SetNewsdate", data.pubDate)
 	CallSubDelayed2(newsDetail, "SetNewsText", parsedData)
 End Sub

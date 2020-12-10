@@ -98,10 +98,14 @@ Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String) As String
 	Dim newText As String = alTextBlock
 	
 	If alTitle <> "" Then
-		newText = newText & $"[b]${alTitle}[/b]${CRLF}"$
+'		newText = newText & $"[b]${alTitle}[/b]${CRLF}"$
+		newText = $"[b]${alTitle}[/b]${CRLF}${newText}"$
 	End If
 	
 	newText = newText.Replace($"align="bottom""$, "")
+	newText = newText.Replace("<p><sup><em>Stockfoto politie</em></sup></p>", "")
+	newText = newText.Replace("<p><em>Foto ter illustratie.</em></p>", "")
+	
 	newText = GetAHref(newText)
 	newText = newText.Replace("<p>", "") ' & alTextBlock.Replace("<p>", "")
 	newText = newText.Replace("</p>", "")
@@ -112,6 +116,8 @@ Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String) As String
 	newText = GetHtmlTextBlockList(newText)
 	newText = newText.Replace("<li>", "[*]")
 	newText = newText.Replace("</li>", "")
+	newText = newText.Replace("</u>", "")
+	newText = newText.Replace("<u>", "")
 	newText = newText.Replace("</ul>", "[/list]")
 	newText = newText.Replace("\n", CRLF)
 	newText = newText.Replace("<br />", CRLF)
