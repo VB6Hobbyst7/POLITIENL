@@ -74,7 +74,7 @@ Sub Process_Globals
 	Type wijkAgent(naam As String, afbeelding As Bitmap, werkGebied As String, publicatieDatum As String, _
 	url As String, instagram As String, twitter As String, facebook As String)
 	Type localNewsHeadline(area As String, pubDate As String, title As String, uid As String, newsUrl As String, _
-	latitude As Double, longtitude As Double)
+	latitude As Double, longtitude As Double, introduction As String)
 	
 	Private xui As XUI
 End Sub

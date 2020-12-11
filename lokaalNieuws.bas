@@ -22,6 +22,7 @@ Sub Globals
 	Private lblStationName As Label
 	Private pnlOpenUrl As Panel
 	Private pnlReadItem As Panel
+	Private lblIntroduction As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -57,12 +58,13 @@ End Sub
 Private Sub GenNewsList(item As localNewsHeadline) As Panel
 	Dim pnl As B4XView = xui.CreatePanel("")
 	
-	pnl.SetLayoutAnimated(0, 0, 0, clvLocalNews.AsView.Width, 240dip)
+	pnl.SetLayoutAnimated(0, 0, 0, clvLocalNews.AsView.Width, 290dip)
 	pnl.LoadLayout("pnlNewsLocalHeadline")
 	
 	lblArea.Text = item.area
 	lblPubDate.Text = item.pubDate
 	lblHeadline.Text = item.title
+	lblIntroduction.Text = item.introduction
 	GenFunctions.ResetUserFontScale(pnl)
 	Return pnl
 End Sub
@@ -84,4 +86,8 @@ Sub InitNews(data As localNewsHeadline)
 	
 	CallSubDelayed2(newsDetail, "SetNewsdate", data.pubDate)
 	CallSubDelayed2(newsDetail, "SetNewsText", parsedData)
+End Sub
+
+Sub pnlHeadline_Click
+	pnlOpenUrl_Click
 End Sub

@@ -110,6 +110,7 @@ Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String) As String
 	newText = newText.Replace("<p>", "") ' & alTextBlock.Replace("<p>", "")
 	newText = newText.Replace("</p>", "")
 	newText = newText.Replace("<br />\n", CRLF)
+	newText = newText.Replace("<br />", CRLF)
 	newText = newText.Replace("&nbsp;", " ")
 	newText = newText.Replace("<strong>", "[b]")
 	newText = newText.Replace("</strong>", "[/b]")

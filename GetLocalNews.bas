@@ -48,6 +48,7 @@ Private Sub ParseLocalNewsData(data As String) As List
 	
 	Dim nieuwsberichten As List = root.Get("nieuwsberichten")
 	For Each colnieuwsberichten As Map In nieuwsberichten
+		Dim introductie As String = colnieuwsberichten.get("introductie")
 		Dim publicatiedatum As String = colnieuwsberichten.Get("publicatiedatum")
 		Dim gebied As String = colnieuwsberichten.Get("gebied")
 		Dim colnieuwsurl As String = colnieuwsberichten.Get("url")
@@ -59,13 +60,13 @@ Private Sub ParseLocalNewsData(data As String) As List
 			Dim longitude As Double = collocaties.Get("longitude")
 			Exit
 		Next
-		lst.Add(CreatelocalNewsHeadline(gebied, GenFunctions.ParseStringDate(publicatiedatum), colnewstitel, uid, colnieuwsurl, latitude, longitude))
+		lst.Add(CreatelocalNewsHeadline(gebied, GenFunctions.ParseStringDate(publicatiedatum), colnewstitel, uid, colnieuwsurl, latitude, longitude, introductie))
 	Next
 	
 	Return lst
 End Sub
 
-Public Sub CreatelocalNewsHeadline (area As String, pubDate As String, title As String, uid As String, newsUrl As String, latitude As Double, longtitude As Double) As localNewsHeadline
+Public Sub CreatelocalNewsHeadline (area As String, pubDate As String, title As String, uid As String, newsUrl As String, latitude As Double, longtitude As Double, introductie As String) As localNewsHeadline
 	Dim t1 As localNewsHeadline
 	t1.Initialize
 	t1.area = area
@@ -75,6 +76,7 @@ Public Sub CreatelocalNewsHeadline (area As String, pubDate As String, title As 
 	t1.newsUrl = newsUrl
 	t1.latitude = latitude
 	t1.longtitude = longtitude
+	t1.introduction = introductie
 	Return t1
 End Sub
 
