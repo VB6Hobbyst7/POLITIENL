@@ -238,6 +238,7 @@ Sub GetStationData(p As Panel) As station
 End Sub
 
 Sub pnlLocalNews_Click
+	Starter.localNewsOffset = 0
 	Dim pnl As Panel = Sender
 	GenFunctions.stationData = clvStation.GetValue(clvStation.GetItemFromView(pnl))
 	StartActivity(lokaalNieuws)	

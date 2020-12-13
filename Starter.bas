@@ -13,6 +13,8 @@ Sub Process_Globals
 	Public filePath As String
 	Private rp As RuntimePermissions
 	Public sql As SQL
+	Public localNewsOffset As Int = 0
+	Public localNewsOffsetEnd as Boolean
 End Sub
 
 Sub Service_Create

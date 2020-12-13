@@ -16,6 +16,7 @@ End Sub
 Sub Globals
 	Private bbNewsDetail As BBCodeView
 	Private TextEngine As BCTextEngine
+	Private lblDate As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -37,6 +38,11 @@ Sub SetNewsText(newsDetailText As String)
 	GenFunctions.ResetUserFontScale(Activity)
 End Sub
 
+Sub SetNewsdate(date As String)
+	lblDate.Text = date
+End Sub
+
 Sub bbNewsDetail_LinkClicked(url As String)
 	GenFunctions.OpenUrl(url)
 End Sub
+

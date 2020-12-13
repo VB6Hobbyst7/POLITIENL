@@ -6,6 +6,7 @@ Version=10.2
 @EndOfDesignText@
 Sub Class_Globals
 	Dim parser As JSONParser
+	Dim itemsOffset As Int = 0
 End Sub
 
 Public Sub Initialize
@@ -14,24 +15,21 @@ End Sub
 
 Sub GetLocalNewsHeadlines As ResumableSub
 	Private lst As List
-	Private data As String
-	Private strLocalNewsUrl As String
 	Private latitude As Double, longtitude As Double
-	Private job As HttpJob
-	
+'	
 	latitude = GenFunctions.stationData.latitude
 	longtitude = GenFunctions.stationData.longtitude
-	strLocalNewsUrl = $"https://api.politie.nl/v4/nieuws/lokaal?language=nl&lat=${latitude}&lon=${longtitude}&radius=5.0&maxnumberofitems=10&offset=0"$
 	
-	job.Initialize("", Me)
-	job.Download(strLocalNewsUrl)
+	Wait For (GetDataFromUrl(latitude, longtitude, Starter.localNewsOffset)) Complete (data As String)
+	Wait For (GetDataFromUrl(latitude, longtitude, Starter.localNewsOffset+10)) Complete (moreData As String)
 	
-	Wait For (job) jobDone(jobDone As HttpJob)
-	
-	If jobDone.Success Then
-		data = job.GetString
+	'SHOW HIDE PREV/NEXT BUTTON
+	If moreData.Length > 10 Then
+		CallSubDelayed2(lokaalNieuws, "ShowHidePrevNextButton", True)
+	Else
+		CallSubDelayed2(lokaalNieuws, "ShowHidePrevNextButton", False)
 	End If
-	job.Release
+
 	lst = ParseLocalNewsData(data)
 	
 	Return lst
@@ -48,6 +46,7 @@ Private Sub ParseLocalNewsData(data As String) As List
 	
 	Dim nieuwsberichten As List = root.Get("nieuwsberichten")
 	For Each colnieuwsberichten As Map In nieuwsberichten
+		Dim introductie As String = colnieuwsberichten.get("introductie")
 		Dim publicatiedatum As String = colnieuwsberichten.Get("publicatiedatum")
 		Dim gebied As String = colnieuwsberichten.Get("gebied")
 		Dim colnieuwsurl As String = colnieuwsberichten.Get("url")
@@ -59,13 +58,13 @@ Private Sub ParseLocalNewsData(data As String) As List
 			Dim longitude As Double = collocaties.Get("longitude")
 			Exit
 		Next
-		lst.Add(CreatelocalNewsHeadline(gebied, GenFunctions.ParseStringDate(publicatiedatum), colnewstitel, uid, colnieuwsurl, latitude, longitude))
+		lst.Add(CreatelocalNewsHeadline(gebied, GenFunctions.ParseStringDate(publicatiedatum), colnewstitel, uid, colnieuwsurl, latitude, longitude, introductie))
 	Next
 	
 	Return lst
 End Sub
 
-Public Sub CreatelocalNewsHeadline (area As String, pubDate As String, title As String, uid As String, newsUrl As String, latitude As Double, longtitude As Double) As localNewsHeadline
+Public Sub CreatelocalNewsHeadline (area As String, pubDate As String, title As String, uid As String, newsUrl As String, latitude As Double, longtitude As Double, introductie As String) As localNewsHeadline
 	Dim t1 As localNewsHeadline
 	t1.Initialize
 	t1.area = area
@@ -75,32 +74,42 @@ Public Sub CreatelocalNewsHeadline (area As String, pubDate As String, title As 
 	t1.newsUrl = newsUrl
 	t1.latitude = latitude
 	t1.longtitude = longtitude
+	t1.introduction = introductie
 	Return t1
 End Sub
 
 Sub GetLocalNewsDetail(latitude As Double, longtitude As Double, uid As String) As ResumableSub
-	Private data As String
-	Private strLocalNewsUrl As String
-	Private latitude As Double, longtitude As Double
-	Private job As HttpJob
+	Private latitude, longtitude As Double
 	
 	latitude = GenFunctions.stationData.latitude
 	longtitude = GenFunctions.stationData.longtitude
-	strLocalNewsUrl = $"https://api.politie.nl/v4/nieuws/lokaal?language=nl&lat=${latitude}&lon=${longtitude}&radius=5.0&maxnumberofitems=10&offset=0"$
+	 
+	Wait For (GetDataFromUrl(latitude, longtitude, Starter.localNewsOffset)) Complete (data As String)
+
 	
+	Return ParseLocalNewsDetail(data, uid)
+End Sub
+
+Private Sub GetDataFromUrl(latitude As Double, longtitude As Double, offset As Int) As ResumableSub
+	Private job As HttpJob
+	Dim strLocalNewsUrl, data As String
+	
+	strLocalNewsUrl = $"https://api.politie.nl/v4/nieuws/lokaal?language=nl&lat=${latitude}&lon=${longtitude}&radius=5.0&maxnumberofitems=10&offset=${offset}"$
 	job.Initialize("", Me)
 	job.Download(strLocalNewsUrl)
-	
 	Wait For (job) jobDone(jobDone As HttpJob)
 	
 	If jobDone.Success Then
 		data = job.GetString
+	Else
+		data = "error"
 	End If
 	job.Release
-	Return ParseLocalNewsDetail(data, uid)
+	
+	Return data
 End Sub
 
-Private Sub ParseLocalNewsDetail(data As String, uidNewsItem As String) As String
+Private Sub ParseLocalNewsDetail(data As String, uidNewsItem As String) As String 'ignore
 	Dim parser As JSONParser
 	Dim alineasText As String = ""
 	Dim titleFound As Boolean
@@ -137,8 +146,10 @@ Private Sub ParseLocalNewsDetail(data As String, uidNewsItem As String) As Strin
 			For Each colalineas As Map In alineas
 				Dim al_titel As String = colalineas.Get("titel")
 				Dim al_opgemaaktetekst As String = colalineas.Get("opgemaaktetekst")
-				
-				alineasText = alineasText & GenFunctions.ParseHtmlTextBlock(al_titel, al_opgemaaktetekst)
+				If al_opgemaaktetekst = "null" Or al_titel = "null" Then
+					Continue
+				End If
+				alineasText = alineasText & GenFunctions.ParseHtmlTextBlock(al_titel.Replace(CRLF, ""), al_opgemaaktetekst)
 				alineasText = alineasText & CRLF& CRLF
 			Next
 			If titleFound = False Then
@@ -152,3 +163,6 @@ Private Sub ParseLocalNewsDetail(data As String, uidNewsItem As String) As Strin
 	
 End Sub
 
+Private Sub CheckForMoreNewsItems
+	
+End Sub

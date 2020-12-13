@@ -97,21 +97,29 @@ End Sub
 Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String) As String
 	Dim newText As String = alTextBlock
 	
+	
 	If alTitle <> "" Then
-		newText = newText & $"[b]${alTitle}[/b]${CRLF}"$
+'		newText = newText & $"[b]${alTitle}[/b]${CRLF}"$
+		newText = $"[b]${alTitle}[/b]${CRLF}${newText}"$
 	End If
 	
 	newText = newText.Replace($"align="bottom""$, "")
+	newText = newText.Replace("<p><sup><em>Stockfoto politie</em></sup></p>", "")
+	newText = newText.Replace("<p><em>Foto ter illustratie.</em></p>", "")
+	
 	newText = GetAHref(newText)
 	newText = newText.Replace("<p>", "") ' & alTextBlock.Replace("<p>", "")
 	newText = newText.Replace("</p>", "")
 	newText = newText.Replace("<br />\n", CRLF)
+	newText = newText.Replace("<br />", CRLF)
 	newText = newText.Replace("&nbsp;", " ")
 	newText = newText.Replace("<strong>", "[b]")
 	newText = newText.Replace("</strong>", "[/b]")
 	newText = GetHtmlTextBlockList(newText)
 	newText = newText.Replace("<li>", "[*]")
 	newText = newText.Replace("</li>", "")
+	newText = newText.Replace("</u>", "")
+	newText = newText.Replace("<u>", "")
 	newText = newText.Replace("</ul>", "[/list]")
 	newText = newText.Replace("\n", CRLF)
 	newText = newText.Replace("<br />", CRLF)
@@ -120,9 +128,10 @@ Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String) As String
 	newText = newText.Replace("<b>", "[b]")
 	newText = newText.Replace("</b>", "[/b]")
 	newText = newText.Replace($"-&gt;"$, "")
-	
 	newText = GetImageFromText(newText)
-	
+	newText = GetHeaderStyle(newText)
+	newText = GetSupTag(newText)
+		
 	Return newText
 End Sub
 
@@ -186,9 +195,12 @@ Sub GetAHref(alTextBlock As String) As String
 		End If
 	Next
 	
-	
 	'GET COMPLETE URL START END
-	changedText = alTextBlock.Replace(ahrefString, $"${CRLF}[url=${url}]${linkTitle}[/url]"$)
+	If ahrefString.IndexOf("bronRegistratie") <> -1 Then
+		ahrefString = ""
+	Else
+		changedText = alTextBlock.Replace(ahrefString, $"${CRLF}[url=${url}]${linkTitle}[/url]"$)
+	End If
 	
 	'FIND MORE <a href
 	If changedText.IndexOf(startARefTag) <> -1 Then
@@ -231,5 +243,54 @@ Sub GetImageFromText(alTextBlock As String) As String
 	End If
 	
 	Return alTextBlock
+	
+End Sub
+
+Sub GetHeaderStyle(alTextBlock As String) As String
+	Dim startHeader As Int = alTextBlock.ToLowerCase.IndexOf("<h")
+	Dim endHeader As Int
+	Dim newText, header As String
+	
+	If startHeader = -1 Then
+		Return alTextBlock
+	End If
+	
+	endHeader = alTextBlock.ToLowerCase.IndexOf(">")
+	header = alTextBlock.SubString2(startHeader, endHeader+1)
+	newText = alTextBlock.Replace(header, "")
+	'GET END TAG
+	
+	startHeader = newText.IndexOf("</h")
+	endHeader = startHeader+5
+	header = newText.SubString2(startHeader, endHeader)
+	newText = newText.Replace(header, "")
+	
+	If newText.ToLowerCase.IndexOf("<h") > -1 Then
+		Return GetHeaderStyle(newText)
+	End If
+	
+	Return newText
+End Sub
+
+Sub GetSupTag(alTextBlock As String) As String
+	Dim startTag,endTag As String
+	Dim supText, newText As String
+	
+	startTag = alTextBlock.IndexOf("<sup>")
+	
+	If startTag = -1 Then
+		Return alTextBlock
+	End If
+	
+	endTag = alTextBlock.IndexOf("</sup>")
+	supText = alTextBlock.SubString2(startTag, endTag+6)
+	
+	newText = alTextBlock.Replace(supText, "")
+	
+	If newText.IndexOf("<sup") > -1 Then
+		Return GetSupTag(newText)
+	End If
+	
+	Return newText
 	
 End Sub
