@@ -23,6 +23,9 @@ Sub Globals
 	Private pnlOpenUrl As Panel
 	Private pnlReadItem As Panel
 	Private lblIntroduction As Label
+	Private lblPrev As Label
+	Private lblNext As Label
+	Private btnPrev As Button
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -69,6 +72,13 @@ Private Sub GenNewsList(item As localNewsHeadline) As Panel
 	Return pnl
 End Sub
 
+Sub ShowHidePrevNextButton(showNext As Boolean)
+	lblNext.Visible = showNext
+	lblPrev.Visible = Starter.localNewsOffset > 0 
+	
+	btnPrev.Visible = Starter.localNewsOffset > 0
+End Sub
+
 Sub pnlOpenUrl_Click
 	Dim pnl As Panel = Sender
 	Dim data As localNewsHeadline = clvLocalNews.GetValue(clvLocalNews.GetItemFromView(pnl))
@@ -90,4 +100,23 @@ End Sub
 
 Sub pnlHeadline_Click
 	pnlOpenUrl_Click
+End Sub
+
+Sub lblPrev_Click
+	If Starter.localNewsOffset >= 10 Then
+		Starter.localNewsOffset = Starter.localNewsOffset - 10
+		GetLocalNewsItems
+	End If
+End Sub
+
+Sub lblNext_Click
+	Starter.localNewsOffset = Starter.localNewsOffset + 10
+	GetLocalNewsItems
+End Sub
+
+Sub btnPrev_Click
+	If Starter.localNewsOffset >= 10 Then
+		Starter.localNewsOffset = Starter.localNewsOffset - 10
+		GetLocalNewsItems
+	End If
 End Sub
