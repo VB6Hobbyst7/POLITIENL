@@ -88,7 +88,7 @@ Sub GetLocalNewsDetail(latitude As Double, longtitude As Double, uid As String) 
 	
 	latitude = GenFunctions.stationData.latitude
 	longtitude = GenFunctions.stationData.longtitude
-	strLocalNewsUrl = $"https://api.politie.nl/v4/nieuws/lokaal?language=nl&lat=${latitude}&lon=${longtitude}&radius=5.0&maxnumberofitems=10&offset=0"$
+	strLocalNewsUrl = $"https://api.politie.nl/v4/nieuws/lokaal?language=nl&lat=${latitude}&lon=${longtitude}&radius=1.0&maxnumberofitems=10&offset=0"$
 	
 	job.Initialize("", Me)
 	job.Download(strLocalNewsUrl)
