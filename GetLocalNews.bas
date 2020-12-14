@@ -58,6 +58,11 @@ Private Sub ParseLocalNewsData(data As String) As List
 			Dim longitude As Double = collocaties.Get("longitude")
 			Exit
 		Next
+		If colnewstitel.ToLowerCase.IndexOf("video")> -1 Then Continue
+'		colnewstitel = colnewstitel.Replace("[", "(")
+'		colnewstitel = colnewstitel.Replace("]", ")")
+'		colnewstitel = colnewstitel.ToLowerCase.Replace("video", "Filmpje")
+		
 		lst.Add(CreatelocalNewsHeadline(gebied, GenFunctions.ParseStringDate(publicatiedatum), colnewstitel, uid, colnieuwsurl, latitude, longitude, introductie))
 	Next
 	
@@ -146,6 +151,10 @@ Private Sub ParseLocalNewsDetail(data As String, uidNewsItem As String) As Strin
 			For Each colalineas As Map In alineas
 				Dim al_titel As String = colalineas.Get("titel")
 				Dim al_opgemaaktetekst As String = colalineas.Get("opgemaaktetekst")
+				If al_opgemaaktetekst.IndexOf("video") > -1 Then
+				
+					File.WriteString(Starter.filePath, $"video$Time{DateTime.Now}.text"$, al_opgemaaktetekst)
+				End If
 				If al_opgemaaktetekst = "null" Or al_titel = "null" Then
 					Continue
 				End If

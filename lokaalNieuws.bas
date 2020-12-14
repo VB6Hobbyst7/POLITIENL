@@ -26,6 +26,7 @@ Sub Globals
 	Private lblPrev As Label
 	Private lblNext As Label
 	Private btnPrev As Button
+	Private btnNext As Button
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -73,8 +74,8 @@ Private Sub GenNewsList(item As localNewsHeadline) As Panel
 End Sub
 
 Sub ShowHidePrevNextButton(showNext As Boolean)
-	lblNext.Visible = showNext
-	lblPrev.Visible = Starter.localNewsOffset > 0 
+	btnNext.Visible = showNext
+	btnPrev.Visible = Starter.localNewsOffset > 0 
 	
 	btnPrev.Visible = Starter.localNewsOffset > 0
 End Sub
@@ -119,4 +120,9 @@ Sub btnPrev_Click
 		Starter.localNewsOffset = Starter.localNewsOffset - 10
 		GetLocalNewsItems
 	End If
+End Sub
+
+Sub btnNext_Click
+	Starter.localNewsOffset = Starter.localNewsOffset + 10
+	GetLocalNewsItems
 End Sub

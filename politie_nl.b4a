@@ -50,6 +50,10 @@ NumberOfLibraries=10
 NumberOfModules=10
 Version=10.2
 @EndOfDesignText@
+#Region TODO/FIX
+	'News item that contain VIDEO tag
+#End Region
+
 #Region  Project Attributes 
 	#ApplicationLabel: Politie Nl
 	#VersionCode: 1

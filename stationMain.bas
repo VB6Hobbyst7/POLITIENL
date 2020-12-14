@@ -89,7 +89,7 @@ Sub GetStation
 	For Each st As station In lstStation
 		PCLV.AddItem(160dip, xui.Color_White, st)
 	Next
-	
+	PCLV.ShowScrollBar = False
 	PCLV.Commit
 End Sub
 

@@ -97,12 +97,18 @@ End Sub
 Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String) As String
 	Dim newText As String = alTextBlock
 	
-	
 	If alTitle <> "" Then
 '		newText = newText & $"[b]${alTitle}[/b]${CRLF}"$
+		alTitle = newText.Replace("[", "(")
+		alTitle = newText.Replace("]", ")")
 		newText = $"[b]${alTitle}[/b]${CRLF}${newText}"$
 	End If
-	
+	If alTextBlock.IndexOf("video") > -1 Then
+'		Log(alTextBlock)
+'		newText = newText.Replace("video", "filmpje")
+	End If
+
+Try
 	newText = newText.Replace($"align="bottom""$, "")
 	newText = newText.Replace("<p><sup><em>Stockfoto politie</em></sup></p>", "")
 	newText = newText.Replace("<p><em>Foto ter illustratie.</em></p>", "")
@@ -131,7 +137,10 @@ Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String) As String
 	newText = GetImageFromText(newText)
 	newText = GetHeaderStyle(newText)
 	newText = GetSupTag(newText)
-		
+	Catch
+		Log(LastException)
+		newText = "Kan bericht niet openen"
+	End Try
 	Return newText
 End Sub
 
@@ -212,6 +221,9 @@ Sub GetAHref(alTextBlock As String) As String
 End Sub
 
 Sub GetImageFromText(alTextBlock As String) As String
+	Try
+	
+	
 	Dim startPosList, endPosList As Int
 	Dim imgText, imgTextNew As String
 	
@@ -240,8 +252,11 @@ Sub GetImageFromText(alTextBlock As String) As String
 	
 	If alTextBlock.IndexOf("<img") <> -1 Then
 		Return GetImageFromText(alTextBlock)
-	End If
-	
+		End If
+		
+	Catch
+		Log(LastException)
+	End Try
 	Return alTextBlock
 	
 End Sub
