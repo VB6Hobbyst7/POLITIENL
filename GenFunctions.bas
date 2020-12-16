@@ -96,47 +96,46 @@ End Sub
 
 Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String) As String
 	Dim newText As String = alTextBlock
-	
+	newText = newText.Replace("[", "(")
+	newText = newText.Replace("]", ")")
 	If alTitle <> "" Then
-'		newText = newText & $"[b]${alTitle}[/b]${CRLF}"$
-		alTitle = newText.Replace("[", "(")
-		alTitle = newText.Replace("]", ")")
-		newText = $"[b]${alTitle}[/b]${CRLF}${newText}"$
-	End If
-	If alTextBlock.IndexOf("video") > -1 Then
-'		Log(alTextBlock)
-'		newText = newText.Replace("video", "filmpje")
+		alTitle = alTitle.Replace("[", "(")
+		alTitle = alTitle.Replace("]", ")")
+		newText = $"[b]${alTitle}[/b]${""}${newText}"$
 	End If
 
-Try
-	newText = newText.Replace($"align="bottom""$, "")
-	newText = newText.Replace("<p><sup><em>Stockfoto politie</em></sup></p>", "")
-	newText = newText.Replace("<p><em>Foto ter illustratie.</em></p>", "")
+	Try
+		newText = newText.Replace($"align="bottom""$, "")
+		newText = newText.Replace("<p><sup><em>Stockfoto politie</em></sup></p>", "")
+		newText = newText.Replace("<p><em>Foto ter illustratie.</em></p>", "")
 	
-	newText = GetAHref(newText)
-	newText = newText.Replace("<p>", "") ' & alTextBlock.Replace("<p>", "")
-	newText = newText.Replace("</p>", "")
-	newText = newText.Replace("<br />\n", CRLF)
-	newText = newText.Replace("<br />", CRLF)
-	newText = newText.Replace("&nbsp;", " ")
-	newText = newText.Replace("<strong>", "[b]")
-	newText = newText.Replace("</strong>", "[/b]")
-	newText = GetHtmlTextBlockList(newText)
-	newText = newText.Replace("<li>", "[*]")
-	newText = newText.Replace("</li>", "")
-	newText = newText.Replace("</u>", "")
-	newText = newText.Replace("<u>", "")
-	newText = newText.Replace("</ul>", "[/list]")
-	newText = newText.Replace("\n", CRLF)
-	newText = newText.Replace("<br />", CRLF)
-	newText = newText.Replace("<em>", "[b][u]")
-	newText = newText.Replace("</em>", "[/u][/b]")
-	newText = newText.Replace("<b>", "[b]")
-	newText = newText.Replace("</b>", "[/b]")
-	newText = newText.Replace($"-&gt;"$, "")
-	newText = GetImageFromText(newText)
-	newText = GetHeaderStyle(newText)
-	newText = GetSupTag(newText)
+		newText = GetAHref(newText)
+		newText = newText.Replace("<p>", "") ' & alTextBlock.Replace("<p>", "")
+		newText = newText.Replace("</p>", CRLF)
+		newText = newText.Replace("<br />\n", CRLF)
+'		newText = newText.Replace("<br />", CRLF)
+		newText = newText.Replace("<br />", "")
+		newText = newText.Replace("&nbsp;", " ")
+		newText = newText.Replace("<strong>", "[b]")
+		newText = newText.Replace("</strong>", "[/b]")
+		newText = GetHtmlTextBlockList(newText)
+		newText = newText.Replace("<li>", "[*]")
+		newText = newText.Replace("</li>", "")
+		newText = newText.Replace("</u>", "")
+		newText = newText.Replace("<u>", "")
+		newText = newText.Replace("</i>", "")
+		newText = newText.Replace("<i>", "")
+		newText = newText.Replace("</ul>", "[/list]")
+		newText = newText.Replace("\n", CRLF)
+		newText = newText.Replace("<br />", CRLF)
+		newText = newText.Replace("<em>", "[b][u]")
+		newText = newText.Replace("</em>", "[/u][/b]")
+		newText = newText.Replace("<b>", "[b]")
+		newText = newText.Replace("</b>", "[/b]")
+		newText = newText.Replace($"-&gt;"$, "")
+		newText = GetImageFromText(newText)
+		newText = GetHeaderStyle(newText)
+		newText = GetSupTag(newText)
 	Catch
 		Log(LastException)
 		newText = "Kan bericht niet openen"

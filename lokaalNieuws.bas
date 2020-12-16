@@ -97,6 +97,7 @@ Sub InitNews(data As localNewsHeadline)
 	
 	CallSubDelayed2(newsDetail, "SetNewsdate", data.pubDate)
 	CallSubDelayed2(newsDetail, "SetNewsText", parsedData)
+	CallSubDelayed2(newsDetail, "SetNewsArea", data.area)
 End Sub
 
 Sub pnlHeadline_Click

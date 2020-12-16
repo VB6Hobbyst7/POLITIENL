@@ -39,6 +39,7 @@ Sub Globals
 	Private edtDummyForFocus As EditText
 	Private pnlWijkAgent As Panel
 	Private pnlLocalNews As Panel
+	Private imgFav As ImageView
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -251,4 +252,17 @@ Sub lblLocation_Click
 	stationData = clvStation.GetValue(clvStation.GetItemFromView(lbl.Parent))
 	
 	GenFunctions.ShowLocationOnGoogleMaps(stationData.latitude, stationData.longtitude)
+End Sub
+
+Sub imgFav_Click
+	Dim imgv As ImageView = Sender
+	If imgv.Tag = "" Or imgv.Tag = "OFF" Then
+		imgv.Tag = "ON"
+		imgv.SetBackgroundImage(LoadBitmapResize(File.DirAssets, "favourite_on.png", 25dip, 25dip, True))
+		imgv.Gravity = Gravity.FILL
+	Else
+		imgv.Tag = "OFF"
+		imgv.SetBackgroundImage(LoadBitmapResize(File.DirAssets, "favourite_off.png", 25dip, 25dip, True))
+		imgv.Gravity = Gravity.FILL
+	End If
 End Sub
