@@ -14,12 +14,14 @@ Sub Process_Globals
 	Private rp As RuntimePermissions
 	Public sql As SQL
 	Public localNewsOffset As Int = 0
-	Public localNewsOffsetEnd as Boolean
+	Public localNewsOffsetEnd As Boolean
+	Private clsDb As dbFunctions
 End Sub
 
 Sub Service_Create
 	GetSetFilepath
 	CheckDatabaseExists
+	clsDb.Initialize
 
 End Sub
 
@@ -49,4 +51,5 @@ Sub CheckDatabaseExists
 	If File.Exists(filePath, "politie.db") = False Then
 		File.Copy(File.DirAssets, "politie.db", filePath, "politie.db")
 	End If
+	clsDb.CheckIfFavStationExists
 End Sub

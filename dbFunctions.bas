@@ -4,6 +4,13 @@ ModulesStructureVersion=1
 Type=Class
 Version=10.2
 @EndOfDesignText@
+'Select pl.*, fs.ps_id As 'fav' from police pl
+'LEFT JOIN favstation fs on
+'fs.ps_id = pl.ps_id
+'WHERE pl.name like "%zaa%" Or fs.ps_id Not Null
+'ORDER by fs.ps_id DESC, pl.name Asc
+
+
 Sub Class_Globals
 	Private qry As String
 	Private rs As ResultSet
@@ -19,6 +26,24 @@ Sub dbInitialized
 		Starter.sql.Initialize(Starter.filePath, "politie.db", False)
 	End If
 End Sub
+
+Sub CheckIfFavStationExists
+	dbInitialized
+	
+	qry = $"CREATE TABLE IF NOT EXISTS "favstation" (
+	"id"	TEXT,
+	"ps_id"	TEXT
+);"$
+	Starter.sql.ExecNonQuery(qry)
+	qry = $"CREATE INDEX "idx_favstation" ON "favstation" (
+	"ps_id"	ASC
+);"$
+	Starter.sql.ExecNonQuery(qry)
+	
+End Sub
+
+
+
 
 #Region ClearDbs
 Sub CleanPoliceDb
