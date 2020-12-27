@@ -13,7 +13,7 @@ Sub Process_Globals
 	Public filePath As String
 	Private rp As RuntimePermissions
 	Public sql As SQL
-	Public localNewsOffset As Int = 0
+	Public localNewsOffset, itemsFoundOffset As Int = 0
 	Public localNewsOffsetEnd As Boolean
 	Private clsDb As dbFunctions
 End Sub
@@ -48,6 +48,7 @@ Private Sub GetSetFilepath
 End Sub
 
 Sub CheckDatabaseExists
+	clsDb.Initialize
 	If File.Exists(filePath, "politie.db") = False Then
 		File.Copy(File.DirAssets, "politie.db", filePath, "politie.db")
 	End If

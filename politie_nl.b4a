@@ -1,31 +1,35 @@
 ﻿Build1=Default,nl.pdeg.politie_nl
 File1=arial.ttf
-File10=pnlNewsLocalHeadline.bal
-File11=pnlWijkAgent.bal
-File12=politie.db
-File13=stationMain.bal
-File14=wijkAgentMain.bal
+File10=materialdesignicons-webfont.ttf
+File11=newsDetail.bal
+File12=pnlNewsLocalHeadline.bal
+File13=pnlWijkAgent.bal
+File14=politie.db
+File15=stationMain.bal
+File16=wijkAgentMain.bal
 File2=cartman.jpg
-File3=clvStation.bal
-File4=favourite_off.png
-File5=favourite_on.png
-File6=lokaalNieuwsMain.bal
-File7=Main.bal
-File8=materialdesignicons-webfont.ttf
-File9=newsDetail.bal
+File3=clvItemFound.bal
+File4=clvStation.bal
+File5=favourite_off.png
+File6=favourite_on.png
+File7=ItemFoundMain.bal
+File8=lokaalNieuwsMain.bal
+File9=Main.bal
 FileGroup1=files
-FileGroup10=forms
+FileGroup10=files
 FileGroup11=forms
-FileGroup12=files
+FileGroup12=forms
 FileGroup13=forms
-FileGroup14=forms
+FileGroup14=files
+FileGroup15=forms
+FileGroup16=forms
 FileGroup2=Default Group
 FileGroup3=forms
-FileGroup4=Default Group
+FileGroup4=forms
 FileGroup5=Default Group
-FileGroup6=forms
+FileGroup6=Default Group
 FileGroup7=forms
-FileGroup8=files
+FileGroup8=forms
 FileGroup9=forms
 Group=Default Group
 Library1=core
@@ -40,18 +44,21 @@ Library8=ime
 Library9=accessibility
 ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: https://www.b4x.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="29"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~CreateResourceFromFile(Macro, Themes.LightTheme)~\n~'End of default text.~\n~SetApplicationAttribute(android:icon, "@mipmap/ic_launcher")~\n~CreateResource(mipmap-anydpi-v26, ic_launcher.xml,~\n~<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">~\n~    <background android:drawable="@mipmap/background"/>~\n~    <foreground android:drawable="@mipmap/foreground"/>~\n~</adaptive-icon>~\n~)~\n~SetActivityAttribute(stationMain, android:windowSoftInputMode, adjustResize|stateHidden)~\n~AddPermission(android.permission.INTERNET)
 Module1=dbFunctions
-Module10=wijkAgentMain
+Module10=ParseWijkAgent
+Module11=Starter
+Module12=stationMain
+Module13=wijkAgentMain
 Module2=GenFunctions
 Module3=GetLocalNews
-Module4=GetPoliceStations
-Module5=lokaalNieuws
-Module6=newsDetail
-Module7=ParseWijkAgent
-Module8=Starter
-Module9=stationMain
-NumberOfFiles=14
+Module4=GetLocationFromLatLong
+Module5=GetPoliceStations
+Module6=ItemOwner
+Module7=ItemsFound
+Module8=lokaalNieuws
+Module9=newsDetail
+NumberOfFiles=16
 NumberOfLibraries=10
-NumberOfModules=10
+NumberOfModules=13
 Version=10.2
 @EndOfDesignText@
 #Region TODO/FIX
@@ -78,11 +85,12 @@ Sub Process_Globals
 	Type psAdress(psId As String, addressTypes As String, address As String, postcode As String, city As String)
 	Type station(ps_id As String, name As String, longtitude As Double, latitude As Double, address As String, _
 	postalcode As String, city As String, _
-	url As String, twitter As String, facebook As String)
+	url As String, twitter As String, facebook As String, fav_id As String)
 	Type wijkAgent(naam As String, afbeelding As Bitmap, werkGebied As String, publicatieDatum As String, _
 	url As String, instagram As String, twitter As String, facebook As String)
 	Type localNewsHeadline(area As String, pubDate As String, title As String, uid As String, newsUrl As String, _
 	latitude As Double, longtitude As Double, introduction As String)
+	Type foundItemList (pubData As String, title As String, description As String, uid As String, location As String)
 	
 	Private xui As XUI
 End Sub
@@ -96,6 +104,7 @@ End Sub
 Sub Activity_Create(FirstTime As Boolean)
 	clsPStations.Initialize
 	clsDb.Initialize
+	
 '	CleanDbs
 	Activity.LoadLayout("Main")
 '	Wait For (clsPStations.GetStationList) Complete (done As Boolean)

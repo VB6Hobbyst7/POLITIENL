@@ -40,6 +40,7 @@ Sub Globals
 	Private pnlWijkAgent As Panel
 	Private pnlLocalNews As Panel
 	Private imgFav As ImageView
+	Private lblItemFound As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -83,12 +84,12 @@ Sub clvStation_ItemClick (Index As Int, Value As Object)
 End Sub
 
 Sub GetStation
-	Dim lstStation As List = clsDb.GetStationList
+	Dim lstStation As List = clsDb.GetFindStationList("")
 	
 	clvStation.Clear
 
 	For Each st As station In lstStation
-		PCLV.AddItem(160dip, xui.Color_White, st)
+		PCLV.AddItem(170dip, xui.Color_White, st)
 	Next
 	PCLV.ShowScrollBar = False
 	PCLV.Commit
@@ -107,7 +108,7 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 		Dim station As station = item.Value
 		Dim pnl As B4XView = xui.CreatePanel("")
 	
-		item.Panel.AddView(pnl, 0, 0, width, 160dip)
+		item.Panel.AddView(pnl, 0, 0, width, 170dip)
 		pnl.LoadLayout("clvStation")
 		
 		lblStationName.Text = station.name
@@ -115,8 +116,8 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 		lblCity.Text = $"${station.postalcode} ${station.city}"$
 		
 		If lblCity.Text.Length < 5 Then
-			lblCity.Text = "Adresgevens van dit bureau niet beschikbaar"
-			lblCity.TextColor = Colors.Red
+			lblAddress.Text = "Geen adresgevens..."
+			lblAddress.TextColor = Colors.Red
 		End If
 		If station.url.Length > 2 Then
 			pnlUrl.Tag = station.url
@@ -136,6 +137,8 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 			pnlFacebook.Enabled = False
 			lblFacebook.TextColor = Colors.Gray
 		End If
+		
+		SetImgFav(station.fav_id <> Null, imgFav)
 		GenFunctions.ResetUserFontScale(pnl)
 	Next
 End Sub
@@ -164,11 +167,11 @@ End Sub
 
 Sub edtFind_EnterPressed
 	edtDummyForFocus.RequestFocus
-	If edtFind.Text = "" Then
-	Dim lstStation As List = clsDb.GetStationList
-		Else
+'	If edtFind.Text = "" Then
+'	Dim lstStation As List = clsDb.GetFindStationList(edtFind.Text)
+'		Else
+'	End If
 	Dim lstStation As List = clsDb.GetFindStationList(edtFind.Text)
-	End If
 	ime.HideKeyboard
 	FindStation(lstStation)	
 	clvStation.ScrollToItem(0)
@@ -190,7 +193,7 @@ Sub lblMagni_Click
 	
 	edtDummyForFocus.RequestFocus
 	If edtFind.Text = "" Then
-		Dim lstStation As List = clsDb.GetStationList
+		Dim lstStation As List = clsDb.GetFindStationList("")
 	Else
 		Dim lstStation As List =clsDb.GetFindStationList(edtFind.Text)
 	End If
@@ -256,13 +259,34 @@ End Sub
 
 Sub imgFav_Click
 	Dim imgv As ImageView = Sender
-	If imgv.Tag = "" Or imgv.Tag = "OFF" Then
-		imgv.Tag = "ON"
-		imgv.SetBackgroundImage(LoadBitmapResize(File.DirAssets, "favourite_on.png", 25dip, 25dip, True))
-		imgv.Gravity = Gravity.FILL
+	Dim stationData As station
+	Dim psId As String
+	Dim addStationFav As Boolean
+	
+	stationData = clvStation.GetValue(clvStation.GetItemFromView(imgv.Parent))
+	psId = stationData.ps_id
+	
+	addStationFav = clsDb.CheckFavIfStationIsInFav(psId)
+	If addStationFav Then
+		GenFunctions.createCustomToast("Bureau als favoriet ingesteld", Colors.Blue)
 	Else
-		imgv.Tag = "OFF"
-		imgv.SetBackgroundImage(LoadBitmapResize(File.DirAssets, "favourite_off.png", 25dip, 25dip, True))
-		imgv.Gravity = Gravity.FILL
+		GenFunctions.createCustomToast("Bureau geen favoriet meer", Colors.Blue)
 	End If
+	
+	SetImgFav(addStationFav, imgv)
+End Sub
+
+Sub SetImgFav(show As Boolean, v As ImageView)
+	If show Then
+		v.SetBackgroundImage(LoadBitmapResize(File.DirAssets, "favourite_on.png", 25dip, 25dip, True))
+		v.Gravity = Gravity.FILL
+	Else
+		v.SetBackgroundImage(LoadBitmapResize(File.DirAssets, "favourite_off.png", 25dip, 25dip, True))
+		v.Gravity = Gravity.FILL
+	End If
+	
+End Sub
+
+Sub lblItemFound_Click
+	StartActivity(ItemsFound)
 End Sub
