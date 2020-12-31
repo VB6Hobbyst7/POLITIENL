@@ -29,6 +29,21 @@ Public Sub GetData(url As String, forList As Boolean) As ResumableSub
 	Return lst
 End Sub
 
+Public Sub GetMoreData(url As String, forList As Boolean) As ResumableSub
+	Private job As HttpJob
+	Private success As Boolean
+	job.Initialize("", Me)
+	job.Download(url)
+	
+	Wait For (job) jobDone(jobDone As HttpJob)
+	
+	If jobDone.Success Then
+		success = job.Success
+	End If
+	
+	Return success
+End Sub
+
 Private Sub ParseData(data As String, forList As Boolean) As ResumableSub
 	Dim parser As JSONParser
 	Dim root As Map
@@ -37,7 +52,11 @@ Private Sub ParseData(data As String, forList As Boolean) As ResumableSub
 	parser.Initialize(data)
 	root = parser.NextObject
 	lst.Initialize
-#region parse json	
+#region parse json
+	Dim iterator As Map = root.Get("iterator")
+	Dim last As String = iterator.Get("last")
+	Dim offset As Int = iterator.Get("offset")
+	Starter.itemsFoundOffsetEnd = last
 	Dim opsporingsberichten As List = root.Get("opsporingsberichten")
 	For Each colopsporingsberichten As Map In opsporingsberichten
 		Dim publicatiedatum As String = colopsporingsberichten.Get("publicatiedatum")

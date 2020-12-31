@@ -17,14 +17,14 @@ Public Sub Initialize
 End Sub
 
 Sub GetStationList As ResumableSub 'ignore
-	Log($"$Time{DateTime.now} Start"$)
+'	Log($"$Time{DateTime.now} Start"$)
 	Private psUrl As String = $"https://api.politie.nl/v4/politiebureaus/all?offset=0"$
 	wait for (RetrieveStation(psUrl)) Complete (done As Boolean)
 	wait for (RetrieveStation($"https://api.politie.nl/v4/politiebureaus/all?offset=100"$)) Complete (done As Boolean)
 	wait for (RetrieveStation($"https://api.politie.nl/v4/politiebureaus/all?offset=200"$)) Complete (done As Boolean)
 	wait for (RetrieveStation($"https://api.politie.nl/v4/politiebureaus/all?offset=300"$)) Complete (done As Boolean)
 	wait for (RetrieveStation($"https://api.politie.nl/v4/politiebureaus/all?offset=400"$)) Complete (done As Boolean)
-	Log($"$Time{DateTime.now} Done"$)
+'	Log($"$Time{DateTime.now} Done"$)
 	Return True
 End Sub
 

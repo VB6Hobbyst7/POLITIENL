@@ -30,15 +30,17 @@ Sub Globals
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
+	Dim cd As ColorDrawable
+	cd.Initialize(Colors.RGB(255,255,255),3dip)
 	clsLocalNews.Initialize
 	Activity.LoadLayout("lokaalNieuwsMain")
+	btnNext.Background = cd
+	btnPrev.Background = cd
 	GenFunctions.ResetUserFontScale(Activity)
 	lblStationName.Text = $"Lokaal Nieuws${CRLF}${GenFunctions.stationData.name}"$
-	ProgressDialogShow2("Ophalen lokale nieuws items..", False)
-	Sleep(300)
+	showProcessDialog
 	GetLocalNewsItems
-	Sleep(300)
-	ProgressDialogHide
+	HideProcessDialog
 End Sub
 
 Sub Activity_Resume
@@ -49,14 +51,34 @@ Sub Activity_Pause (UserClosed As Boolean)
 
 End Sub
 
+Private Sub showProcessDialog
+	ProgressDialogShow2("Ophalen lokale nieuws items..", False)
+	Sleep(200)
+End Sub
+
+
+Private Sub HideProcessDialog
+	ProgressDialogHide
+End Sub
+
 Private Sub GetLocalNewsItems
+	showProcessDialog
 	clvLocalNews.Clear
 	wait for (clsLocalNews.GetLocalNewsHeadlines) Complete (lstNews As List)
+	
+	If lstNews.Size = 0 Then
+		HideProcessDialog
+		GenFunctions.createCustomToast("Niets gevonden", Colors.Red)
+		Activity.Finish
+	End If
 	
 	For Each item As localNewsHeadline In lstNews
 		clvLocalNews.Add(GenNewsList(item), item)
 	Next
 	
+	btnNext.Visible = Not(Starter.localNewsOffsetEnd)
+	btnPrev.Visible = Starter.localNewsOffset >= 10
+	HideProcessDialog
 End Sub
 
 Private Sub GenNewsList(item As localNewsHeadline) As Panel
@@ -73,10 +95,8 @@ Private Sub GenNewsList(item As localNewsHeadline) As Panel
 	Return pnl
 End Sub
 
-Sub ShowHidePrevNextButton(showNext As Boolean)
-	btnNext.Visible = showNext
-	btnPrev.Visible = Starter.localNewsOffset > 0 
-	
+Sub ShowHidePrevNextButton
+	btnNext.Visible = Not(Starter.localNewsOffsetEnd)
 	btnPrev.Visible = Starter.localNewsOffset > 0
 End Sub
 

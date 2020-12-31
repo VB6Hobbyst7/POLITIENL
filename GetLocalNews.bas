@@ -21,14 +21,14 @@ Sub GetLocalNewsHeadlines As ResumableSub
 	longtitude = GenFunctions.stationData.longtitude
 	
 	Wait For (GetDataFromUrl(latitude, longtitude, Starter.localNewsOffset)) Complete (data As String)
-	Wait For (GetDataFromUrl(latitude, longtitude, Starter.localNewsOffset+10)) Complete (moreData As String)
+'	Wait For (GetDataFromUrl(latitude, longtitude, Starter.localNewsOffset+10)) Complete (moreData As String)
 	
 	'SHOW HIDE PREV/NEXT BUTTON
-	If moreData.Length > 10 Then
-		CallSubDelayed2(lokaalNieuws, "ShowHidePrevNextButton", True)
-	Else
-		CallSubDelayed2(lokaalNieuws, "ShowHidePrevNextButton", False)
-	End If
+'	If moreData.Length > 10 Then
+'		CallSubDelayed2(lokaalNieuws, "ShowHidePrevNextButton", True)
+'	Else
+'		CallSubDelayed2(lokaalNieuws, "ShowHidePrevNextButton", False)
+'	End If
 
 	lst = ParseLocalNewsData(data)
 	
@@ -40,9 +40,19 @@ Private Sub ParseLocalNewsData(data As String) As List
 	Dim parser As JSONParser
 	Dim root As Map
 	
-	parser.Initialize(data)
 	lst.Initialize
+	
+	If data = "error" Then
+		Return lst
+	End If
+	
+	parser.Initialize(data)
 	root = parser.NextObject
+	
+	Dim iterator As Map = root.Get("iterator")
+	Dim last As String = iterator.Get("last")
+	Dim offset As Int = iterator.Get("offset")
+	Starter.localNewsOffsetEnd = last
 	
 	Dim nieuwsberichten As List = root.Get("nieuwsberichten")
 	For Each colnieuwsberichten As Map In nieuwsberichten
@@ -63,7 +73,7 @@ Private Sub ParseLocalNewsData(data As String) As List
 '		colnewstitel = colnewstitel.Replace("]", ")")
 '		colnewstitel = colnewstitel.ToLowerCase.Replace("video", "Filmpje")
 		
-		lst.Add(CreatelocalNewsHeadline(gebied, GenFunctions.ParseStringDate(publicatiedatum), colnewstitel, uid, colnieuwsurl, latitude, longitude, introductie))
+		lst.Add(CreatelocalNewsHeadline(gebied, GenFunctions.ParseStringDate(publicatiedatum, "d"), colnewstitel, uid, colnieuwsurl, latitude, longitude, introductie))
 	Next
 	
 	Return lst
@@ -110,6 +120,10 @@ Private Sub GetDataFromUrl(latitude As Double, longtitude As Double, offset As I
 		data = "error"
 	End If
 	job.Release
+	
+	If data.Length < 10 Then
+		data = "error"
+	End If
 	
 	Return data
 End Sub

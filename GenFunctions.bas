@@ -55,7 +55,7 @@ Sub OpenUrl(url As String)
 	StartActivity(i)
 End Sub
 
-Sub ParseStringDate(strDate As String) As String
+Sub ParseStringDate(strDate As String, dtf As String) As String
 	Dim dateStr() As String = Regex.Split(" ", strDate)
 	Dim dateAsString, timeAsString As String
 	Dim parsedDate As Long
@@ -66,7 +66,14 @@ Sub ParseStringDate(strDate As String) As String
 	DateTime.DateFormat = "yy-MM-dd"
 	parsedDate = DateTime.DateParse(dateAsString)
 	DateTime.DateFormat = "dd MMMM yyyy"
-	Return $"$Date{parsedDate} ${timeAsString.SubString2(0,5)}"$
+	
+	If dtf = "d" Then
+		Return $"$Date{parsedDate}"$
+	Else If dtf = "t" Then
+		Return $"${timeAsString.SubString2(0,5)}"$
+	Else
+		Return $"$Date{parsedDate} ${timeAsString.SubString2(0,5)}"$
+	End If
 End Sub
 
 Sub ResetUserFontScale(p As Panel)

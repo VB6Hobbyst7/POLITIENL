@@ -1,35 +1,43 @@
 ﻿Build1=Default,nl.pdeg.politie_nl
 File1=arial.ttf
-File10=materialdesignicons-webfont.ttf
-File11=newsDetail.bal
-File12=pnlNewsLocalHeadline.bal
-File13=pnlWijkAgent.bal
-File14=politie.db
-File15=stationMain.bal
-File16=wijkAgentMain.bal
+File10=lokaalNieuwsMain.bal
+File11=lostfound.png
+File12=Main.bal
+File13=materialdesignicons-webfont.ttf
+File14=newsDetail.bal
+File15=pnlNewsLocalHeadline.bal
+File16=pnlWijkAgent.bal
+File17=politie.db
+File18=stationMain.bal
+File19=twitter.png
 File2=cartman.jpg
+File20=wijkAgentMain.bal
 File3=clvItemFound.bal
 File4=clvStation.bal
-File5=favourite_off.png
-File6=favourite_on.png
-File7=ItemFoundMain.bal
-File8=lokaalNieuwsMain.bal
-File9=Main.bal
+File5=facebook.png
+File6=favourite_off.png
+File7=favourite_on.png
+File8=internet.png
+File9=ItemFoundMain.bal
 FileGroup1=files
-FileGroup10=files
-FileGroup11=forms
+FileGroup10=forms
+FileGroup11=Default Group
 FileGroup12=forms
-FileGroup13=forms
-FileGroup14=files
+FileGroup13=files
+FileGroup14=forms
 FileGroup15=forms
 FileGroup16=forms
+FileGroup17=files
+FileGroup18=forms
+FileGroup19=Default Group
 FileGroup2=Default Group
+FileGroup20=forms
 FileGroup3=forms
 FileGroup4=forms
 FileGroup5=Default Group
 FileGroup6=Default Group
-FileGroup7=forms
-FileGroup8=forms
+FileGroup7=Default Group
+FileGroup8=Default Group
 FileGroup9=forms
 Group=Default Group
 Library1=core
@@ -56,7 +64,7 @@ Module6=ItemOwner
 Module7=ItemsFound
 Module8=lokaalNieuws
 Module9=newsDetail
-NumberOfFiles=16
+NumberOfFiles=20
 NumberOfLibraries=10
 NumberOfModules=13
 Version=10.2
@@ -67,8 +75,8 @@ Version=10.2
 
 #Region  Project Attributes 
 	#ApplicationLabel: Politie Nl
-	#VersionCode: 1
-	#VersionName: v0.40
+	#VersionCode: 4
+	#VersionName: v0.41
 	'SupportedOrientations possible values: unspecified, landscape or portrait.
 	#SupportedOrientations: portrait
 	#CanInstallToExternalStorage: False
@@ -105,9 +113,9 @@ Sub Activity_Create(FirstTime As Boolean)
 	clsPStations.Initialize
 	clsDb.Initialize
 	
-'	CleanDbs
+	CleanDbs
 	Activity.LoadLayout("Main")
-'	Wait For (clsPStations.GetStationList) Complete (done As Boolean)
+	Wait For (clsPStations.GetStationList) Complete (done As Boolean)
 End Sub
 
 Sub Activity_Resume
