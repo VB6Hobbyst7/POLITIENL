@@ -13,12 +13,14 @@ Sub Process_Globals
 	Public filePath As String
 	Private rp As RuntimePermissions
 	Public sql As SQL
-	Public localNewsOffset As Int = 0
-	Public localNewsOffsetEnd as Boolean
+	Public localNewsOffset, itemsFoundOffset As Int = 0
+	Public localNewsOffsetEnd, itemsFoundOffsetEnd As Boolean
+	Private clsDb As dbFunctions
 End Sub
 
 Sub Service_Create
 	GetSetFilepath
+	clsDb.Initialize
 	CheckDatabaseExists
 
 End Sub
@@ -33,6 +35,7 @@ End Sub
 
 'Return true to allow the OS default exceptions handler to handle the uncaught exception.
 Sub Application_Error (Error As Exception, StackTrace As String) As Boolean
+	Log(StackTrace)
 	Return True
 End Sub
 
@@ -49,4 +52,5 @@ Sub CheckDatabaseExists
 	If File.Exists(filePath, "politie.db") = False Then
 		File.Copy(File.DirAssets, "politie.db", filePath, "politie.db")
 	End If
+	clsDb.CheckIfFavStationExists
 End Sub

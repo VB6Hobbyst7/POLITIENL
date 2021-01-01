@@ -55,7 +55,7 @@ Sub OpenUrl(url As String)
 	StartActivity(i)
 End Sub
 
-Sub ParseStringDate(strDate As String) As String
+Sub ParseStringDate(strDate As String, dtf As String) As String
 	Dim dateStr() As String = Regex.Split(" ", strDate)
 	Dim dateAsString, timeAsString As String
 	Dim parsedDate As Long
@@ -66,7 +66,14 @@ Sub ParseStringDate(strDate As String) As String
 	DateTime.DateFormat = "yy-MM-dd"
 	parsedDate = DateTime.DateParse(dateAsString)
 	DateTime.DateFormat = "dd MMMM yyyy"
-	Return $"$Date{parsedDate} ${timeAsString.SubString2(0,5)}"$
+	
+	If dtf = "d" Then
+		Return $"$Date{parsedDate}"$
+	Else If dtf = "t" Then
+		Return $"${timeAsString.SubString2(0,5)}"$
+	Else
+		Return $"$Date{parsedDate} ${timeAsString.SubString2(0,5)}"$
+	End If
 End Sub
 
 Sub ResetUserFontScale(p As Panel)
@@ -96,42 +103,52 @@ End Sub
 
 Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String) As String
 	Dim newText As String = alTextBlock
-	
-	
+	newText = newText.Replace("[", "(")
+	newText = newText.Replace("]", ")")
 	If alTitle <> "" Then
-'		newText = newText & $"[b]${alTitle}[/b]${CRLF}"$
-		newText = $"[b]${alTitle}[/b]${CRLF}${newText}"$
+		alTitle = alTitle.Replace("[", "(")
+		alTitle = alTitle.Replace("]", ")")
+		newText = $"[b]${alTitle}[/b]${""}${newText}"$
 	End If
+
+	Try
+		newText = newText.Replace($"align="bottom""$, "")
+		newText = newText.Replace("<p><sup><em>Stockfoto politie</em></sup></p>", "")
+		newText = newText.Replace("<p><em>Foto ter illustratie.</em></p>", "")
 	
-	newText = newText.Replace($"align="bottom""$, "")
-	newText = newText.Replace("<p><sup><em>Stockfoto politie</em></sup></p>", "")
-	newText = newText.Replace("<p><em>Foto ter illustratie.</em></p>", "")
-	
-	newText = GetAHref(newText)
-	newText = newText.Replace("<p>", "") ' & alTextBlock.Replace("<p>", "")
-	newText = newText.Replace("</p>", "")
-	newText = newText.Replace("<br />\n", CRLF)
-	newText = newText.Replace("<br />", CRLF)
-	newText = newText.Replace("&nbsp;", " ")
-	newText = newText.Replace("<strong>", "[b]")
-	newText = newText.Replace("</strong>", "[/b]")
-	newText = GetHtmlTextBlockList(newText)
-	newText = newText.Replace("<li>", "[*]")
-	newText = newText.Replace("</li>", "")
-	newText = newText.Replace("</u>", "")
-	newText = newText.Replace("<u>", "")
-	newText = newText.Replace("</ul>", "[/list]")
-	newText = newText.Replace("\n", CRLF)
-	newText = newText.Replace("<br />", CRLF)
-	newText = newText.Replace("<em>", "[b][u]")
-	newText = newText.Replace("</em>", "[/u][/b]")
-	newText = newText.Replace("<b>", "[b]")
-	newText = newText.Replace("</b>", "[/b]")
-	newText = newText.Replace($"-&gt;"$, "")
-	newText = GetImageFromText(newText)
-	newText = GetHeaderStyle(newText)
-	newText = GetSupTag(newText)
+		newText = GetAHref(newText)
+		newText = newText.Replace("<p>", "") ' & alTextBlock.Replace("<p>", "")
+		newText = newText.Replace("</p>", CRLF)
+		newText = newText.Replace("<br />\n", CRLF)
+		newText = newText.Replace("<br/>", CRLF)
 		
+'		newText = newText.Replace("<br />", CRLF)
+		newText = newText.Replace("<br />", "")
+		newText = newText.Replace("&nbsp;", " ")
+		newText = newText.Replace("<strong>", "[b]")
+		newText = newText.Replace("</strong>", "[/b]")
+		newText = GetHtmlTextBlockList(newText)
+		newText = newText.Replace("<li>", "[*]")
+		newText = newText.Replace("</li>", "")
+		newText = newText.Replace("</u>", "")
+		newText = newText.Replace("<u>", "")
+		newText = newText.Replace("</i>", "")
+		newText = newText.Replace("<i>", "")
+		newText = newText.Replace("</ul>", "[/list]")
+		newText = newText.Replace("\n", CRLF)
+		newText = newText.Replace("<br />", CRLF)
+		newText = newText.Replace("<em>", "[b][u]")
+		newText = newText.Replace("</em>", "[/u][/b]")
+		newText = newText.Replace("<b>", "[b]")
+		newText = newText.Replace("</b>", "[/b]")
+		newText = newText.Replace($"-&gt;"$, "")
+		newText = GetImageFromText(newText)
+		newText = GetHeaderStyle(newText)
+		newText = GetSupTag(newText)
+	Catch
+		Log(LastException)
+		newText = "Kan bericht niet openen"
+	End Try
 	Return newText
 End Sub
 
@@ -199,7 +216,7 @@ Sub GetAHref(alTextBlock As String) As String
 	If ahrefString.IndexOf("bronRegistratie") <> -1 Then
 		ahrefString = ""
 	Else
-		changedText = alTextBlock.Replace(ahrefString, $"${CRLF}[url=${url}]${linkTitle}[/url]"$)
+		changedText = alTextBlock.Replace(ahrefString, $"${CRLF}[url=${url}][Color=#ffff00]${linkTitle}[/color][/url]"$)
 	End If
 	
 	'FIND MORE <a href
@@ -212,6 +229,9 @@ Sub GetAHref(alTextBlock As String) As String
 End Sub
 
 Sub GetImageFromText(alTextBlock As String) As String
+	Try
+	
+	
 	Dim startPosList, endPosList As Int
 	Dim imgText, imgTextNew As String
 	
@@ -240,8 +260,11 @@ Sub GetImageFromText(alTextBlock As String) As String
 	
 	If alTextBlock.IndexOf("<img") <> -1 Then
 		Return GetImageFromText(alTextBlock)
-	End If
-	
+		End If
+		
+	Catch
+		Log(LastException)
+	End Try
 	Return alTextBlock
 	
 End Sub
@@ -294,3 +317,4 @@ Sub GetSupTag(alTextBlock As String) As String
 	Return newText
 	
 End Sub
+

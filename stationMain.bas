@@ -14,6 +14,7 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
+	Private TextEngine As BCTextEngine
 	Private PCLV As PreoptimizedCLV
 	Private CardLayoutsCache As List
 	Dim ime As IME
@@ -39,6 +40,13 @@ Sub Globals
 	Private edtDummyForFocus As EditText
 	Private pnlWijkAgent As Panel
 	Private pnlLocalNews As Panel
+	Private imgFav As ImageView
+	Private lblItemFound As Label
+	Private lblOpenHours As Label
+	Private pnlOpenHours As Panel
+	Private bbOpenHours As BBCodeView
+	Private btnClose As Button
+	Private lblNumber As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -51,6 +59,7 @@ Sub Activity_Create(FirstTime As Boolean)
 	
 	PCLV.Initialize(Me, "PCLV", clvStation)
 	GetStation
+	TextEngine.Initialize(pnlOpenHours)
 	
 	ime.Initialize("IME")
 	ime.AddHandleActionEvent(edtFind)
@@ -82,14 +91,14 @@ Sub clvStation_ItemClick (Index As Int, Value As Object)
 End Sub
 
 Sub GetStation
-	Dim lstStation As List = clsDb.GetStationList
+	Dim lstStation As List = clsDb.GetFindStationList("")
 	
 	clvStation.Clear
 
 	For Each st As station In lstStation
-		PCLV.AddItem(160dip, xui.Color_White, st)
+		PCLV.AddItem(180dip, xui.Color_White, st)
 	Next
-	
+	PCLV.ShowScrollBar = False
 	PCLV.Commit
 End Sub
 
@@ -100,23 +109,32 @@ End Sub
 
 Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 	Dim width As Int = clvStation.AsView.Width
-		
+	Dim cs As CSBuilder	
 	For Each i As Int In PCLV.VisibleRangeChanged(FirstIndex, LastIndex)
 		Dim item As CLVItem = clvStation.GetRawListItem(i)
 		Dim station As station = item.Value
 		Dim pnl As B4XView = xui.CreatePanel("")
 	
-		item.Panel.AddView(pnl, 0, 0, width, 160dip)
+		item.Panel.AddView(pnl, 0, 0, width, 180dip)
 		pnl.LoadLayout("clvStation")
-		
+		cs.Initialize.Color(0xFF00FFFF).Append(station.address).Append(CRLF).Append(station.postalcode).Append(" ").pop
+		cs.Color(Colors.Yellow).Append(station.city).PopAll
+		lblNumber.Text = NumberFormat(i+1,3, 0)
 		lblStationName.Text = station.name
-		lblAddress.Text = station.address
+		lblAddress.Text =  cs'$"${station.address}${CRLF}${station.postalcode} ${station.city}"$
 		lblCity.Text = $"${station.postalcode} ${station.city}"$
 		
 		If lblCity.Text.Length < 5 Then
-			lblCity.Text = "Adresgevens van dit bureau niet beschikbaar"
-			lblCity.TextColor = Colors.Red
+			lblAddress.textColor = Colors.Yellow
+			lblAddress.Typeface = Typeface.LoadFromAssets("VeraMono-Italic.ttf")
+			lblAddress.Text = "Geen adresgevens..."
+'			lblAddress.TextColor = Colors.Red
 		End If
+		
+		If station.openHours.Length < 5 Then
+			lblOpenHours.Visible = False
+		End If
+		
 		If station.url.Length > 2 Then
 			pnlUrl.Tag = station.url
 		Else
@@ -135,6 +153,8 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 			pnlFacebook.Enabled = False
 			lblFacebook.TextColor = Colors.Gray
 		End If
+		
+		SetImgFav(station.fav_id <> Null, imgFav)
 		GenFunctions.ResetUserFontScale(pnl)
 	Next
 End Sub
@@ -163,11 +183,11 @@ End Sub
 
 Sub edtFind_EnterPressed
 	edtDummyForFocus.RequestFocus
-	If edtFind.Text = "" Then
-	Dim lstStation As List = clsDb.GetStationList
-		Else
+'	If edtFind.Text = "" Then
+'	Dim lstStation As List = clsDb.GetFindStationList(edtFind.Text)
+'		Else
+'	End If
 	Dim lstStation As List = clsDb.GetFindStationList(edtFind.Text)
-	End If
 	ime.HideKeyboard
 	FindStation(lstStation)	
 	clvStation.ScrollToItem(0)
@@ -189,7 +209,7 @@ Sub lblMagni_Click
 	
 	edtDummyForFocus.RequestFocus
 	If edtFind.Text = "" Then
-		Dim lstStation As List = clsDb.GetStationList
+		Dim lstStation As List = clsDb.GetFindStationList("")
 	Else
 		Dim lstStation As List =clsDb.GetFindStationList(edtFind.Text)
 	End If
@@ -251,4 +271,76 @@ Sub lblLocation_Click
 	stationData = clvStation.GetValue(clvStation.GetItemFromView(lbl.Parent))
 	
 	GenFunctions.ShowLocationOnGoogleMaps(stationData.latitude, stationData.longtitude)
+End Sub
+
+Sub imgFav_Click
+	Dim imgv As ImageView = Sender
+	Dim stationData As station
+	Dim psId As String
+	Dim addStationFav As Boolean
+	
+	stationData = clvStation.GetValue(clvStation.GetItemFromView(imgv.Parent))
+	psId = stationData.ps_id
+	
+	addStationFav = clsDb.CheckFavIfStationIsInFav(psId)
+	If addStationFav Then
+		GenFunctions.createCustomToast("Bureau als favoriet ingesteld", Colors.Blue)
+	Else
+		GenFunctions.createCustomToast("Bureau geen favoriet meer", Colors.Blue)
+	End If
+	
+	SetImgFav(addStationFav, imgv)
+End Sub
+
+Sub SetImgFav(show As Boolean, v As ImageView)
+	If show Then
+		v.SetBackgroundImage(LoadBitmapResize(File.DirAssets, "favourite_on.png", 25dip, 25dip, True))
+		v.Gravity = Gravity.FILL
+	Else
+		v.SetBackgroundImage(LoadBitmapResize(File.DirAssets, "favourite_off.png", 25dip, 25dip, True))
+		v.Gravity = Gravity.FILL
+	End If
+	
+End Sub
+
+Sub lblItemFound_Click
+	StartActivity(ItemsFound)
+End Sub
+
+Sub lblOpenHours_Click
+	Dim stationData As station
+	Dim lbl As Label = Sender
+	Dim pnl As Panel = lbl.Parent
+	
+	stationData = clvStation.GetValue(clvStation.GetItemFromView(pnl))
+	
+	If pnlOpenHours.Visible = True Then Return
+	TextEngine.KerningEnabled = Not(TextEngine.KerningEnabled)
+	bbOpenHours.Text = stationData.openHours
+	pnlOpenHours.Visible = True
+	
+End Sub
+
+Sub pnlOpenHours_Click
+	
+End Sub
+
+Sub bbOpenHours_LinkClicked (URL As String)
+	GenFunctions.OpenUrl(URL)
+End Sub
+
+Sub btnClose_Click
+	pnlOpenHours.Visible = False
+End Sub
+
+Sub Activity_KeyPress (KeyCode As Int) As Boolean 'Return True to consume the event
+	If KeyCode = KeyCodes.KEYCODE_BACK Then
+		If pnlOpenHours.Visible Then
+			pnlOpenHours.Visible = False
+			Return True
+		End If
+	End If
+
+'	Activity.Finish
+	Return False
 End Sub

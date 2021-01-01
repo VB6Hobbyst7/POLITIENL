@@ -14,9 +14,11 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
+	dim access as Accessibility
 	Private bbNewsDetail As BBCodeView
 	Private TextEngine As BCTextEngine
 	Private lblDate As Label
+	Private lblArea As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -34,12 +36,18 @@ Sub Activity_Pause (UserClosed As Boolean)
 End Sub
 
 Sub SetNewsText(newsDetailText As String)
+	TextEngine.KerningEnabled = Not(TextEngine.KerningEnabled)
 	bbNewsDetail.Text = newsDetailText
+'	bbNewsDetail.sv.TextSize =  bbNewsDetail.sv.TextSize / access.GetUserFontScale
 	GenFunctions.ResetUserFontScale(Activity)
 End Sub
 
 Sub SetNewsdate(date As String)
 	lblDate.Text = date
+End Sub
+
+Sub SetNewsArea(area As String)
+	lblArea.Text = area
 End Sub
 
 Sub bbNewsDetail_LinkClicked(url As String)

@@ -23,21 +23,25 @@ Sub Globals
 	Private pnlOpenUrl As Panel
 	Private pnlReadItem As Panel
 	Private lblIntroduction As Label
-	Private lblPrev As Label
-	Private lblNext As Label
 	Private btnPrev As Button
+	Private btnNext As Button
+	Private lblNext As Label
+	Private lblPrev As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
+	Dim cd As ColorDrawable
+	cd.Initialize(Colors.RGB(255,255,255),3dip)
 	clsLocalNews.Initialize
 	Activity.LoadLayout("lokaalNieuwsMain")
+	btnNext.Background = cd
+	btnPrev.Background = cd
 	GenFunctions.ResetUserFontScale(Activity)
 	lblStationName.Text = $"Lokaal Nieuws${CRLF}${GenFunctions.stationData.name}"$
-	ProgressDialogShow2("Ophalen lokale nieuws items..", False)
-	Sleep(300)
+	showProcessDialog
 	GetLocalNewsItems
-	Sleep(300)
-	ProgressDialogHide
+	HideProcessDialog
+	
 End Sub
 
 Sub Activity_Resume
@@ -48,20 +52,40 @@ Sub Activity_Pause (UserClosed As Boolean)
 
 End Sub
 
+Private Sub showProcessDialog
+	ProgressDialogShow2("Ophalen lokale nieuws items..", False)
+	Sleep(200)
+End Sub
+
+
+Private Sub HideProcessDialog
+	ProgressDialogHide
+End Sub
+
 Private Sub GetLocalNewsItems
+	showProcessDialog
 	clvLocalNews.Clear
 	wait for (clsLocalNews.GetLocalNewsHeadlines) Complete (lstNews As List)
+	
+	If lstNews.Size = 0 Then
+		HideProcessDialog
+		GenFunctions.createCustomToast("Niets gevonden", Colors.Red)
+		Activity.Finish
+	End If
 	
 	For Each item As localNewsHeadline In lstNews
 		clvLocalNews.Add(GenNewsList(item), item)
 	Next
 	
+	lblNext.Visible = Not(Starter.localNewsOffsetEnd)
+	lblPrev.Visible = Starter.localNewsOffset >= 10
+	HideProcessDialog
 End Sub
 
 Private Sub GenNewsList(item As localNewsHeadline) As Panel
 	Dim pnl As B4XView = xui.CreatePanel("")
 	
-	pnl.SetLayoutAnimated(0, 0, 0, clvLocalNews.AsView.Width, 290dip)
+	pnl.SetLayoutAnimated(0, 0, 0, clvLocalNews.AsView.Width, 310dip)
 	pnl.LoadLayout("pnlNewsLocalHeadline")
 	
 	lblArea.Text = item.area
@@ -72,10 +96,8 @@ Private Sub GenNewsList(item As localNewsHeadline) As Panel
 	Return pnl
 End Sub
 
-Sub ShowHidePrevNextButton(showNext As Boolean)
-	lblNext.Visible = showNext
-	lblPrev.Visible = Starter.localNewsOffset > 0 
-	
+Sub ShowHidePrevNextButton
+	btnNext.Visible = Not(Starter.localNewsOffsetEnd)
 	btnPrev.Visible = Starter.localNewsOffset > 0
 End Sub
 
@@ -96,6 +118,7 @@ Sub InitNews(data As localNewsHeadline)
 	
 	CallSubDelayed2(newsDetail, "SetNewsdate", data.pubDate)
 	CallSubDelayed2(newsDetail, "SetNewsText", parsedData)
+	CallSubDelayed2(newsDetail, "SetNewsArea", data.area)
 End Sub
 
 Sub pnlHeadline_Click
@@ -119,4 +142,9 @@ Sub btnPrev_Click
 		Starter.localNewsOffset = Starter.localNewsOffset - 10
 		GetLocalNewsItems
 	End If
+End Sub
+
+Sub btnNext_Click
+	Starter.localNewsOffset = Starter.localNewsOffset + 10
+	GetLocalNewsItems
 End Sub
