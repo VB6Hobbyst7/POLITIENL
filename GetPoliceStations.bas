@@ -60,7 +60,7 @@ Private Sub ParsePsData(data As String) As ResumableSub
 	For Each colpolitiebureaus As Map In politiebureaus
 '		Dim publicatiedatum As String = colpolitiebureaus.Get("publicatiedatum")
 		Dim twitterurl As String = colpolitiebureaus.Get("twitterurl")
-'		Dim openingstijden As String = colpolitiebureaus.Get("openingstijden")
+		Dim openingstijden As String = colpolitiebureaus.Get("openingstijden")
 '		Dim displayName As String = colpolitiebureaus.Get("displayName")
 		
 		Dim bezoekadres As Map = colpolitiebureaus.Get("bezoekadres")
@@ -91,7 +91,7 @@ Private Sub ParsePsData(data As String) As ResumableSub
 '		Dim extrainformatie As String = colpolitiebureaus.Get("extrainformatie")
 '		Dim availabletranslations As String = colpolitiebureaus.Get("availabletranslations")
 		
-		lstPsBase.Add(CreatepsStation(naam, uid, longitude, latitude))
+		lstPsBase.Add(CreatepsStation(naam, uid, longitude, latitude, openingstijden))
 		
 		lstPsSocialMedia.Add(CreatesocialMedia(uid, "twitter", twitterurl))
 		lstPsSocialMedia.Add(CreatesocialMedia(uid, "facebook", facebookurl))
@@ -102,20 +102,20 @@ Private Sub ParsePsData(data As String) As ResumableSub
 	Next
 	
 	clsdb.AddPoliceStations(lstPsBase)
-	
 	clsdb.AddSocialmedia(lstPsSocialMedia)
 	clsdb.AddAdress(lstPsAddress)
 	Return True
 End Sub
 
 'STATION BASE
-Public Sub CreatepsStation (naam As String, uid As String, longtitude As Double, latitude As Double) As psStation
+Public Sub CreatepsStation (naam As String, uid As String, longtitude As Double, latitude As Double, hours As String) As psStation
 	Dim t1 As psStation
 	t1.Initialize
 	t1.naam = naam
 	t1.uid = uid
 	t1.longtitude = longtitude
 	t1.latitude = latitude
+	t1.openHours = hours
 	Return t1
 End Sub
 

@@ -23,8 +23,8 @@ Sub Globals
 	Private clvItemFound As CustomListView
 	Private lblDate As Label
 	Private bbItemDescription As BBCodeView
-	Private btnPrev As Button
-	Private btnNext As Button
+	Private lblNext As Label
+	Private lblPrev As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -32,12 +32,7 @@ Sub Activity_Create(FirstTime As Boolean)
 	cd.Initialize(Colors.RGB(255,255,255),3dip)
 	clsItemOwner.Initialize
 	Activity.LoadLayout("ItemFoundMain")
-	
-	btnPrev.Background = cd
-	btnNext.Background = cd
-	
 	GetItems
-	
 End Sub
 
 Sub Activity_Resume
@@ -63,8 +58,8 @@ Private Sub GetItems
 	
 	GenList(lst)
 	
-	btnNext.Visible = Not(Starter.itemsFoundOffsetEnd)
-	btnPrev.Visible = Starter.itemsFoundOffset >= 10
+	lblNext.Visible = Not(Starter.itemsFoundOffsetEnd)
+	lblPrev.Visible = Starter.itemsFoundOffset >= 10
 	HideProgressDialog
 End Sub
 
@@ -128,6 +123,18 @@ Sub btnPrev_Click
 End Sub
 
 Sub btnNext_Click
+	Starter.itemsFoundOffset = Starter.itemsFoundOffset + 10
+	GetItems
+End Sub
+
+Sub lblPrev_Click
+	If Starter.itemsFoundOffset = 0 Then Return
+	
+	Starter.itemsFoundOffset = Starter.itemsFoundOffset - 10
+	GetItems
+End Sub
+
+Sub lblNext_Click
 	Starter.itemsFoundOffset = Starter.itemsFoundOffset + 10
 	GetItems
 End Sub

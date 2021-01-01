@@ -14,6 +14,7 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
+	Private TextEngine As BCTextEngine
 	Private PCLV As PreoptimizedCLV
 	Private CardLayoutsCache As List
 	Dim ime As IME
@@ -41,6 +42,11 @@ Sub Globals
 	Private pnlLocalNews As Panel
 	Private imgFav As ImageView
 	Private lblItemFound As Label
+	Private lblOpenHours As Label
+	Private pnlOpenHours As Panel
+	Private bbOpenHours As BBCodeView
+	Private btnClose As Button
+	Private lblNumber As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -53,6 +59,7 @@ Sub Activity_Create(FirstTime As Boolean)
 	
 	PCLV.Initialize(Me, "PCLV", clvStation)
 	GetStation
+	TextEngine.Initialize(pnlOpenHours)
 	
 	ime.Initialize("IME")
 	ime.AddHandleActionEvent(edtFind)
@@ -89,7 +96,7 @@ Sub GetStation
 	clvStation.Clear
 
 	For Each st As station In lstStation
-		PCLV.AddItem(170dip, xui.Color_White, st)
+		PCLV.AddItem(180dip, xui.Color_White, st)
 	Next
 	PCLV.ShowScrollBar = False
 	PCLV.Commit
@@ -102,23 +109,32 @@ End Sub
 
 Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 	Dim width As Int = clvStation.AsView.Width
-		
+	Dim cs As CSBuilder	
 	For Each i As Int In PCLV.VisibleRangeChanged(FirstIndex, LastIndex)
 		Dim item As CLVItem = clvStation.GetRawListItem(i)
 		Dim station As station = item.Value
 		Dim pnl As B4XView = xui.CreatePanel("")
 	
-		item.Panel.AddView(pnl, 0, 0, width, 170dip)
+		item.Panel.AddView(pnl, 0, 0, width, 180dip)
 		pnl.LoadLayout("clvStation")
-		
+		cs.Initialize.Color(0xFF00FFFF).Append(station.address).Append(CRLF).Append(station.postalcode).Append(" ").pop
+		cs.Color(Colors.Yellow).Append(station.city).PopAll
+		lblNumber.Text = NumberFormat(i+1,3, 0)
 		lblStationName.Text = station.name
-		lblAddress.Text = station.address
+		lblAddress.Text =  cs'$"${station.address}${CRLF}${station.postalcode} ${station.city}"$
 		lblCity.Text = $"${station.postalcode} ${station.city}"$
 		
 		If lblCity.Text.Length < 5 Then
+			lblAddress.textColor = Colors.Yellow
+			lblAddress.Typeface = Typeface.LoadFromAssets("VeraMono-Italic.ttf")
 			lblAddress.Text = "Geen adresgevens..."
-			lblAddress.TextColor = Colors.Red
+'			lblAddress.TextColor = Colors.Red
 		End If
+		
+		If station.openHours.Length < 5 Then
+			lblOpenHours.Visible = False
+		End If
+		
 		If station.url.Length > 2 Then
 			pnlUrl.Tag = station.url
 		Else
@@ -289,4 +305,42 @@ End Sub
 
 Sub lblItemFound_Click
 	StartActivity(ItemsFound)
+End Sub
+
+Sub lblOpenHours_Click
+	Dim stationData As station
+	Dim lbl As Label = Sender
+	Dim pnl As Panel = lbl.Parent
+	
+	stationData = clvStation.GetValue(clvStation.GetItemFromView(pnl))
+	
+	If pnlOpenHours.Visible = True Then Return
+	TextEngine.KerningEnabled = Not(TextEngine.KerningEnabled)
+	bbOpenHours.Text = stationData.openHours
+	pnlOpenHours.Visible = True
+	
+End Sub
+
+Sub pnlOpenHours_Click
+	
+End Sub
+
+Sub bbOpenHours_LinkClicked (URL As String)
+	GenFunctions.OpenUrl(URL)
+End Sub
+
+Sub btnClose_Click
+	pnlOpenHours.Visible = False
+End Sub
+
+Sub Activity_KeyPress (KeyCode As Int) As Boolean 'Return True to consume the event
+	If KeyCode = KeyCodes.KEYCODE_BACK Then
+		If pnlOpenHours.Visible Then
+			pnlOpenHours.Visible = False
+			Return True
+		End If
+	End If
+
+'	Activity.Finish
+	Return False
 End Sub

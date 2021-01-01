@@ -77,6 +77,12 @@ Sub CleanPoliceDb
 	Starter.sql.ExecNonQuery(qry)
 End Sub
 
+Sub CleanOpenHoursDb
+	dbInitialized
+	qry = $"DELETE FROM openinghours"$
+	Starter.sql.ExecNonQuery(qry)
+End Sub
+
 Sub CleanSocialMediaDb
 	dbInitialized
 	qry = $"DELETE FROM socialmedia"$
@@ -100,11 +106,16 @@ Sub AddPoliceStations(lstPsStation As List)
 			Continue
 		End If
 		qry = $"INSERT INTO police (ps_id, name, longtitude, latitude) VALUES (?, ?, ?, ?)"$
-		
 		Starter.sql.ExecNonQuery2(qry, Array As String(station.uid, station.naam, station.longtitude, station.latitude))
+		AddOpenhours(station.uid, station.openHours)
 	Next
 	Starter.sql.TransactionSuccessful
 	Starter.sql.EndTransaction
+End Sub
+
+Sub AddOpenhours(ps_id As String, hours As String)
+	qry = $"INSERT INTO openinghours (id, ps_id, opening_hours) VALUES (?, ?, ?)"$
+	Starter.sql.ExecNonQuery2(qry, Array As String(GenFunctions.UUIDv4, ps_id, GenFunctions.ParseHtmlTextBlock("", hours).Trim))
 End Sub
 
 Sub AddSocialmedia(lstPsSocialMedia As List)
@@ -166,13 +177,16 @@ Sub GetFindStationList(hint As String) As List
 ,(SELECT url FROM socialmedia where ps_id = pc.ps_id AND media_type = 'facebook') as facebook
 ,ad.city
 ,fs.ps_id as favid
+,oh.opening_hours
 FROM police pc
 inner join address ad on
 ad.ps_id = pc.ps_id
 LEFT JOIN favstation fs on
 fs.ps_id = pc.ps_id
+LEFT JOIN openinghours oh ON
+oh.ps_id = pc.ps_id
 WHERE ad.adress_type = 'visit' And (pc.name LIKE ? OR ad.city LIKE ? OR ad.postalcode LIKE ? OR fs.ps_id IS NOT NULL)
-ORDER by fs.ps_id DESC, pc.name Asc"$
+ORDER by fs.ps_id DESC, ad.city Asc"$
 
 	rs = Starter.sql.ExecQuery2(qry, Array As String(searchStr, searchStr, hint&"%"))
 
@@ -180,7 +194,7 @@ ORDER by fs.ps_id DESC, pc.name Asc"$
 	Do While rs.NextRow
 		lstStation.Add(Createstation(rs.GetString("id"), rs.GetString("name"), rs.GetDouble("long"), rs.GetDouble("lat"), _
 		rs.GetString("address"), rs.GetString("postalcode"), rs.GetString("city"), _
-		rs.GetString("url"), rs.GetString("twitter"), rs.GetString("facebook"), rs.GetString("favid")))
+		rs.GetString("url"), rs.GetString("twitter"), rs.GetString("facebook"), rs.GetString("favid"), rs.GetString("opening_hours")))
 	Loop
 	rs.Close
 	Return lstStation
@@ -188,7 +202,7 @@ End Sub
 
 Public Sub Createstation (ps_id As String, name As String, longtitude As Double, latitude As Double, address As String, _
 						  postalcode As String, city As String, url As String, twitter As String, facebook As String, _
-						  favid As String) As station
+						  favid As String, openHours As String) As station
 	Dim t1 As station
 	t1.Initialize
 	t1.ps_id = ps_id
@@ -202,5 +216,6 @@ Public Sub Createstation (ps_id As String, name As String, longtitude As Double,
 	t1.twitter = twitter
 	t1.facebook = facebook
 	t1.fav_id = favid
+	t1.openHours = openHours
 	Return t1
 End Sub

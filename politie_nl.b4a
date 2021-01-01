@@ -1,44 +1,46 @@
 ﻿Build1=Default,nl.pdeg.politie_nl
 File1=arial.ttf
-File10=lokaalNieuwsMain.bal
-File11=lostfound.png
-File12=Main.bal
-File13=materialdesignicons-webfont.ttf
-File14=newsDetail.bal
-File15=pnlNewsLocalHeadline.bal
-File16=pnlWijkAgent.bal
-File17=politie.db
-File18=stationMain.bal
-File19=twitter.png
+File10=Main.bal
+File11=materialdesignicons-webfont.ttf
+File12=newsDetail.bal
+File13=pnlNewsLocalHeadline.bal
+File14=pnlWijkAgent.bal
+File15=politie.db
+File16=stationMain.bal
+File17=VeraMono.ttf
+File18=VeraMono-Bold.ttf
+File19=VeraMono-Bold-Italic.ttf
 File2=cartman.jpg
-File20=wijkAgentMain.bal
+File20=VeraMono-Italic.ttf
+File21=wijkAgentMain.bal
 File3=clvItemFound.bal
 File4=clvStation.bal
-File5=facebook.png
-File6=favourite_off.png
-File7=favourite_on.png
-File8=internet.png
-File9=ItemFoundMain.bal
+File5=favourite_off.png
+File6=favourite_on.png
+File7=ItemFoundMain.bal
+File8=lokaalNieuwsMain.bal
+File9=lostfound.png
 FileGroup1=files
 FileGroup10=forms
-FileGroup11=Default Group
+FileGroup11=files
 FileGroup12=forms
-FileGroup13=files
+FileGroup13=forms
 FileGroup14=forms
-FileGroup15=forms
+FileGroup15=files
 FileGroup16=forms
-FileGroup17=files
-FileGroup18=forms
+FileGroup17=Default Group
+FileGroup18=Default Group
 FileGroup19=Default Group
 FileGroup2=Default Group
-FileGroup20=forms
+FileGroup20=Default Group
+FileGroup21=forms
 FileGroup3=forms
 FileGroup4=forms
 FileGroup5=Default Group
 FileGroup6=Default Group
-FileGroup7=Default Group
-FileGroup8=Default Group
-FileGroup9=forms
+FileGroup7=forms
+FileGroup8=forms
+FileGroup9=Default Group
 Group=Default Group
 Library1=core
 Library10=bctextengine
@@ -64,7 +66,7 @@ Module6=ItemOwner
 Module7=ItemsFound
 Module8=lokaalNieuws
 Module9=newsDetail
-NumberOfFiles=20
+NumberOfFiles=21
 NumberOfLibraries=10
 NumberOfModules=13
 Version=10.2
@@ -88,12 +90,12 @@ Version=10.2
 #End Region
 
 Sub Process_Globals
-	Type psStation(naam As String, uid As String, longtitude As Double, latitude As Double)
+	Type psStation(naam As String, uid As String, longtitude As Double, latitude As Double, openHours As String)
 	Type psSocialMedia(psId As String, media As String, url As String)
 	Type psAdress(psId As String, addressTypes As String, address As String, postcode As String, city As String)
 	Type station(ps_id As String, name As String, longtitude As Double, latitude As Double, address As String, _
 	postalcode As String, city As String, _
-	url As String, twitter As String, facebook As String, fav_id As String)
+	url As String, twitter As String, facebook As String, fav_id As String, openHours As String)
 	Type wijkAgent(naam As String, afbeelding As Bitmap, werkGebied As String, publicatieDatum As String, _
 	url As String, instagram As String, twitter As String, facebook As String)
 	Type localNewsHeadline(area As String, pubDate As String, title As String, uid As String, newsUrl As String, _
@@ -128,6 +130,7 @@ End Sub
 
 Sub CleanDbs 'ignore
 	clsDb.CleanPoliceDb
+	clsDb.CleanOpenHoursDb
 	clsDb.CleanAddressdb
 	clsDb.CleanSocialMediadb
 End Sub

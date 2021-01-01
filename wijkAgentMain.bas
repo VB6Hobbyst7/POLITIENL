@@ -63,14 +63,14 @@ Sub GenWijkAgent(wijkAgent As wijkAgent) As Panel
 
 	Dim pnl As B4XView = xui.CreatePanel("")
 	
-	pnl.SetLayoutAnimated(0, 0, 0, clvAgent.AsView.Width, 200dip)
+	pnl.SetLayoutAnimated(0, 0, 0, clvAgent.AsView.Width, 210dip)
 	pnl.LoadLayout("pnlWijkAgent")
 	
 	
 	imgAgent.SetBackgroundImage(wijkAgent.afbeelding)
 	lblAgentNaam.Text = wijkAgent.naam
 	lblWerkGebied.Text = wijkAgent.werkGebied
-	lblPubDate.Text = ""' $"Pub. datum $Date{publicationDate}"$
+	lblPubDate.Text = $"${GenFunctions.ParseStringDate(wijkAgent.publicatieDatum, "d")}"$
 	
 	If wijkAgent.url.Length < 10 Then
 		lblUrl.TextColor = Colors.Gray

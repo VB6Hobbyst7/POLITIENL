@@ -23,10 +23,10 @@ Sub Globals
 	Private pnlOpenUrl As Panel
 	Private pnlReadItem As Panel
 	Private lblIntroduction As Label
-	Private lblPrev As Label
-	Private lblNext As Label
 	Private btnPrev As Button
 	Private btnNext As Button
+	Private lblNext As Label
+	Private lblPrev As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -41,6 +41,7 @@ Sub Activity_Create(FirstTime As Boolean)
 	showProcessDialog
 	GetLocalNewsItems
 	HideProcessDialog
+	
 End Sub
 
 Sub Activity_Resume
@@ -76,15 +77,15 @@ Private Sub GetLocalNewsItems
 		clvLocalNews.Add(GenNewsList(item), item)
 	Next
 	
-	btnNext.Visible = Not(Starter.localNewsOffsetEnd)
-	btnPrev.Visible = Starter.localNewsOffset >= 10
+	lblNext.Visible = Not(Starter.localNewsOffsetEnd)
+	lblPrev.Visible = Starter.localNewsOffset >= 10
 	HideProcessDialog
 End Sub
 
 Private Sub GenNewsList(item As localNewsHeadline) As Panel
 	Dim pnl As B4XView = xui.CreatePanel("")
 	
-	pnl.SetLayoutAnimated(0, 0, 0, clvLocalNews.AsView.Width, 290dip)
+	pnl.SetLayoutAnimated(0, 0, 0, clvLocalNews.AsView.Width, 310dip)
 	pnl.LoadLayout("pnlNewsLocalHeadline")
 	
 	lblArea.Text = item.area

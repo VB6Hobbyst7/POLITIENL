@@ -14,6 +14,7 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
+	dim access as Accessibility
 	Private bbNewsDetail As BBCodeView
 	Private TextEngine As BCTextEngine
 	Private lblDate As Label
@@ -37,6 +38,7 @@ End Sub
 Sub SetNewsText(newsDetailText As String)
 	TextEngine.KerningEnabled = Not(TextEngine.KerningEnabled)
 	bbNewsDetail.Text = newsDetailText
+'	bbNewsDetail.sv.TextSize =  bbNewsDetail.sv.TextSize / access.GetUserFontScale
 	GenFunctions.ResetUserFontScale(Activity)
 End Sub
 

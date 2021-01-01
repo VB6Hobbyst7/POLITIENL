@@ -120,6 +120,8 @@ Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String) As String
 		newText = newText.Replace("<p>", "") ' & alTextBlock.Replace("<p>", "")
 		newText = newText.Replace("</p>", CRLF)
 		newText = newText.Replace("<br />\n", CRLF)
+		newText = newText.Replace("<br/>", CRLF)
+		
 '		newText = newText.Replace("<br />", CRLF)
 		newText = newText.Replace("<br />", "")
 		newText = newText.Replace("&nbsp;", " ")
@@ -214,7 +216,7 @@ Sub GetAHref(alTextBlock As String) As String
 	If ahrefString.IndexOf("bronRegistratie") <> -1 Then
 		ahrefString = ""
 	Else
-		changedText = alTextBlock.Replace(ahrefString, $"${CRLF}[url=${url}]${linkTitle}[/url]"$)
+		changedText = alTextBlock.Replace(ahrefString, $"${CRLF}[url=${url}][Color=#ffff00]${linkTitle}[/color][/url]"$)
 	End If
 	
 	'FIND MORE <a href
