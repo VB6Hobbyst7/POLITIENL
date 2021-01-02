@@ -14,6 +14,7 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
+	Private textView As BCTextEngine
 	Private clsLocalNews As GetLocalNews
 	Private clvLocalNews As CustomListView
 	Private lblPubDate As Label
@@ -23,19 +24,15 @@ Sub Globals
 	Private pnlOpenUrl As Panel
 	Private pnlReadItem As Panel
 	Private lblIntroduction As Label
-	Private btnPrev As Button
-	Private btnNext As Button
 	Private lblNext As Label
 	Private lblPrev As Label
+	Private BBCodeView1 As BBCodeView
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
-	Dim cd As ColorDrawable
-	cd.Initialize(Colors.RGB(255,255,255),3dip)
 	clsLocalNews.Initialize
 	Activity.LoadLayout("lokaalNieuwsMain")
-	btnNext.Background = cd
-	btnPrev.Background = cd
+	textView.Initialize(Activity)
 	GenFunctions.ResetUserFontScale(Activity)
 	lblStationName.Text = $"Lokaal Nieuws${CRLF}${GenFunctions.stationData.name}"$
 	showProcessDialog
@@ -74,7 +71,9 @@ Private Sub GetLocalNewsItems
 	End If
 	
 	For Each item As localNewsHeadline In lstNews
-		clvLocalNews.Add(GenNewsList(item), item)
+		Dim p As Panel = GenNewsList(item)
+		GenFunctions.ResetUserFontScale(p)
+		clvLocalNews.Add(p, item)
 	Next
 	
 	lblNext.Visible = Not(Starter.localNewsOffsetEnd)
@@ -83,23 +82,39 @@ Private Sub GetLocalNewsItems
 End Sub
 
 Private Sub GenNewsList(item As localNewsHeadline) As Panel
+	
 	Dim pnl As B4XView = xui.CreatePanel("")
-	
-	pnl.SetLayoutAnimated(0, 0, 0, clvLocalNews.AsView.Width, 310dip)
+	pnl.SetLayoutAnimated(0, 0, 0, clvLocalNews.AsView.Width, 300dip)
 	pnl.LoadLayout("pnlNewsLocalHeadline")
-	
+	textView.Initialize(pnl)
+	textView.KerningEnabled = Not(textView.KerningEnabled)
+	lblArea.TextColor = Colors.Yellow
 	lblArea.Text = item.area
 	lblPubDate.Text = item.pubDate
 	lblHeadline.Text = item.title
-	lblIntroduction.Text = item.introduction
-	GenFunctions.ResetUserFontScale(pnl)
+	
+	BBCodeView1.Text= item.introduction
+	BBCodeView1.sv.Height = BBCodeView1.sv.ScrollViewContentHeight + 10dip
+	BBCodeView1.mBase.Height = BBCodeView1.sv.Height
+	BBCodeView1.Text= item.introduction
+	
+	pnl.Height =  BBCodeView1.sv.Height+0dip + 200dip
+	
+	Dim p1 As Panel
+	For Each v As View In pnl.GetAllViewsRecursive
+		If v Is Panel Then
+			p1 = v
+			p1.Height = pnl.Height-10dip
+			Exit
+		End If
+	Next
+	
+	pnlOpenUrl.Top = p1.Height - 40dip
+	pnlReadItem.Top = p1.Height - 40dip
 	Return pnl
 End Sub
 
-Sub ShowHidePrevNextButton
-	btnNext.Visible = Not(Starter.localNewsOffsetEnd)
-	btnPrev.Visible = Starter.localNewsOffset > 0
-End Sub
+
 
 Sub pnlOpenUrl_Click
 	Dim pnl As Panel = Sender
