@@ -72,8 +72,7 @@ Private Sub ParseLocalNewsData(data As String) As List
 '		colnewstitel = colnewstitel.Replace("[", "(")
 '		colnewstitel = colnewstitel.Replace("]", ")")
 '		colnewstitel = colnewstitel.ToLowerCase.Replace("video", "Filmpje")
-		
-		lst.Add(CreatelocalNewsHeadline(gebied, GenFunctions.ParseStringDate(publicatiedatum, "d"), colnewstitel, uid, colnieuwsurl, latitude, longitude, introductie))
+		lst.Add(CreatelocalNewsHeadline(gebied, GenFunctions.ParseStringDate(publicatiedatum, "d"), colnewstitel, uid, colnieuwsurl, latitude, longitude, GenFunctions.ParseHtmlTextBlock(introductie, "")))
 	Next
 	
 	Return lst

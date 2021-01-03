@@ -47,6 +47,7 @@ Sub Globals
 	Private bbOpenHours As BBCodeView
 	Private btnClose As Button
 	Private lblNumber As Label
+	Private lvlFav As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -96,7 +97,7 @@ Sub GetStation
 	clvStation.Clear
 
 	For Each st As station In lstStation
-		PCLV.AddItem(180dip, xui.Color_White, st)
+		PCLV.AddItem(170dip, xui.Color_White, st)
 	Next
 	PCLV.ShowScrollBar = False
 	PCLV.Commit
@@ -115,7 +116,7 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 		Dim station As station = item.Value
 		Dim pnl As B4XView = xui.CreatePanel("")
 	
-		item.Panel.AddView(pnl, 0, 0, width, 180dip)
+		item.Panel.AddView(pnl, 0, 0, width, 170dip)
 		pnl.LoadLayout("clvStation")
 		cs.Initialize.Color(0xFF00FFFF).Append(station.address).Append(CRLF).Append(station.postalcode).Append(" ").pop
 		cs.Color(Colors.Yellow).Append(station.city).PopAll
@@ -139,21 +140,25 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 			pnlUrl.Tag = station.url
 		Else
 			pnlUrl.Enabled = False
-			lblUrl.TextColor = Colors.Gray
+			lblUrl.TextColor = Colors.Red
 		End If
 		If station.twitter.Length > 2 Then
 			pnlTwitter.Tag = station.twitter
 		Else
 			pnlTwitter.Enabled = False
-			lblTwitter.TextColor = Colors.Gray
+			lblTwitter.TextColor = Colors.Red
 		End If
 		If station.facebook.Length > 2 Then
 			pnlFacebook.Tag = station.facebook
 		Else
 			pnlFacebook.Enabled = False
-			lblFacebook.TextColor = Colors.Gray
+			lblFacebook.TextColor = Colors.Red
 		End If
-		
+		If station.fav_id <> Null Then
+			lvlFav.TextColor = 0xFF7FFF00
+			Else
+			lvlFav.TextColor = Colors.Red
+		End If
 		SetImgFav(station.fav_id <> Null, imgFav)
 		GenFunctions.ResetUserFontScale(pnl)
 	Next
@@ -203,8 +208,8 @@ Sub lblMagni_Click
 		'GO FIND
 	else If lblMagni.Text = Chr(0xf349) Then
 		lblMagni.Text = Chr(0xf156)
-		ime.ShowKeyboard(edtFind)
 		edtFind.RequestFocus
+		ime.ShowKeyboard(edtFind)
 	End If
 	
 	edtDummyForFocus.RequestFocus
@@ -343,4 +348,25 @@ Sub Activity_KeyPress (KeyCode As Int) As Boolean 'Return True to consume the ev
 
 '	Activity.Finish
 	Return False
+End Sub
+
+Sub lvlFav_Click
+	Dim lbl As Label = Sender
+	Dim stationData As station
+	Dim psId As String
+	Dim addStationFav As Boolean
+	
+	stationData = clvStation.GetValue(clvStation.GetItemFromView(lbl.Parent))
+	psId = stationData.ps_id
+	
+	addStationFav = clsDb.CheckFavIfStationIsInFav(psId)
+	If addStationFav Then
+		lbl.TextColor = 0xFF7FFF00 '0XFF00FFFF
+		GenFunctions.createCustomToast("Bureau als favoriet ingesteld", Colors.Blue)
+	Else
+		GenFunctions.createCustomToast("Bureau geen favoriet meer", Colors.Blue)
+		lbl.TextColor = Colors.Red
+	End If
+	
+	
 End Sub

@@ -118,6 +118,7 @@ Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String) As String
 	
 		newText = GetAHref(newText)
 		newText = newText.Replace("<p>", "") ' & alTextBlock.Replace("<p>", "")
+		newText = newText.Replace("<HR>", "") ' & alTextBlock.Replace("<p>", "")
 		newText = newText.Replace("</p>", CRLF)
 		newText = newText.Replace("<br />\n", CRLF)
 		newText = newText.Replace("<br/>", CRLF)
@@ -146,7 +147,7 @@ Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String) As String
 		newText = GetHeaderStyle(newText)
 		newText = GetSupTag(newText)
 	Catch
-		Log(LastException)
+'		Log(LastException)
 		newText = "Kan bericht niet openen"
 	End Try
 	Return newText
