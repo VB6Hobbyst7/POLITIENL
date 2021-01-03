@@ -16,6 +16,7 @@ End Sub
 Sub Globals
 	Private textView As BCTextEngine
 	Private clsLocalNews As GetLocalNews
+	Private clsBbHeight As GetBbCodeViewHeight
 	Private clvLocalNews As CustomListView
 	Private lblPubDate As Label
 	Private lblHeadline As Label
@@ -31,6 +32,7 @@ End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
 	clsLocalNews.Initialize
+	clsBbHeight.Initialize
 	Activity.LoadLayout("lokaalNieuwsMain")
 	textView.Initialize(Activity)
 	GenFunctions.ResetUserFontScale(Activity)
@@ -91,25 +93,12 @@ Private Sub GenNewsList(item As localNewsHeadline) As Panel
 	lblArea.Text = item.area
 	lblPubDate.Text = item.pubDate
 	lblHeadline.Text = item.title
-	
-	BBCodeView1.Text= item.introduction
-	BBCodeView1.sv.Height = BBCodeView1.sv.ScrollViewContentHeight + 10dip
-	BBCodeView1.mBase.Height = BBCodeView1.sv.Height
+	pnl.Height =  clsBbHeight.GetHeight(BBCodeView1, item.introduction) + 200dip
 	BBCodeView1.Text= item.introduction
 	
-	pnl.Height =  BBCodeView1.sv.Height+0dip + 200dip
-	
-	Dim p1 As Panel
-	For Each v As View In pnl.GetAllViewsRecursive
-		If v Is Panel Then
-			p1 = v
-			p1.Height = pnl.Height-10dip
-			Exit
-		End If
-	Next
-	
-	pnlOpenUrl.Top = p1.Height - 40dip
-	pnlReadItem.Top = p1.Height - 40dip
+	Dim pHeight As Int = clsBbHeight.SetMainPanelHeigth(pnl)
+	pnlOpenUrl.Top = pHeight - 40dip
+	pnlReadItem.Top = pHeight - 40dip
 	Return pnl
 End Sub
 
@@ -151,14 +140,7 @@ Sub lblNext_Click
 	GetLocalNewsItems
 End Sub
 
-Sub btnPrev_Click
-	If Starter.localNewsOffset >= 10 Then
-		Starter.localNewsOffset = Starter.localNewsOffset - 10
-		GetLocalNewsItems
-	End If
-End Sub
-
-Sub btnNext_Click
-	Starter.localNewsOffset = Starter.localNewsOffset + 10
-	GetLocalNewsItems
+Sub clvLocalNews_ItemClick (Index As Int, Value As Object)
+	Dim data As localNewsHeadline = Value
+	InitNews(data)
 End Sub
