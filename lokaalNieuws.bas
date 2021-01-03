@@ -54,7 +54,6 @@ Private Sub showProcessDialog
 	Sleep(200)
 End Sub
 
-
 Private Sub HideProcessDialog
 	ProgressDialogHide
 End Sub
