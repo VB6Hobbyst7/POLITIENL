@@ -140,24 +140,24 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 			pnlUrl.Tag = station.url
 		Else
 			pnlUrl.Enabled = False
-			lblUrl.TextColor = Colors.Red
+			lblUrl.TextColor = Colors.Gray
 		End If
 		If station.twitter.Length > 2 Then
 			pnlTwitter.Tag = station.twitter
 		Else
 			pnlTwitter.Enabled = False
-			lblTwitter.TextColor = Colors.Red
+			lblTwitter.TextColor = Colors.Gray
 		End If
 		If station.facebook.Length > 2 Then
 			pnlFacebook.Tag = station.facebook
 		Else
 			pnlFacebook.Enabled = False
-			lblFacebook.TextColor = Colors.Red
+			lblFacebook.TextColor = Colors.Gray
 		End If
 		If station.fav_id <> Null Then
 			lvlFav.TextColor = 0xFF7FFF00
 			Else
-			lvlFav.TextColor = Colors.Red
+			lvlFav.TextColor = Colors.Gray
 		End If
 		SetImgFav(station.fav_id <> Null, imgFav)
 		GenFunctions.ResetUserFontScale(pnl)

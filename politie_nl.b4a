@@ -75,7 +75,7 @@ Module9=lokaalNieuws
 NumberOfFiles=23
 NumberOfLibraries=11
 NumberOfModules=14
-Version=10.2
+Version=10.5
 @EndOfDesignText@
 #Region TODO/FIX
 	'News item that contain VIDEO tag
@@ -129,7 +129,7 @@ Sub Activity_Create(FirstTime As Boolean)
 	clsDb.Initialize
 	
 	Activity.LoadLayout("Main")
-	lblStationName.Typeface = Typeface.LoadFromAssets("VeraMono.ttf")
+	lblStationName.Typeface = Typeface.LoadFromAssets("veramono-bold.otf")
 	textEngine.Initialize(Activity)
 	textEngine.KerningEnabled = Not(textEngine.KerningEnabled)
 	lblVersie.Text = $"v${Application.VersionName}"$
