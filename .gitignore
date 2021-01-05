@@ -1,11 +1,3 @@
-/Objects/bin/*
-/Objects/b4xlibs/*
-/Objects/src/*
-/Objects/gen/*
-/Objects/src/*
-/Objects/AndroidManifest.xml
-/Objects/classes.dex
-
 # Compiled class file
 *.class
 
@@ -32,6 +24,13 @@
 hs_err_pid*
 
 #B4a
+/Objects/bin/*
+/Objects/b4xlibs/*
+/Objects/src/*
+/Objects/gen/*
+/Objects/src/*
+/Objects/AndroidManifest.xml
+/Objects/classes.dex
 bin/
 gen/
 src/

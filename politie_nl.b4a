@@ -114,12 +114,9 @@ End Sub
 Sub Globals
 	Private clsDb As dbFunctions
 	Private clsPStations As GetPoliceStations
-	Private lblVerder As Label
+	Private lblVerder, lblVersie, lblDisclaimer, lblStationName As Label
 	Private updatingDb As Boolean
-	Private lblVersie As Label
 	Private imgLogo As ImageView
-	Private lblDisclaimer As Label
-	Private lblStationName As Label
 	Private BBWhatsIn As BBCodeView
 	Private textEngine As BCTextEngine
 End Sub

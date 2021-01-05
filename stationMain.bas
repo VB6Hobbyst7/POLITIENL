@@ -15,39 +15,23 @@ End Sub
 
 Sub Globals
 	Private TextEngine As BCTextEngine
+	Private bbOpenHours As BBCodeView
 	Private PCLV As PreoptimizedCLV
 	Private CardLayoutsCache As List
-	Dim ime As IME
+	Private ime As IME
 	Private clsDb As dbFunctions
 	Private clvStation As CustomListView
 	Private clsStationData As GetPoliceStations
 	Private clsLocalNews As GetLocalNews
 	
-	Private pnlStation As Panel
-	Private lblStationName As Label
-	Private lblAddress As Label
-	Private lblZip As Label
-	Private lblCity As Label
-	Private pnlTwitter As Panel
-	Private pnlFacebook As Panel
-	Private pnlUrl As Panel
-	Private lblTwitter As Label
-	Private lblFacebook As Label
-	Private lblUrl As Label
-	Private edtFind As EditText
-	Private lblMagni As Label
-	Private pnlFind As Panel
-	Private edtDummyForFocus As EditText
-	Private pnlWijkAgent As Panel
-	Private pnlLocalNews As Panel
+	Private lblStationName, lblAddress, lblZip, lblCity As Label
+	Private lblTwitter, lblFacebook, lblUrl, lblMagni As Label
+	Private lblItemFound, lblOpenHours, lblNumber, lvlFav As Label
+	Private pnlOpenHours, pnlFind, pnlStation As Panel
+	Private pnlTwitter, pnlFacebook, pnlUrl, pnlWijkAgent, pnlLocalNews As Panel
+	Private edtFind, edtDummyForFocus As EditText
 	Private imgFav As ImageView
-	Private lblItemFound As Label
-	Private lblOpenHours As Label
-	Private pnlOpenHours As Panel
-	Private bbOpenHours As BBCodeView
 	Private btnClose As Button
-	Private lblNumber As Label
-	Private lvlFav As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)

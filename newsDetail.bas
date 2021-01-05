@@ -14,7 +14,7 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
-	Dim access As Accessibility
+'	Dim access As Accessibility
 	Private bbNewsDetail As BBCodeView
 	Private TextEngine As BCTextEngine
 	Private lblDate As Label

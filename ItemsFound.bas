@@ -86,7 +86,8 @@ End Sub
 
 Private Sub AddItem(item As foundItemList) As Panel
 	Dim pnl As B4XView = xui.CreatePanel("")
-	Dim pnlBbHeight, pnlDiff As Int 
+'	Dim pnlBbHeight, pnlDiff As Int 
+'	Dim pnlBbHeight As Int 
 	
 	pnl.SetLayoutAnimated(0, 0, 0, clvItemFound.AsView.Width, 280dip)
 	pnl.LoadLayout("clvItemFound")
@@ -94,9 +95,9 @@ Private Sub AddItem(item As foundItemList) As Panel
 	TextEngine.Initialize(pnl)
 	TextEngine.KerningEnabled = Not(TextEngine.KerningEnabled)
 	bbItemDescription.Text = item.description
-	pnlBbHeight = bbItemDescription.mBase.Height
+'	pnlBbHeight = bbItemDescription.mBase.Height
 	
-	pnlDiff = bbItemDescription.Paragraph.Height - pnlBbHeight
+'	pnlDiff = bbItemDescription.Paragraph.Height - pnlBbHeight
 
 	Dim ContentHeight As Int = Min(bbItemDescription.Paragraph.Height / TextEngine.mScale + bbItemDescription.Padding.Top + bbItemDescription.Padding.Bottom, bbItemDescription.mBase.Height)
 	bbItemDescription.sv.ScrollViewContentHeight = ContentHeight+20dip
