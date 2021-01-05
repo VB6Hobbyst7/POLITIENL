@@ -1,62 +1,66 @@
 ﻿Build1=Default,nl.pdeg.politie_nl
 File1=arial.ttf
-File10=materialdesignicons-webfont.ttf
-File11=newsDetail.bal
-File12=output-onlineasciitools(1).png
-File13=pnlNewsLocalHeadline.bal
-File14=pnlWijkAgent.bal
-File15=politie.db
-File16=stationMain.bal
-File17=VeraMono.ttf
-File18=veramono-bold.otf
-File19=veramono-bold.ttf
+File10=lostfound.png
+File11=Main.bal
+File12=materialdesignicons-webfont.ttf
+File13=newsDetail.bal
+File14=output-onlineasciitools(1).png
+File15=pnlNewsLocalHeadline.bal
+File16=pnlWijkAgent.bal
+File17=politie.db
+File18=stationMain.bal
+File19=VeraMono.ttf
 File2=clvItemFound.bal
-File20=veramono-bold1.ttf
-File21=VeraMono-Bold-Italic.ttf
-File22=VeraMono-Italic.ttf
-File23=wijkAgentMain.bal
+File20=veramono-bold.otf
+File21=veramono-bold.ttf
+File22=veramono-bold1.ttf
+File23=VeraMono-Bold-Italic.ttf
+File24=VeraMono-Italic.ttf
+File25=wijkAgentMain.bal
 File3=clvStation.bal
 File4=favourite_off.png
 File5=favourite_on.png
-File6=ItemFoundMain.bal
-File7=lokaalNieuwsMain.bal
-File8=lostfound.png
-File9=Main.bal
+File6=instagram_off.png
+File7=instagram_on.png
+File8=ItemFoundMain.bal
+File9=lokaalNieuwsMain.bal
 FileGroup1=files
-FileGroup10=files
+FileGroup10=Default Group
 FileGroup11=forms
-FileGroup12=Default Group
+FileGroup12=files
 FileGroup13=forms
-FileGroup14=forms
-FileGroup15=files
+FileGroup14=Default Group
+FileGroup15=forms
 FileGroup16=forms
-FileGroup17=Default Group
-FileGroup18=Default Group
+FileGroup17=files
+FileGroup18=forms
 FileGroup19=Default Group
 FileGroup2=forms
 FileGroup20=Default Group
 FileGroup21=Default Group
 FileGroup22=Default Group
-FileGroup23=forms
+FileGroup23=Default Group
+FileGroup24=Default Group
+FileGroup25=forms
 FileGroup3=forms
 FileGroup4=Default Group
 FileGroup5=Default Group
-FileGroup6=forms
-FileGroup7=forms
-FileGroup8=Default Group
+FileGroup6=Default Group
+FileGroup7=Default Group
+FileGroup8=forms
 FileGroup9=forms
 Group=Default Group
-Library1=core
-Library10=bctextengine
-Library11=stringutils
-Library2=runtimepermissions
-Library3=sql
-Library4=okhttputils2
+Library1=accessibility
+Library10=stringutils
+Library11=xui views
+Library2=bctextengine
+Library3=core
+Library4=ime
 Library5=json
-Library6=xui views
+Library6=okhttputils2
 Library7=preoptimizedclv
-Library8=ime
-Library9=accessibility
+Library8=runtimepermissions
+Library9=sql
 ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: https://www.b4x.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="29"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~CreateResourceFromFile(Macro, Themes.DarkTheme)~\n~'End of default text.~\n~SetApplicationAttribute(android:icon, "@mipmap/ic_launcher")~\n~CreateResource(mipmap-anydpi-v26, ic_launcher.xml,~\n~<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">~\n~    <background android:drawable="@mipmap/background"/>~\n~    <foreground android:drawable="@mipmap/foreground"/>~\n~</adaptive-icon>~\n~)~\n~SetActivityAttribute(stationMain, android:windowSoftInputMode, adjustResize|stateHidden)~\n~AddPermission(android.permission.INTERNET)~\n~SetApplicationAttribute(android:theme, "@style/LightTheme")~\n~CreateResource(values, colors.xml,~\n~<resources>~\n~    <color name="actionbar">#FF0000FF</color>~\n~   <color name="statusbar">#FF0000FF</color>~\n~   <color name="textColorPrimary">#FF0000FF</color>~\n~   <color name="navigationBar">#FF0000FF</color>~\n~</resources>~\n~)~\n~CreateResource(values-v20, theme.xml,~\n~<resources>~\n~    <style name="LightTheme" parent="@android:style/Theme.Material.Light">~\n~        <item name="android:colorPrimary">@color/actionbar</item>~\n~        <item name="android:colorPrimaryDark">@color/statusbar</item>~\n~        <item name="android:textColorPrimary">@color/textColorPrimary</item>~\n~        <item name="android:navigationBarColor">@color/navigationBar</item>~\n~    </style>~\n~</resources>~\n~)~\n~CreateResource(values-v14, theme.xml,~\n~<resources>~\n~    <style name="LightTheme" parent="@android:style/Theme.Holo.Light">~\n~       <item name="android:actionBarStyle">@style/CustomActionBarStyle</item>~\n~    </style>~\n~   <style name="CustomActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">~\n~       <item name="android:background">@color/actionbar</item>~\n~   </style>~\n~</resources>~\n~)
 Module1=dbFunctions
 Module10=newsDetail
@@ -72,7 +76,7 @@ Module6=GetPoliceStations
 Module7=ItemOwner
 Module8=ItemsFound
 Module9=lokaalNieuws
-NumberOfFiles=23
+NumberOfFiles=25
 NumberOfLibraries=11
 NumberOfModules=14
 Version=10.5
@@ -126,11 +130,11 @@ Sub Activity_Create(FirstTime As Boolean)
 	clsDb.Initialize
 	
 	Activity.LoadLayout("Main")
-	lblStationName.Typeface = Typeface.LoadFromAssets("veramono-bold.otf")
 	textEngine.Initialize(Activity)
 	textEngine.KerningEnabled = Not(textEngine.KerningEnabled)
 	lblVersie.Text = $"v${Application.VersionName}"$
 	SetWhatsIn
+	GenFunctions.ResetUserFontScale(Activity)
 	GetUpdateStations
 End Sub
 

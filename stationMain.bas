@@ -94,14 +94,25 @@ End Sub
 
 Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 	Dim width As Int = clvStation.AsView.Width
-	Dim cs As CSBuilder	
+	Dim pnlHeight, pnlTop, pnlCount As Int
+	Dim cs As CSBuilder
+	
+	pnlCount = 0
 	For Each i As Int In PCLV.VisibleRangeChanged(FirstIndex, LastIndex)
+		If pnlCount = 0 Then
+			pnlHeight = 200dip
+			pnlTop = 10dip
+		Else
+			pnlHeight = 170dip
+			pnlTop = 0dip
+		End If
 		Dim item As CLVItem = clvStation.GetRawListItem(i)
 		Dim station As station = item.Value
 		Dim pnl As B4XView = xui.CreatePanel("")
 	
-		item.Panel.AddView(pnl, 0, 0, width, 170dip)
+		item.Panel.AddView(pnl, 0, 0, width, pnlHeight)
 		pnl.LoadLayout("clvStation")
+		pnlStation.Top = pnlTop
 		cs.Initialize.Color(0xFF00FFFF).Append(station.address).Append(CRLF).Append(station.postalcode).Append(" ").pop
 		cs.Color(Colors.Yellow).Append(station.city).PopAll
 		lblNumber.Text = NumberFormat(i+1,3, 0)
@@ -140,7 +151,7 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 		End If
 		If station.fav_id <> Null Then
 			lvlFav.TextColor = 0xFF7FFF00
-			Else
+		Else
 			lvlFav.TextColor = Colors.Gray
 		End If
 		SetImgFav(station.fav_id <> Null, imgFav)

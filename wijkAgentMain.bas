@@ -57,7 +57,7 @@ Sub GenWijkAgent(wijkAgent As wijkAgent) As Panel
 	pnl.LoadLayout("pnlWijkAgent")
 	
 	
-	imgAgent.SetBackgroundImage(wijkAgent.afbeelding)
+	imgAgent.SetBackgroundImage(GenFunctions.CreateRoundRectBitmap( wijkAgent.afbeelding, 5dip))
 	lblAgentNaam.Text = wijkAgent.naam
 	lblWerkGebied.Text = wijkAgent.werkGebied
 	lblPubDate.Text = $"${GenFunctions.ParseStringDate(wijkAgent.publicatieDatum, "d")}"$

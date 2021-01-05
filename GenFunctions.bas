@@ -7,6 +7,7 @@ Version=10.2
 Sub Process_Globals
 	Dim stationData As station
 	Private access As Accessibility
+	Private xui as XUI
 
 End Sub
 
@@ -319,3 +320,26 @@ Sub GetSupTag(alTextBlock As String) As String
 	
 End Sub
 
+Sub CreateRoundRectBitmap (Input As B4XBitmap, Radius As Float) As B4XBitmap
+	Dim BorderColor As Int = xui.Color_Black
+	Dim BorderWidth As Int = 4dip
+	Dim c As B4XCanvas
+	Dim xview As B4XView = xui.CreatePanel("")
+	xview.SetLayoutAnimated(0, 0, 0, Input.Width, Input.Height)
+	c.Initialize(xview)
+	Dim path As B4XPath
+	path.InitializeRoundedRect(c.TargetRect, Radius)
+	c.ClipPath(path)
+	c.DrawRect(c.TargetRect, BorderColor, True, BorderWidth) 'border
+	c.RemoveClip
+	Dim r As B4XRect
+	r.Initialize(BorderWidth, BorderWidth, c.TargetRect.Width - BorderWidth, c.TargetRect.Height - BorderWidth)
+	path.InitializeRoundedRect(r, Radius - 0.7 * BorderWidth)
+	c.ClipPath(path)
+	c.DrawBitmap(Input, r)
+	c.RemoveClip
+	c.Invalidate
+	Dim res As B4XBitmap = c.CreateBitmap
+	c.Release
+	Return res
+End Sub
