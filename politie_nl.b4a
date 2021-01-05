@@ -84,7 +84,7 @@ Version=10.5
 #Region  Project Attributes 
 	#ApplicationLabel: Politie Nl
 	#VersionCode: 4
-	#VersionName: 0.41
+	#VersionName: 0.42
 	'SupportedOrientations possible values: unspecified, landscape or portrait.
 	#SupportedOrientations: portrait
 	#CanInstallToExternalStorage: False
