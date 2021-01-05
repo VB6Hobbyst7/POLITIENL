@@ -14,21 +14,11 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
-	Private lblStationName As Label
+	Private lblStationName, lblAgentNaam, lblWerkGebied, lblTwitter, lblInstagram As Label
+	Private pnlAgent, pnlUrl, pnlImg, pnlFacebook, pnlTwitter As Panel
 	Private clvAgent As CustomListView
 	Private imgAgent As ImageView
-	Private lblAgentNaam As Label
-	Private lblWerkGebied As Label
-	Private pnlAgent As Panel
-	Private lblPubDate As Label
-	Private pnlUrl As Panel
-	Private pnlImg As Panel
-	Private lblUrl As Label
-	Private pnlFacebook As Panel
-	Private lblFacebook As Label
-	Private pnlTwitter As Panel
-	Private lblTwitter As Label
-	Private lblInstagram As Label
+	Private lblPubDate, lblUrl, lblFacebook As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)

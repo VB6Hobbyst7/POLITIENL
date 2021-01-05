@@ -15,19 +15,13 @@ End Sub
 
 Sub Globals
 	Private textView As BCTextEngine
+	Private BBCodeView1 As BBCodeView
 	Private clsLocalNews As GetLocalNews
 	Private clsBbHeight As GetBbCodeViewHeight
+	Private pnlOpenUrl, pnlReadItem As Panel
 	Private clvLocalNews As CustomListView
-	Private lblPubDate As Label
-	Private lblHeadline As Label
-	Private lblArea As Label
-	Private lblStationName As Label
-	Private pnlOpenUrl As Panel
-	Private pnlReadItem As Panel
-	Private lblIntroduction As Label
-	Private lblNext As Label
-	Private lblPrev As Label
-	Private BBCodeView1 As BBCodeView
+	Private lblIntroduction, lblNext,lblPrev As Label
+	Private lblPubDate, lblHeadline, lblArea, lblStationName As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)

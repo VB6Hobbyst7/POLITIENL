@@ -6,7 +6,7 @@ Version=10.2
 @EndOfDesignText@
 Sub Class_Globals
 	Dim parser As JSONParser
-	Dim itemsOffset As Int = 0
+'	Dim itemsOffset As Int = 0
 End Sub
 
 Public Sub Initialize
@@ -51,7 +51,7 @@ Private Sub ParseLocalNewsData(data As String) As List
 	
 	Dim iterator As Map = root.Get("iterator")
 	Dim last As String = iterator.Get("last")
-	Dim offset As Int = iterator.Get("offset")
+'	Dim offset As Int = iterator.Get("offset")
 	Starter.localNewsOffsetEnd = last
 	
 	Dim nieuwsberichten As List = root.Get("nieuwsberichten")
@@ -130,7 +130,7 @@ End Sub
 Private Sub ParseLocalNewsDetail(data As String, uidNewsItem As String) As String 'ignore
 	Dim parser As JSONParser
 	Dim alineasText As String = ""
-	Dim titleFound As Boolean
+'	Dim titleFound As Boolean
 	
 	parser.Initialize(data)
 	
@@ -150,7 +150,7 @@ Private Sub ParseLocalNewsDetail(data As String, uidNewsItem As String) As Strin
 		Next
 '		Dim url As String = colnieuwsberichten.Get("url")
 		Dim uid As String = colnieuwsberichten.Get("uid")
-		Dim coltitel As String = colnieuwsberichten.Get("titel")
+'		Dim coltitel As String = colnieuwsberichten.Get("titel")
 '		Dim introductie As String = colnieuwsberichten.Get("introductie")
 '		Dim afbeelding As Map = colnieuwsberichten.Get("afbeelding")
 '		Dim alttext As String = afbeelding.Get("alttext")
@@ -174,9 +174,9 @@ Private Sub ParseLocalNewsDetail(data As String, uidNewsItem As String) As Strin
 				alineasText = alineasText & GenFunctions.ParseHtmlTextBlock(al_titel.Replace(CRLF, ""), al_opgemaaktetekst)
 				alineasText = alineasText & CRLF& CRLF
 			Next
-			If titleFound = False Then
-				alineasText = $"[alignment=center][b]${coltitel}[/b][/alignment]${CRLF}${CRLF}${alineasText}"$
-			End If
+'			If titleFound = False Then
+'				alineasText = $"[alignment=center][b]${coltitel}[/b][/alignment]${CRLF}${CRLF}${alineasText}"$
+'			End If
 			
 			Return alineasText
 			Exit
@@ -185,6 +185,3 @@ Private Sub ParseLocalNewsDetail(data As String, uidNewsItem As String) As Strin
 	
 End Sub
 
-Private Sub CheckForMoreNewsItems
-	
-End Sub
