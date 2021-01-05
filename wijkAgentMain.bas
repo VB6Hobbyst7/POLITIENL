@@ -63,7 +63,7 @@ Sub GenWijkAgent(wijkAgent As wijkAgent) As Panel
 
 	Dim pnl As B4XView = xui.CreatePanel("")
 	
-	pnl.SetLayoutAnimated(0, 0, 0, clvAgent.AsView.Width, 210dip)
+	pnl.SetLayoutAnimated(0, 0, 0, clvAgent.AsView.Width, 200dip)
 	pnl.LoadLayout("pnlWijkAgent")
 	
 	

@@ -96,6 +96,7 @@ Private Sub GenNewsList(item As localNewsHeadline) As Panel
 	pnl.Height =  clsBbHeight.GetHeight(BBCodeView1, item.introduction) + 200dip
 	BBCodeView1.Text= item.introduction
 	
+	
 	Dim pHeight As Int = clsBbHeight.SetMainPanelHeigth(pnl)
 	pnlOpenUrl.Top = pHeight - 40dip
 	pnlReadItem.Top = pHeight - 40dip

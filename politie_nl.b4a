@@ -8,11 +8,13 @@ File14=pnlWijkAgent.bal
 File15=politie.db
 File16=stationMain.bal
 File17=VeraMono.ttf
-File18=VeraMono-Bold.ttf
-File19=VeraMono-Bold-Italic.ttf
+File18=veramono-bold.otf
+File19=veramono-bold.ttf
 File2=clvItemFound.bal
-File20=VeraMono-Italic.ttf
-File21=wijkAgentMain.bal
+File20=veramono-bold1.ttf
+File21=VeraMono-Bold-Italic.ttf
+File22=VeraMono-Italic.ttf
+File23=wijkAgentMain.bal
 File3=clvStation.bal
 File4=favourite_off.png
 File5=favourite_on.png
@@ -33,7 +35,9 @@ FileGroup18=Default Group
 FileGroup19=Default Group
 FileGroup2=forms
 FileGroup20=Default Group
-FileGroup21=forms
+FileGroup21=Default Group
+FileGroup22=Default Group
+FileGroup23=forms
 FileGroup3=forms
 FileGroup4=Default Group
 FileGroup5=Default Group
@@ -68,10 +72,10 @@ Module6=GetPoliceStations
 Module7=ItemOwner
 Module8=ItemsFound
 Module9=lokaalNieuws
-NumberOfFiles=21
+NumberOfFiles=23
 NumberOfLibraries=11
 NumberOfModules=14
-Version=10.2
+Version=10.5
 @EndOfDesignText@
 #Region TODO/FIX
 	'News item that contain VIDEO tag
@@ -80,7 +84,7 @@ Version=10.2
 #Region  Project Attributes 
 	#ApplicationLabel: Politie Nl
 	#VersionCode: 4
-	#VersionName: 0.41
+	#VersionName: 0.42
 	'SupportedOrientations possible values: unspecified, landscape or portrait.
 	#SupportedOrientations: portrait
 	#CanInstallToExternalStorage: False
@@ -125,6 +129,7 @@ Sub Activity_Create(FirstTime As Boolean)
 	clsDb.Initialize
 	
 	Activity.LoadLayout("Main")
+	lblStationName.Typeface = Typeface.LoadFromAssets("veramono-bold.otf")
 	textEngine.Initialize(Activity)
 	textEngine.KerningEnabled = Not(textEngine.KerningEnabled)
 	lblVersie.Text = $"v${Application.VersionName}"$
