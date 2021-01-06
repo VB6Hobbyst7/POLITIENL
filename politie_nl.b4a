@@ -53,6 +53,7 @@ Group=Default Group
 Library1=accessibility
 Library10=stringutils
 Library11=xui views
+Library12=phone
 Library2=bctextengine
 Library3=core
 Library4=ime
@@ -77,7 +78,7 @@ Module7=ItemOwner
 Module8=ItemsFound
 Module9=lokaalNieuws
 NumberOfFiles=25
-NumberOfLibraries=11
+NumberOfLibraries=12
 NumberOfModules=14
 Version=10.5
 @EndOfDesignText@
@@ -119,7 +120,7 @@ Sub Globals
 	Private clsDb As dbFunctions
 	Private clsPStations As GetPoliceStations
 	Private lblVerder, lblVersie, lblDisclaimer, lblStationName As Label
-	Private updatingDb As Boolean
+	Private updatingDb, hasNoInternet As Boolean
 	Private imgLogo As ImageView
 	Private BBWhatsIn As BBCodeView
 	Private textEngine As BCTextEngine
@@ -135,8 +136,24 @@ Sub Activity_Create(FirstTime As Boolean)
 	lblVersie.Text = $"v${Application.VersionName}"$
 	SetWhatsIn
 	GenFunctions.ResetUserFontScale(Activity)
+	Wait For (CheckConnected) Complete (connected As Boolean)
+	
+	If connected = False Then
+		lblVerder.Text = "Geen Internet connectie"
+		
+		Msgbox2Async("Geen Internet verbinding, kan applicatie niet openen", "Politie Nl", "Oke", "", "", Application.Icon, False)
+		Wait For Msgbox_Result (Result As Int)
+		If Result = DialogResponse.POSITIVE Then
+		
+		End If
+		hasNoInternet = True
+		Return
+	End If
+	
 	GetUpdateStations
 End Sub
+
+
 
 Sub Activity_Resume
 
@@ -178,6 +195,8 @@ Private Sub GetUpdateStations
 End Sub
 
 Sub lblVerder_Click
+	If hasNoInternet Then Return
+	
 	If updatingDb Then Return
 	StartActivity(stationMain)
 	Activity.Finish
@@ -213,4 +232,14 @@ $"[list]
 [/list]"$
 	
 	BBWhatsIn.Text = txt
+End Sub
+
+public Sub CheckConnected As ResumableSub
+	Dim p As Phone
+	Wait For (p.ShellAsync("ping", Array As String("-c", "1", "8.8.8.8"))) Complete (Success As Boolean, ExitValue As Int, StdOut As String, StdErr As String)
+	If StdErr = "" And StdOut.Contains("Destination Host Unreachable")=False Then
+		Return True
+	Else
+		Return False
+	End If
 End Sub

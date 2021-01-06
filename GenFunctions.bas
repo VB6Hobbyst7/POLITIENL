@@ -7,7 +7,7 @@ Version=10.2
 Sub Process_Globals
 	Dim stationData As station
 	Private access As Accessibility
-	Private xui as XUI
+	Private xui As XUI
 
 End Sub
 
@@ -343,3 +343,4 @@ Sub CreateRoundRectBitmap (Input As B4XBitmap, Radius As Float) As B4XBitmap
 	c.Release
 	Return res
 End Sub
+
