@@ -1,58 +1,55 @@
 ﻿Build1=Default,nl.pdeg.politie_nl
 File1=arial.ttf
-File10=lostfound.png
-File11=Main.bal
-File12=materialdesignicons-webfont.ttf
-File13=newsDetail.bal
-File14=output-onlineasciitools(1).png
-File15=pnlNewsLocalHeadline.bal
-File16=pnlWijkAgent.bal
-File17=politie.db
-File18=stationMain.bal
-File19=VeraMono.ttf
+File10=materialdesignicons-webfont.ttf
+File11=newsDetail.bal
+File12=output-onlineasciitools(1).png
+File13=pnlNewsLocalHeadline.bal
+File14=pnlWijkAgent.bal
+File15=politie.db
+File16=stationMain.bal
+File17=VeraMono.ttf
+File18=veramono-bold.otf
+File19=veramono-bold.ttf
 File2=clvItemFound.bal
-File20=veramono-bold.otf
-File21=veramono-bold.ttf
-File22=veramono-bold1.ttf
-File23=VeraMono-Bold-Italic.ttf
-File24=VeraMono-Italic.ttf
-File25=wijkAgentMain.bal
+File20=veramono-bold1.ttf
+File21=VeraMono-Bold-Italic.ttf
+File22=VeraMono-Italic.ttf
+File23=wijkAgentMain.bal
 File3=clvStation.bal
 File4=favourite_off.png
 File5=favourite_on.png
-File6=instagram_off.png
-File7=instagram_on.png
-File8=ItemFoundMain.bal
-File9=lokaalNieuwsMain.bal
+File6=ItemFoundMain.bal
+File7=lokaalNieuwsMain.bal
+File8=lostfound.png
+File9=Main.bal
 FileGroup1=files
-FileGroup10=Default Group
+FileGroup10=files
 FileGroup11=forms
-FileGroup12=files
+FileGroup12=Default Group
 FileGroup13=forms
-FileGroup14=Default Group
-FileGroup15=forms
+FileGroup14=forms
+FileGroup15=files
 FileGroup16=forms
-FileGroup17=files
-FileGroup18=forms
+FileGroup17=Default Group
+FileGroup18=Default Group
 FileGroup19=Default Group
 FileGroup2=forms
 FileGroup20=Default Group
 FileGroup21=Default Group
 FileGroup22=Default Group
-FileGroup23=Default Group
-FileGroup24=Default Group
-FileGroup25=forms
+FileGroup23=forms
 FileGroup3=forms
 FileGroup4=Default Group
 FileGroup5=Default Group
-FileGroup6=Default Group
-FileGroup7=Default Group
-FileGroup8=forms
+FileGroup6=forms
+FileGroup7=forms
+FileGroup8=Default Group
 FileGroup9=forms
 Group=Default Group
 Library1=accessibility
 Library10=stringutils
 Library11=xui views
+Library12=phone
 Library2=bctextengine
 Library3=core
 Library4=ime
@@ -76,8 +73,8 @@ Module6=GetPoliceStations
 Module7=ItemOwner
 Module8=ItemsFound
 Module9=lokaalNieuws
-NumberOfFiles=25
-NumberOfLibraries=11
+NumberOfFiles=23
+NumberOfLibraries=12
 NumberOfModules=14
 Version=10.5
 @EndOfDesignText@
@@ -88,7 +85,7 @@ Version=10.5
 #Region  Project Attributes 
 	#ApplicationLabel: Politie Nl
 	#VersionCode: 4
-	#VersionName: 0.42
+	#VersionName: 0.56
 	'SupportedOrientations possible values: unspecified, landscape or portrait.
 	#SupportedOrientations: portrait
 	#CanInstallToExternalStorage: False
@@ -119,7 +116,7 @@ Sub Globals
 	Private clsDb As dbFunctions
 	Private clsPStations As GetPoliceStations
 	Private lblVerder, lblVersie, lblDisclaimer, lblStationName As Label
-	Private updatingDb As Boolean
+	Private updatingDb, hasNoInternet As Boolean
 	Private imgLogo As ImageView
 	Private BBWhatsIn As BBCodeView
 	Private textEngine As BCTextEngine
@@ -135,8 +132,24 @@ Sub Activity_Create(FirstTime As Boolean)
 	lblVersie.Text = $"v${Application.VersionName}"$
 	SetWhatsIn
 	GenFunctions.ResetUserFontScale(Activity)
+	Wait For (CheckConnected) Complete (connected As Boolean)
+	
+	If connected = False Then
+		lblVerder.Text = "Geen Internet connectie"
+		
+		Msgbox2Async("Geen Internet verbinding, kan applicatie niet openen", "Politie Nl", "Oke", "", "", Application.Icon, False)
+		Wait For Msgbox_Result (Result As Int)
+		If Result = DialogResponse.POSITIVE Then
+		
+		End If
+		hasNoInternet = True
+		Return
+	End If
+	
 	GetUpdateStations
 End Sub
+
+
 
 Sub Activity_Resume
 
@@ -178,6 +191,8 @@ Private Sub GetUpdateStations
 End Sub
 
 Sub lblVerder_Click
+	If hasNoInternet Then Return
+	
 	If updatingDb Then Return
 	StartActivity(stationMain)
 	Activity.Finish
@@ -213,4 +228,14 @@ $"[list]
 [/list]"$
 	
 	BBWhatsIn.Text = txt
+End Sub
+
+public Sub CheckConnected As ResumableSub
+	Dim p As Phone
+	Wait For (p.ShellAsync("ping", Array As String("-c", "1", "8.8.8.8"))) Complete (Success As Boolean, ExitValue As Int, StdOut As String, StdErr As String)
+	If StdErr = "" And StdOut.Contains("Destination Host Unreachable")=False Then
+		Return True
+	Else
+		Return False
+	End If
 End Sub

@@ -72,7 +72,7 @@ Private Sub ParseLocalNewsData(data As String) As List
 '		colnewstitel = colnewstitel.Replace("[", "(")
 '		colnewstitel = colnewstitel.Replace("]", ")")
 '		colnewstitel = colnewstitel.ToLowerCase.Replace("video", "Filmpje")
-		lst.Add(CreatelocalNewsHeadline(gebied, GenFunctions.ParseStringDate(publicatiedatum, "d"), colnewstitel, uid, colnieuwsurl, latitude, longitude, GenFunctions.ParseHtmlTextBlock(introductie, "")))
+		lst.Add(CreatelocalNewsHeadline(gebied, GenFunctions.ParseStringDate(publicatiedatum, "d"), colnewstitel, uid, colnieuwsurl, latitude, longitude, GenFunctions.ParseHtmlTextBlock(introductie, "", "")))
 	Next
 	
 	Return lst
@@ -171,7 +171,7 @@ Private Sub ParseLocalNewsDetail(data As String, uidNewsItem As String) As Strin
 				If al_opgemaaktetekst = "null" Or al_titel = "null" Then
 					Continue
 				End If
-				alineasText = alineasText & GenFunctions.ParseHtmlTextBlock(al_titel.Replace(CRLF, ""), al_opgemaaktetekst)
+				alineasText = alineasText & GenFunctions.ParseHtmlTextBlock(al_titel.Replace(CRLF, ""), al_opgemaaktetekst, "[color=#00FF00]")
 				alineasText = alineasText & CRLF& CRLF
 			Next
 '			If titleFound = False Then

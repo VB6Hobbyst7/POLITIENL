@@ -22,6 +22,7 @@ Sub Globals
 	Private clvLocalNews As CustomListView
 	Private lblIntroduction, lblNext,lblPrev As Label
 	Private lblPubDate, lblHeadline, lblArea, lblStationName As Label
+	Private lblOpenItem As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -68,6 +69,7 @@ Private Sub GetLocalNewsItems
 	For Each item As localNewsHeadline In lstNews
 		Dim p As Panel = GenNewsList(item)
 		GenFunctions.ResetUserFontScale(p)
+		
 		clvLocalNews.Add(p, item)
 	Next
 	
@@ -90,10 +92,10 @@ Private Sub GenNewsList(item As localNewsHeadline) As Panel
 	pnl.Height =  clsBbHeight.GetHeight(BBCodeView1, item.introduction) + 200dip
 	BBCodeView1.Text= item.introduction
 	
-	
 	Dim pHeight As Int = clsBbHeight.SetMainPanelHeigth(pnl)
 	pnlOpenUrl.Top = pHeight - 40dip
 	pnlReadItem.Top = pHeight - 40dip
+	lblOpenItem.Height = pnl.Height - 100dip
 	Return pnl
 End Sub
 
@@ -137,5 +139,12 @@ End Sub
 
 Sub clvLocalNews_ItemClick (Index As Int, Value As Object)
 	Dim data As localNewsHeadline = Value
+	InitNews(data)
+End Sub
+
+Private Sub lblOpenItem_Click
+	Dim lbl As Label = Sender
+	Dim pnl As Panel = lbl.Parent
+	Dim data As localNewsHeadline = clvLocalNews.GetValue(clvLocalNews.GetItemFromView(pnl))
 	InitNews(data)
 End Sub
