@@ -102,14 +102,20 @@ Sub ShowLocationOnGoogleMaps(lat As Double, lon As Double)
 	StartActivity(gMapIntent)
 End Sub
 
-Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String) As String
+Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String, color As String) As String
 	Dim newText As String = alTextBlock
 	newText = newText.Replace("[", "(")
 	newText = newText.Replace("]", ")")
 	If alTitle <> "" Then
 		alTitle = alTitle.Replace("[", "(")
 		alTitle = alTitle.Replace("]", ")")
-		newText = $"[b]${alTitle}[/b]${""}${newText}"$
+'		newText = $"[b]${alTitle}[/b]${""}${newText}"$
+	If color <> "" Then
+			newText = $"${color}${alTitle}[/color]${CRLF}${newText}"$
+	Else
+			newText = $"${alTitle}${CRLF}${newText}"$
+	End If	
+	
 	End If
 
 	Try
@@ -123,12 +129,11 @@ Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String) As String
 		newText = newText.Replace("</p>", CRLF)
 		newText = newText.Replace("<br />\n", CRLF)
 		newText = newText.Replace("<br/>", CRLF)
-		
-'		newText = newText.Replace("<br />", CRLF)
-		newText = newText.Replace("<br />", "")
+		newText = newText.Replace("<br />", CRLF)
+'		newText = newText.Replace("<br />", "")
 		newText = newText.Replace("&nbsp;", " ")
-		newText = newText.Replace("<strong>", "[b]")
-		newText = newText.Replace("</strong>", "[/b]")
+		newText = newText.Replace("<strong>", "")'"[b]")
+		newText = newText.Replace("</strong>", "")'"[/b]")
 		newText = GetHtmlTextBlockList(newText)
 		newText = newText.Replace("<li>", "[*]")
 		newText = newText.Replace("</li>", "")
@@ -139,11 +144,12 @@ Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String) As String
 		newText = newText.Replace("</ul>", "[/list]")
 		newText = newText.Replace("\n", CRLF)
 		newText = newText.Replace("<br />", CRLF)
-		newText = newText.Replace("<em>", "[b][u]")
-		newText = newText.Replace("</em>", "[/u][/b]")
-		newText = newText.Replace("<b>", "[b]")
-		newText = newText.Replace("</b>", "[/b]")
+		newText = newText.Replace("<em>", "[u]")'"[b][u]")
+		newText = newText.Replace("</em>", "[/u]") '"[/u][/b]")
+		newText = newText.Replace("<b>", "")'"[b]")
+		newText = newText.Replace("</b>", "")'"[/b]")
 		newText = newText.Replace($"-&gt;"$, "")
+'		newText = ConvertTable(newText)
 		newText = GetImageFromText(newText)
 		newText = GetHeaderStyle(newText)
 		newText = GetSupTag(newText)
@@ -317,6 +323,27 @@ Sub GetSupTag(alTextBlock As String) As String
 	End If
 	
 	Return newText
+	
+End Sub
+
+Private Sub ConvertTable(alTextBlock As String) As String
+	Dim tableStartPos, tableEndPos As Int
+	Dim replaceString, NewText As String
+	
+	tableStartPos = alTextBlock.ToLowerCase.IndexOf("<table")
+	If tableStartPos < 0 Then 
+		Return alTextBlock
+	End If
+	tableEndPos = alTextBlock.ToLowerCase.IndexOf(">")+1
+	Log($"${tableStartPos} > ${tableEndPos}"$)
+	
+	replaceString = alTextBlock.SubString2(tableStartPos, tableEndPos)
+	NewText = alTextBlock.Replace(replaceString, "[list]")
+	NewText = NewText.Replace($"<tbody>${CRLF}"$, "")
+	NewText = NewText.Replace($"<tr>${CRLF}"$, "")
+	NewText = NewText.Replace($"<td>${CRLF}"$, "")
+	Return NewText
+	
 	
 End Sub
 

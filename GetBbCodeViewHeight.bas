@@ -15,15 +15,21 @@ Public Sub Initialize
 End Sub
 
 Sub GetHeight (bbView As BBCodeView, txt As String) As Int
+	
 	textEngine.Initialize(xui.CreatePanel(""))
 	
-	codeView = bbView
-	codeView.Text = txt
-	codeView.sv.Height = codeView.sv.ScrollViewContentHeight + 10dip
-	codeView.mBase.Height = codeView.sv.Height
+'	codeView= bbView
 '	codeView.Text = txt
+'	codeView.sv.Height = codeView.sv.ScrollViewContentHeight + 10dip
+'	codeView.mBase.Height = codeView.sv.Height
+'
+'	Return codeView.sv.Height+0dip
 
-	Return codeView.sv.Height+0dip
+	bbView.Text = txt
+	bbView.sv.Height = bbView.sv.ScrollViewContentHeight + 10dip
+	bbView.mBase.Height = bbView.sv.Height
+
+	Return bbView.sv.Height+0dip
 End Sub
 
 Sub SetMainPanelHeigth(pnl As Panel) As Int
