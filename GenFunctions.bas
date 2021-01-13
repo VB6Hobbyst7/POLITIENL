@@ -96,6 +96,7 @@ Sub ShowLocationOnGoogleMaps(lat As Double, lon As Double)
 	Dim uri As String
 	
 	uri = $"geo:${lat}, ${lon}?q=${lat}, ${lon},18z/data=!5m1!1e1"$
+	'uri = $"${lat},${lon},18z/data=!5m1!1e1"$
 	
 	gMapIntent.Initialize(gMapIntent.ACTION_VIEW,uri)
 	gMapIntent.SetComponent("googlemaps")

@@ -2,20 +2,23 @@
 Group=Default Group
 ModulesStructureVersion=1
 Type=Class
-Version=10.2
+Version=10.5
 @EndOfDesignText@
-#IgnoreWarnings: 9
+#IgnoreWarnings:9
+
 Sub Class_Globals
-	
+	Private selectedUID As String
+	Public lstString, lstMeerafbeeldingen As List
 End Sub
 
-'Initializes the object. You can add parameters to this method if needed.
 Public Sub Initialize
 	
 End Sub
 
-
-Public Sub GetData(url As String, forList As Boolean) As ResumableSub
+Public Sub GetData(url As String, passedUid As String) As ResumableSub
+	Dim jobString As String
+	selectedUID = passedUid
+	
 	Private job As HttpJob
 	job.Initialize("", Me)
 	job.Download(url)
@@ -23,41 +26,28 @@ Public Sub GetData(url As String, forList As Boolean) As ResumableSub
 	Wait For (job) jobDone(jobDone As HttpJob)
 	
 	If jobDone.Success Then
-		wait for (ParseData(job.GetString, forList)) Complete (lst As List)
-'		Return lst
-	End If
-	Return lst
-End Sub
-
-Public Sub GetMoreData(url As String, forList As Boolean) As ResumableSub
-	Private job As HttpJob
-	Private success As Boolean
-	job.Initialize("", Me)
-	job.Download(url)
-	
-	Wait For (job) jobDone(jobDone As HttpJob)
-	
-	If jobDone.Success Then
-		success = job.Success
+		jobString = job.GetString
+		job.Release
+		wait for (ParseData(jobString)) Complete (done As Boolean)
 	End If
 	
-	Return success
+	Return True
 End Sub
 
-Private Sub ParseData(data As String, forList As Boolean) As ResumableSub
+Private Sub ParseData(data As String) As ResumableSub
 	Dim parser As JSONParser
 	Dim root As Map
-	Dim lst As List
 
 	parser.Initialize(data)
 	root = parser.NextObject
-	lst.Initialize
+	lstString.Initialize
+	lstMeerafbeeldingen.Initialize
 	
 #region parse json
 	Dim iterator As Map = root.Get("iterator")
 	Dim last As String = iterator.Get("last")
 	Dim offset As Int = iterator.Get("offset")
-	Starter.itemsFoundOffsetEnd = last
+	
 	Dim opsporingsberichten As List = root.Get("opsporingsberichten")
 	For Each colopsporingsberichten As Map In opsporingsberichten
 		Dim publicatiedatum As String = colopsporingsberichten.Get("publicatiedatum")
@@ -73,12 +63,19 @@ Private Sub ParseData(data As String, forList As Boolean) As ResumableSub
 		Dim voortvluchtige As String = colopsporingsberichten.Get("voortvluchtige")
 		Dim url As String = colopsporingsberichten.Get("url")
 		Dim omschrijving As String = colopsporingsberichten.Get("omschrijving")
-		Dim uid As String = colopsporingsberichten.Get("uid")
+		Dim UID As String = colopsporingsberichten.Get("uid")
+		
+		'*** GET SELECTED UID ***
+		If UID <> selectedUID Then
+			Continue
+		End If
+		
 		Dim titel As String = colopsporingsberichten.Get("titel")
 		Dim meerafbeeldingen As List = colopsporingsberichten.Get("meerafbeeldingen")
 		For Each colmeerafbeeldingen As Map In meerafbeeldingen
 			Dim alttextmeer As String = colmeerafbeeldingen.Get("alttext")
 			Dim urlmeer As String = colmeerafbeeldingen.Get("url")
+			lstMeerafbeeldingen.Add(urlmeer)
 		Next
 		Dim afbeeldingen As List = colopsporingsberichten.Get("afbeeldingen")
 		For Each colafbeeldingen As Map In afbeeldingen
@@ -98,22 +95,23 @@ Private Sub ParseData(data As String, forList As Boolean) As ResumableSub
 		Dim datumdelict As String = gestolen_gevonden.Get("datumdelict")
 		Dim vraag As String = gestolen_gevonden.Get("vraag")
 #end region		
-		'List of items
-		If forList Then
-			lst.Add(CreatefoundItemList(publicatiedatum, titel, introductie, uid, plaatsdelict))
+		If UID == selectedUID Then
+			Exit
 		End If
 	Next
 	
-	Return lst
+	lstString.Add(CreatefoundItemDetail(omschrijving, urltipformulier, "", vraag))
+
+	Return True	
 End Sub
 
-Public Sub CreatefoundItemList (pubData As String, title As String, description As String, uid As String, location As String) As foundItemList
-	Dim t1 As foundItemList
+
+Public Sub CreatefoundItemDetail (description As String, urlTipFormulier As String, question As String, questionOwner As String) As foundItemDetail
+	Dim t1 As foundItemDetail
 	t1.Initialize
-	t1.pubData = pubData
-	t1.title = title
 	t1.description = description
-	t1.uid = uid
-	t1.location = location
+	t1.urlTipFormulier = urlTipFormulier
+	t1.question = question
+	t1.questionOwner = questionOwner
 	Return t1
 End Sub

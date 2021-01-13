@@ -83,12 +83,15 @@ Private Sub GenNewsList(item As localNewsHeadline) As Panel
 	Dim pnl As B4XView = xui.CreatePanel("")
 	pnl.SetLayoutAnimated(0, 0, 0, clvLocalNews.AsView.Width, 300dip)
 	pnl.LoadLayout("pnlNewsLocalHeadline")
+	
 	textView.Initialize(pnl)
 	textView.KerningEnabled = Not(textView.KerningEnabled)
+	
 	lblArea.TextColor = Colors.Yellow
 	lblArea.Text = item.area
 	lblPubDate.Text = item.pubDate
 	lblHeadline.Text = item.title
+	
 	pnl.Height =  clsBbHeight.GetHeight(BBCodeView1, item.introduction) + 200dip
 	BBCodeView1.Text= item.introduction
 	
