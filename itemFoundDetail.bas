@@ -14,7 +14,7 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
-	dim selectedPanel as Panel
+	Dim selectedPanel As Panel
 	Dim imgRotate As Float = 0
 	Dim clsItemDetail As itemOwnerDetail
 	Dim lstString, lstImages As List
@@ -28,6 +28,7 @@ Sub Globals
 	Private imgZoom As ZoomImageView
 	Private pnlimgContainer As Panel
 	Private lblRotate As Label
+	Private pnlThumbnail As Panel
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -86,10 +87,11 @@ Sub GetImageFromUrl(imgUrl As String)As ResumableSub
 		
 		Dim pnl As B4XView = xui.CreatePanel("")
 	
-		pnl.SetLayoutAnimated(0, 0, 0, 110dip, 130dip)
+		pnl.SetLayoutAnimated(0, 0, 5dip, 110dip, 110dip)
 		pnl.LoadLayout("pnlItemImage")
 		
 		imgItem.Bitmap = job.GetBitmap
+		imgItem.Gravity = Gravity.FILL
 		
 		clvImage.Add(pnl, "")
 		Else
@@ -102,7 +104,7 @@ End Sub
 
 
 Private Sub imgItem_Click
-	ImgPanelYellowBorder
+	ImgPanelYellowBorder(Sender)
 	Dim clickdImg As ImageView = Sender
 	imgZoom.SetBitmap(clickdImg.Bitmap)
 	imgZoom.ImageView.GetBitmap.Resize(pnlimgContainer.Width, pnlimgContainer.Height, True)
@@ -124,12 +126,11 @@ Private Sub lblRotate_Click
 	imgZoom.ImageView.Rotation = imgRotate
 End Sub
 
-Sub ImgPanelYellowBorder
+Sub ImgPanelYellowBorder(img As ImageView)
 	Dim cv As Canvas
-	Dim lbl As ImageView = Sender
-	Dim pnl As Panel = lbl.Parent
+	Dim pnl As Panel = img.Parent
 	
-'	ImgPanelNoBorder
+	ClearPanelBorders
 	cv.Initialize(pnl)
 	Dim Path1 As Path
 	Path1.Initialize(0, 0)
@@ -137,25 +138,28 @@ Sub ImgPanelYellowBorder
 	Path1.LineTo(pnl.Width, pnl.Height)
 	Path1.LineTo(0,pnl.Height)
 	Path1.LineTo(0,0)
-	cv.DrawPath(Path1, Colors.Magenta, False, 10dip)
-	selectedPanel = pnl
+	cv.DrawPath(Path1, Colors.Yellow, False, 3dip)
 	pnl.Invalidate
 
 End Sub
 
-Sub ImgPanelNoBorder
-Dim cv As Canvas
-	If selectedPanel Then
+Sub ImgPanelNoBorder(p As Panel)
+	Dim cv As Canvas
 	
-	
-		cv.Initialize(selectedPanel)
+	cv.Initialize(p)
 	Dim Path1 As Path
 	Path1.Initialize(0, 0)
-		Path1.LineTo(selectedPanel.Width, 0)
-		Path1.LineTo(selectedPanel.Width, selectedPanel.Height)
-		Path1.LineTo(0,selectedPanel.Height)
+	Path1.LineTo(p.Width, 0)
+	Path1.LineTo(p.Width, p.Height)
+	Path1.LineTo(0,p.Height)
 	Path1.LineTo(0,0)
 	cv.DrawPath(Path1, Colors.Yellow, False, 0dip)
-		selectedPanel.Invalidate
-End If
+	p.Invalidate
+End Sub
+
+Sub ClearPanelBorders
+	For i = 0 To clvImage.Size -1
+		ImgPanelNoBorder(clvImage.GetPanel(i))
+	Next
+	
 End Sub
