@@ -14,6 +14,7 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
+	dim selectedPanel as Panel
 	Dim imgRotate As Float = 0
 	Dim clsItemDetail As itemOwnerDetail
 	Dim lstString, lstImages As List
@@ -27,11 +28,11 @@ Sub Globals
 	Private imgZoom As ZoomImageView
 	Private pnlimgContainer As Panel
 	Private lblRotate As Label
-	Private imgZoomTest As ZoomImageView
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
 	clsItemDetail.Initialize
+	selectedPanel.Initialize(Me)
 	'***
 	Activity.LoadLayout("itemFoundDetail")
 	imgZoom.ImageView.Height = pnlImg.Height
@@ -101,6 +102,7 @@ End Sub
 
 
 Private Sub imgItem_Click
+	ImgPanelYellowBorder
 	Dim clickdImg As ImageView = Sender
 	imgZoom.SetBitmap(clickdImg.Bitmap)
 	imgZoom.ImageView.GetBitmap.Resize(pnlimgContainer.Width, pnlimgContainer.Height, True)
@@ -122,3 +124,38 @@ Private Sub lblRotate_Click
 	imgZoom.ImageView.Rotation = imgRotate
 End Sub
 
+Sub ImgPanelYellowBorder
+	Dim cv As Canvas
+	Dim lbl As ImageView = Sender
+	Dim pnl As Panel = lbl.Parent
+	
+'	ImgPanelNoBorder
+	cv.Initialize(pnl)
+	Dim Path1 As Path
+	Path1.Initialize(0, 0)
+	Path1.LineTo(pnl.Width, 0)
+	Path1.LineTo(pnl.Width, pnl.Height)
+	Path1.LineTo(0,pnl.Height)
+	Path1.LineTo(0,0)
+	cv.DrawPath(Path1, Colors.Magenta, False, 10dip)
+	selectedPanel = pnl
+	pnl.Invalidate
+
+End Sub
+
+Sub ImgPanelNoBorder
+Dim cv As Canvas
+	If selectedPanel Then
+	
+	
+		cv.Initialize(selectedPanel)
+	Dim Path1 As Path
+	Path1.Initialize(0, 0)
+		Path1.LineTo(selectedPanel.Width, 0)
+		Path1.LineTo(selectedPanel.Width, selectedPanel.Height)
+		Path1.LineTo(0,selectedPanel.Height)
+	Path1.LineTo(0,0)
+	cv.DrawPath(Path1, Colors.Yellow, False, 0dip)
+		selectedPanel.Invalidate
+End If
+End Sub
