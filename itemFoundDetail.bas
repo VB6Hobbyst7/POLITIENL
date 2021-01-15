@@ -104,12 +104,12 @@ End Sub
 
 
 Private Sub imgItem_Click
-	ImgPanelYellowBorder(Sender)
 	Dim clickdImg As ImageView = Sender
 	imgZoom.SetBitmap(clickdImg.Bitmap)
 	imgZoom.ImageView.GetBitmap.Resize(pnlimgContainer.Width, pnlimgContainer.Height, True)
 	pnlImg.Visible = True
 	
+	ImgPanelYellowBorder(Sender)
 End Sub
 
 Private Sub pnlImg_Click
@@ -117,44 +117,38 @@ Private Sub pnlImg_Click
 End Sub
 
 Private Sub lblRotate_Click
+	Dim bmRotate As B4XBitmap
+	bmRotate = imgZoom.ImageView.GetBitmap
 	If imgRotate = 360 Then
 		imgRotate = 0
-		Else
-			imgRotate = imgRotate + 90
+	Else
+		imgRotate = imgRotate + 90
 	End If
-	
-	imgZoom.ImageView.Rotation = imgRotate
+	imgZoom.SetBitmap(bmRotate.Rotate(imgRotate))
+	imgZoom.ImageView.GetBitmap.Resize(pnlimgContainer.Width, pnlimgContainer.Height, True)
 End Sub
 
 Sub ImgPanelYellowBorder(img As ImageView)
-	Dim cv As Canvas
-	Dim pnl As Panel = img.Parent
-	
+	Dim p As Panel = img.Parent
+	Dim c As ColorDrawable
 	ClearPanelBorders
-	cv.Initialize(pnl)
-	Dim Path1 As Path
-	Path1.Initialize(0, 0)
-	Path1.LineTo(pnl.Width, 0)
-	Path1.LineTo(pnl.Width, pnl.Height)
-	Path1.LineTo(0,pnl.Height)
-	Path1.LineTo(0,0)
-	cv.DrawPath(Path1, Colors.Yellow, False, 3dip)
-	pnl.Invalidate
+	c.Initialize2(Colors.Transparent,0dip,2dip,Colors.Yellow)
+	p.Background = c
 
 End Sub
 
 Sub ImgPanelNoBorder(p As Panel)
-	Dim cv As Canvas
+	Dim c As ColorDrawable
+	Dim iPanel As Panel
+	For Each v As View In p.GetAllViewsRecursive
+		If v Is Panel Then
+			iPanel = v
+			c.Initialize2(Colors.Transparent,0dip,0dip,Colors.Red)
+			iPanel.Background = c
+		End If
+	Next
 	
-	cv.Initialize(p)
-	Dim Path1 As Path
-	Path1.Initialize(0, 0)
-	Path1.LineTo(p.Width, 0)
-	Path1.LineTo(p.Width, p.Height)
-	Path1.LineTo(0,p.Height)
-	Path1.LineTo(0,0)
-	cv.DrawPath(Path1, Colors.Yellow, False, 0dip)
-	p.Invalidate
+	
 End Sub
 
 Sub ClearPanelBorders
