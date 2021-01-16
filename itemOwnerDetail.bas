@@ -9,6 +9,7 @@ Version=10.5
 Sub Class_Globals
 	Private selectedUID As String
 	Public lstString, lstMeerafbeeldingen As List
+	Public itemFoundData As foundItemDetail
 End Sub
 
 Public Sub Initialize
@@ -113,5 +114,7 @@ Public Sub CreatefoundItemDetail (description As String, urlTipFormulier As Stri
 	t1.urlTipFormulier = urlTipFormulier
 	t1.question = question
 	t1.questionOwner = questionOwner
+	
+	itemFoundData = t1
 	Return t1
 End Sub
