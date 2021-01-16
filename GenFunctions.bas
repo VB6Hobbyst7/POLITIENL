@@ -125,6 +125,7 @@ Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String, color As String
 		newText = newText.Replace("<p><em>Foto ter illustratie.</em></p>", "")
 	
 		newText = GetAHref(newText)
+		newText = newText.Replace(CRLF, "")
 		newText = newText.Replace("<p>", "") ' & alTextBlock.Replace("<p>", "")
 		newText = newText.Replace("<HR>", "") ' & alTextBlock.Replace("<p>", "")
 		newText = newText.Replace("</p>", CRLF)

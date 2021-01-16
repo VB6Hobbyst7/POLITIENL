@@ -14,28 +14,34 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
+	Private textView As BCTextEngine
+	Dim clickedImage As Bitmap
 	Dim selectedPanel As Panel
 	Dim imgRotate As Float = 0
 	Dim clsItemDetail As itemOwnerDetail
 	Dim lstString, lstImages As List
-	Dim url As String
+	Dim urlItems As String
 	Private lblStationName As Label
 	Private bbDescription As BBCodeView
 	Private clvImage As CustomListView
 	Private imgItem As ImageView
 	Private pnlImg As Panel
-	Private largeImage As B4XImageView
 	Private imgZoom As ZoomImageView
 	Private pnlimgContainer As Panel
 	Private lblRotate As Label
 	Private pnlThumbnail As Panel
+	Private lblImgNumber As Label
+	Private BBQuestion As BBCodeView
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
 	clsItemDetail.Initialize
 	selectedPanel.Initialize(Me)
+	
 	'***
 	Activity.LoadLayout("itemFoundDetail")
+	textView.Initialize(Activity)
+	textView.KerningEnabled = Not(textView.KerningEnabled)
 	imgZoom.ImageView.Height = pnlImg.Height
 	GetItemDetail
 End Sub
@@ -49,14 +55,38 @@ Sub Activity_Pause (UserClosed As Boolean)
 End Sub
 
 Sub GetItemDetail
+	Dim tipUrl, itemDescription, itemQuestion As String 'ignore
 	clvImage.Clear
-	url = $"https://api.politie.nl/v4/gezocht/eigenaargezocht?language=nl&radius=5.0&maxnumberofitems=10&offset=${Starter.itemsFoundOffset}"$
-	Wait For (clsItemDetail.GetData(url, Starter.itemFoundUid)) Complete (done As Boolean)
+	
+	urlItems = $"https://api.politie.nl/v4/gezocht/eigenaargezocht?language=nl&radius=5.0&maxnumberofitems=10&offset=${Starter.itemsFoundOffset}"$
+	Wait For (clsItemDetail.GetData(urlItems, Starter.itemFoundUid)) Complete (done As Boolean)
+	
+	itemDescription = GenFunctions.ParseHtmlTextBlock("", $"${clsItemDetail.itemFoundData.description.Trim}${""}"$, "")
+	itemQuestion = GenFunctions.ParseHtmlTextBlock("", $"${clsItemDetail.itemFoundData.questionOwner.Trim}${""}"$, "")
+	tipUrl = GenFunctions.ParseHtmlTextBlock("", GetSetTipUrl(clsItemDetail.itemFoundData.urlTipFormulier.Trim), "")
+
+	itemDescription = $"${CreateHeader("Omschrijving")}${itemDescription}"$
+	itemQuestion = $"${CreateHeader("Vraag")}${itemQuestion}"$
+	tipUrl = $"${CreateHeader("Heeft u informatie")}${tipUrl}"$
+
+	bbDescription.Text = $"${itemDescription}${CRLF}${itemQuestion}${CRLF}${tipUrl}"$
 	
 	If done Then
 		GetSetImages
 	End If
 	
+End Sub
+
+Private Sub CreateHeader(headerText As String) As String
+	Return $"[Span MinWidth=100%x Alignment=center][TextSize=19][color=#FFFFF00]${headerText}[/color][/TextSize][/Span]"$
+	 
+End Sub
+
+Sub GetSetTipUrl(tipUrl As String) As String
+	If tipUrl.Length > 0 And tipUrl.IndexOf("http") > -1 Then
+		Return $"<a href="${tipUrl}">Klik hier om het "Tip formulier" te openen</a>"$
+	End If
+	Return "noUrl"
 End Sub
 
 Sub SetStringItems(items As List)
@@ -71,12 +101,14 @@ Sub SetImageItems(image As List)
 End Sub
 
 Sub GetSetImages
+	Dim imgCount As Int = 1
 	For Each imageUrl As String In clsItemDetail.lstMeerafbeeldingen
-		Wait For (GetImageFromUrl(imageUrl)) Complete (done As Boolean)
+		Wait For (GetImageFromUrl(imageUrl, imgCount)) Complete (done As Boolean)
+		imgCount = imgCount + 1
 	Next
 End Sub
 
-Sub GetImageFromUrl(imgUrl As String)As ResumableSub
+Sub GetImageFromUrl(imgUrl As String, imgCount As Int)As ResumableSub
 	Private job As HttpJob
 	job.Initialize("", Me)
 	job.Download(imgUrl)
@@ -92,6 +124,7 @@ Sub GetImageFromUrl(imgUrl As String)As ResumableSub
 		
 		imgItem.Bitmap = job.GetBitmap
 		imgItem.Gravity = Gravity.FILL
+		lblImgNumber.Text = NumberFormat(imgCount, 3 ,0)
 		
 		clvImage.Add(pnl, "")
 		Else
@@ -105,10 +138,12 @@ End Sub
 
 Private Sub imgItem_Click
 	Dim clickdImg As ImageView = Sender
+	clickedImage.Initialize3(clickdImg.Bitmap)
+	
 	imgZoom.SetBitmap(clickdImg.Bitmap)
 	imgZoom.ImageView.GetBitmap.Resize(pnlimgContainer.Width, pnlimgContainer.Height, True)
-	pnlImg.Visible = True
 	
+	pnlImg.Visible = True
 	ImgPanelYellowBorder(Sender)
 End Sub
 
@@ -118,7 +153,7 @@ End Sub
 
 Private Sub lblRotate_Click
 	Dim bmRotate As B4XBitmap
-	bmRotate = imgZoom.ImageView.GetBitmap
+	bmRotate = clickedImage
 	If imgRotate = 360 Then
 		imgRotate = 0
 	Else
@@ -156,4 +191,8 @@ Sub ClearPanelBorders
 		ImgPanelNoBorder(clvImage.GetPanel(i))
 	Next
 	
+End Sub
+
+Private Sub bbDescription_LinkClicked (url As String)
+	GenFunctions.OpenUrl(url)
 End Sub
