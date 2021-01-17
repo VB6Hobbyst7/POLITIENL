@@ -328,26 +328,26 @@ Sub GetSupTag(alTextBlock As String) As String
 	
 End Sub
 
-Private Sub ConvertTable(alTextBlock As String) As String
-	Dim tableStartPos, tableEndPos As Int
-	Dim replaceString, NewText As String
-	
-	tableStartPos = alTextBlock.ToLowerCase.IndexOf("<table")
-	If tableStartPos < 0 Then 
-		Return alTextBlock
-	End If
-	tableEndPos = alTextBlock.ToLowerCase.IndexOf(">")+1
-	Log($"${tableStartPos} > ${tableEndPos}"$)
-	
-	replaceString = alTextBlock.SubString2(tableStartPos, tableEndPos)
-	NewText = alTextBlock.Replace(replaceString, "[list]")
-	NewText = NewText.Replace($"<tbody>${CRLF}"$, "")
-	NewText = NewText.Replace($"<tr>${CRLF}"$, "")
-	NewText = NewText.Replace($"<td>${CRLF}"$, "")
-	Return NewText
-	
-	
-End Sub
+'Private Sub ConvertTable(alTextBlock As String) As String
+'	Dim tableStartPos, tableEndPos As Int
+'	Dim replaceString, NewText As String
+'	
+'	tableStartPos = alTextBlock.ToLowerCase.IndexOf("<table")
+'	If tableStartPos < 0 Then 
+'		Return alTextBlock
+'	End If
+'	tableEndPos = alTextBlock.ToLowerCase.IndexOf(">")+1
+'	Log($"${tableStartPos} > ${tableEndPos}"$)
+'	
+'	replaceString = alTextBlock.SubString2(tableStartPos, tableEndPos)
+'	NewText = alTextBlock.Replace(replaceString, "[list]")
+'	NewText = NewText.Replace($"<tbody>${CRLF}"$, "")
+'	NewText = NewText.Replace($"<tr>${CRLF}"$, "")
+'	NewText = NewText.Replace($"<td>${CRLF}"$, "")
+'	Return NewText
+'	
+'	
+'End Sub
 
 Sub CreateRoundRectBitmap (Input As B4XBitmap, Radius As Float) As B4XBitmap
 	Dim BorderColor As Int = xui.Color_Black
