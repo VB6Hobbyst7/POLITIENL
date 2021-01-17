@@ -14,12 +14,13 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
+	Private loadingImages As Boolean
 	Private textView As BCTextEngine
 	Dim clickedImage As Bitmap
-	Dim selectedPanel As Panel
+	Dim selectedImage As ImageView
 	Dim imgRotate As Float = 0
 	Dim clsItemDetail As itemOwnerDetail
-	Dim lstString, lstImages As List
+'	Dim lstImages As List
 	Dim urlItems As String
 	Private lblStationName As Label
 	Private bbDescription As BBCodeView
@@ -31,13 +32,11 @@ Sub Globals
 	Private lblRotate As Label
 	Private pnlThumbnail As Panel
 	Private lblImgNumber As Label
-	Private BBQuestion As BBCodeView
+	Private lblImgCounter As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
 	clsItemDetail.Initialize
-	selectedPanel.Initialize(Me)
-	
 	'***
 	Activity.LoadLayout("itemFoundDetail")
 	textView.Initialize(Activity)
@@ -54,12 +53,26 @@ Sub Activity_Pause (UserClosed As Boolean)
 
 End Sub
 
+Sub Activity_KeyPress (KeyCode As Int) As Boolean
+	If KeyCode = KeyCodes.KEYCODE_BACK Then
+		If loadingImages Then
+			loadingImages = False
+			Return True
+		End If
+	End If
+	
+	Return False
+End Sub
+
 Sub GetItemDetail
 	Dim tipUrl, itemDescription, itemQuestion As String 'ignore
 	clvImage.Clear
 	
-	urlItems = $"https://api.politie.nl/v4/gezocht/eigenaargezocht?language=nl&radius=5.0&maxnumberofitems=10&offset=${Starter.itemsFoundOffset}"$
+'	urlItems = $"https://api.politie.nl/v4/gezocht/eigenaargezocht?language=nl&radius=5.0&maxnumberofitems=10&offset=${Starter.itemsFoundOffset}"$
+	urlItems = $"${Starter.urlOwnerItem}${Starter.itemsFoundOffset}"$
 	Wait For (clsItemDetail.GetData(urlItems, Starter.itemFoundUid)) Complete (done As Boolean)
+	
+
 	
 	itemDescription = GenFunctions.ParseHtmlTextBlock("", $"${clsItemDetail.itemFoundData.description.Trim}${""}"$, "")
 	itemQuestion = GenFunctions.ParseHtmlTextBlock("", $"${clsItemDetail.itemFoundData.questionOwner.Trim}${""}"$, "")
@@ -89,23 +102,24 @@ Sub GetSetTipUrl(tipUrl As String) As String
 	Return "noUrl"
 End Sub
 
-Sub SetStringItems(items As List)
-	lstString.Initialize
-	lstString = items
-End Sub
-
-Sub SetImageItems(image As List)
-	lstImages.Initialize
-	lstImages = image
-	GetSetImages
-End Sub
-
 Sub GetSetImages
 	Dim imgCount As Int = 1
+	loadingImages = True
+	lblImgCounter.SetVisibleAnimated(0, True)
 	For Each imageUrl As String In clsItemDetail.lstMeerafbeeldingen
 		Wait For (GetImageFromUrl(imageUrl, imgCount)) Complete (done As Boolean)
+		
+		If loadingImages = False Then
+			Exit
+		End If
+				
+		lblImgCounter.Text = $"Laden afbeelding ${NumberFormat(imgCount, 3 ,0)} van ${NumberFormat(clsItemDetail.lstMeerafbeeldingen.Size, 3 ,0)}"$
 		imgCount = imgCount + 1
+		
 	Next
+	Sleep(200)
+	lblImgCounter.SetVisibleAnimated(1000, False)
+	loadingImages = False
 End Sub
 
 Sub GetImageFromUrl(imgUrl As String, imgCount As Int)As ResumableSub
@@ -137,18 +151,22 @@ End Sub
 
 
 Private Sub imgItem_Click
-	Dim clickdImg As ImageView = Sender
-	clickedImage.Initialize3(clickdImg.Bitmap)
+	selectedImage = Sender
+	imgRotate = 0
+	Dim clickedImg As ImageView = Sender
+	clickedImage.Initialize3(clickedImg.Bitmap)
 	
-	imgZoom.SetBitmap(clickdImg.Bitmap)
+	imgZoom.SetBitmap(clickedImg.Bitmap)
 	imgZoom.ImageView.GetBitmap.Resize(pnlimgContainer.Width, pnlimgContainer.Height, True)
 	
-	pnlImg.Visible = True
+	pnlImg.SetVisibleAnimated(500, True)
+	clvImage.ScrollToItem(clvImage.GetItemFromView(clickedImg.Parent))
 	ImgPanelYellowBorder(Sender)
 End Sub
 
 Private Sub pnlImg_Click
-	pnlImg.Visible = False
+	pnlImg.SetVisibleAnimated(500, False)
+	SelectedImgPanelNoYellowBorder(selectedImage)
 End Sub
 
 Private Sub lblRotate_Click
@@ -168,6 +186,15 @@ Sub ImgPanelYellowBorder(img As ImageView)
 	Dim c As ColorDrawable
 	ClearPanelBorders
 	c.Initialize2(Colors.Transparent,0dip,2dip,Colors.Yellow)
+	p.Background = c
+
+End Sub
+
+Sub SelectedImgPanelNoYellowBorder(img As ImageView)
+	Dim p As Panel = img.Parent
+	Dim c As ColorDrawable
+'	ClearPanelBorders
+	c.Initialize2(Colors.Transparent,0dip,0dip,Colors.Yellow)
 	p.Background = c
 
 End Sub

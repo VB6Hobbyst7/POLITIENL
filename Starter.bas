@@ -16,6 +16,8 @@ Sub Process_Globals
 	Public localNewsOffset, itemsFoundOffset As Int = 0
 	Public localNewsOffsetEnd, itemsFoundOffsetEnd As Boolean
 	Private clsDb As dbFunctions
+	
+	Public urlOwnerItem As String = $"https://api.politie.nl/v4/gezocht/eigenaargezocht?language=nl&radius=5.0&maxnumberofitems=10&offset="$
 End Sub
 
 Sub Service_Create

@@ -17,7 +17,6 @@ Sub Globals
 	Private clsBbHeight As GetBbCodeViewHeight
 	Private TextEngine As BCTextEngine
 	Dim clsItemOwner As ItemOwner
-	Dim url As String = $"https://api.politie.nl/v4/gezocht/eigenaargezocht?language=nl&radius=5.0&maxnumberofitems=10&offset=_items"$
 	Private lblLocation As Label
 	Private lblTitle As Label
 	Private pnlItemFound As Panel
@@ -49,7 +48,6 @@ End Sub
 Private Sub GetItems
 	ProgressDialogShow2("Items ophalen", False)
 	Sleep(200)
-	SetItemsOffset
 	clvItemFound.Clear
 	wait for (clsItemOwner.GetData(SetItemsOffset, True)) Complete (lst As List)
 	
@@ -62,7 +60,7 @@ Private Sub GetItems
 	GenList(lst)
 	
 	lblNext.Visible = Not(Starter.itemsFoundOffsetEnd)
-	lblPrev.Visible = Starter.itemsFoundOffset >= 10
+	lblPrev.Visible = Not(lblNext.Visible) 
 	HideProgressDialog
 End Sub
 
@@ -71,14 +69,13 @@ Private Sub HideProgressDialog
 End Sub
 
 Private Sub SetItemsOffset As String
-	Dim newUrl As String = url.Replace("_items", Starter.itemsFoundOffset)
+	'Dim newUrl As String = Starter.urlOwnerItem.Replace("_items", Starter.itemsFoundOffset)
+	Dim newUrl As String = $"${Starter.urlOwnerItem}${Starter.itemsFoundOffset}"$
 	Return newUrl
 	
 End Sub
 
 Private Sub GenList(lst As List)
-'	Dim pnl As Panel
-	
 	For Each item As foundItemList In lst
 		Dim pnl As Panel = GenFoundList(item)
 		GenFunctions.ResetUserFontScale(pnl)
@@ -111,20 +108,6 @@ Sub pnlItemFound_Click
 	
 End Sub
 
-
-
-Sub btnPrev_Click
-	If Starter.itemsFoundOffset = 0 Then Return
-	
-	Starter.itemsFoundOffset = Starter.itemsFoundOffset - 10
-	GetItems
-End Sub
-
-Sub btnNext_Click
-	Starter.itemsFoundOffset = Starter.itemsFoundOffset + 10
-	GetItems
-End Sub
-
 Sub lblPrev_Click
 	If Starter.itemsFoundOffset = 0 Then Return
 	
@@ -138,7 +121,7 @@ Sub lblNext_Click
 End Sub
 
 Private Sub lblShowDetail_Click
-	Dim url As String
+'	Dim url As String
 	Dim lbl As Label = Sender
 	Dim pnl As Panel = lbl.Parent
 	Dim data As foundItemList = clvItemFound.GetValue(clvItemFound.GetItemFromView(pnl))

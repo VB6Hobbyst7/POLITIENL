@@ -73,11 +73,20 @@ Private Sub ParseData(data As String) As ResumableSub
 		
 		Dim titel As String = colopsporingsberichten.Get("titel")
 		Dim meerafbeeldingen As List = colopsporingsberichten.Get("meerafbeeldingen")
-		For Each colmeerafbeeldingen As Map In meerafbeeldingen
-			Dim alttextmeer As String = colmeerafbeeldingen.Get("alttext")
-			Dim urlmeer As String = colmeerafbeeldingen.Get("url")
-			lstMeerafbeeldingen.Add(urlmeer)
-		Next
+		'ZIJN ER FOTOs
+		If meerafbeeldingen.Size > 0 Then
+			For Each colmeerafbeeldingen As Map In meerafbeeldingen
+				Dim alttextmeer As String = colmeerafbeeldingen.Get("alttext")
+				Dim urlmeer As String = colmeerafbeeldingen.Get("url")
+				lstMeerafbeeldingen.Add(urlmeer)
+			Next
+		Else
+			If omschrijving.IndexOf("<table") > -1 Then
+				GetImageUrlFromTable(omschrijving)
+				omschrijving = DeleteTableFromOmschrijving(omschrijving)
+			End If
+		End If
+		
 		Dim afbeeldingen As List = colopsporingsberichten.Get("afbeeldingen")
 		For Each colafbeeldingen As Map In afbeeldingen
 			Dim alttextafb As String = colafbeeldingen.Get("alttext")
@@ -103,9 +112,41 @@ Private Sub ParseData(data As String) As ResumableSub
 	
 	lstString.Add(CreatefoundItemDetail(omschrijving, urltipformulier, "", vraag))
 
-	Return True	
+	Return True
 End Sub
 
+Private Sub DeleteTableFromOmschrijving(omschrijving As String) As String
+	Dim startTablePos, endTablePos As Int
+	Dim endStrTable As String = "</table>"
+	
+	startTablePos = omschrijving.IndexOf("<table")
+	endTablePos = omschrijving.IndexOf(endStrTable)+endStrTable.Length
+	
+	Return omschrijving.SubString2(0, startTablePos)
+End Sub
+
+Private Sub GetImageUrlFromTable(tableString As String)
+	File.WriteString(Starter.filePath, "td.tmp", tableString)
+	
+	Dim tdStr As String = "<td><img src="
+	Dim imgLink, tmpFile As String
+	Dim cleanTable As List
+	Dim endPos As Int
+	
+	tmpFile = "td.tmp"
+	
+	cleanTable = File.ReadList(Starter.filePath, tmpFile)
+	
+	For Each line As String In cleanTable
+		If line.IndexOf(tdStr) > -1 Then
+			line = line.Replace($"${tdStr}""$, "")
+			endPos = line.IndexOf($"""$)
+			imgLink = line.SubString2(0, endPos)
+			lstMeerafbeeldingen.Add($"https://www.politie.nl${imgLink.Trim}"$)
+		End If
+	Next
+	File.Delete(Starter.filePath, tmpFile)
+End Sub
 
 Public Sub CreatefoundItemDetail (description As String, urlTipFormulier As String, question As String, questionOwner As String) As foundItemDetail
 	Dim t1 As foundItemDetail
