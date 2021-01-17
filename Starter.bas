@@ -13,11 +13,12 @@ Sub Process_Globals
 	Public filePath, itemFoundUid As String
 	Private rp As RuntimePermissions
 	Public sql As SQL
-	Public localNewsOffset, itemsFoundOffset As Int = 0
-	Public localNewsOffsetEnd, itemsFoundOffsetEnd As Boolean
+	Public localNewsOffset, itemsFoundOffset, dossierOffset As Int = 0
+	Public localNewsOffsetEnd, itemsFoundOffsetEnd, dossierOffsetEnd As Boolean
 	Private clsDb As dbFunctions
 	
-	Public urlOwnerItem As String = $"https://api.politie.nl/v4/gezocht/eigenaargezocht?language=nl&radius=5.0&maxnumberofitems=10&offset="$
+	Public urlOwnerItem As String	= "https://api.politie.nl/v4/gezocht/eigenaargezocht?language=nl&radius=5.0&maxnumberofitems=10&offset="
+	Public urlDossier As String		= "https://api.politie.nl/v4/gezocht/dossiers?language=nl&radius=5.0&maxnumberofitems=10&offset="
 End Sub
 
 Sub Service_Create

@@ -57,17 +57,27 @@ Sub OpenUrl(url As String)
 End Sub
 
 Sub ParseStringDate(strDate As String, dtf As String) As String
-	Dim dateStr() As String = Regex.Split(" ", strDate)
+	If strDate = "" Then
+		Return "onbekend"
+	End If
+	
+	Dim dateStr() As String '= Regex.Split(" ", strDate)
 	Dim dateAsString, timeAsString As String
 	Dim parsedDate As Long
+	
+	If strDate.IndexOf(" ") = -1 Then
+		strDate = $"${strDate} 00:00:00"$
+	End If
+	
+	dateStr = Regex.Split(" ", strDate)
 	
 	dateAsString = dateStr(0)
 	timeAsString = dateStr(1)
 	
 	DateTime.DateFormat = "yy-MM-dd"
 	parsedDate = DateTime.DateParse(dateAsString)
-	DateTime.DateFormat = "dd MMMM yyyy"
-	
+	'DateTime.DateFormat = "dd MMMM yyyy"
+	DateTime.DateFormat = "dd-MM-yyyy"
 	If dtf = "d" Then
 		Return $"$Date{parsedDate}"$
 	Else If dtf = "t" Then

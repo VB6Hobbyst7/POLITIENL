@@ -1,54 +1,60 @@
 ﻿Build1=Default,nl.pdeg.politie_nl
 File1=arial.ttf
-File10=Main.bal
-File11=materialdesignicons-webfont.ttf
-File12=newsDetail.bal
-File13=output-onlineasciitools(1).png
-File14=pnlItemImage.bal
-File15=pnlNewsLocalHeadline.bal
-File16=pnlWijkAgent.bal
-File17=politie.db
-File18=stationMain.bal
-File19=VeraMono.ttf
+File10=lostfound.png
+File11=Main.bal
+File12=materialdesignicons-webfont.ttf
+File13=newsDetail.bal
+File14=output-onlineasciitools(1).png
+File15=pnlDossier.bal
+File16=pnlItemImage.bal
+File17=pnlNewsLocalHeadline.bal
+File18=pnlWijkAgent.bal
+File19=politie.db
 File2=clvItemFound.bal
-File20=veramono-bold.otf
-File21=veramono-bold.ttf
-File22=veramono-bold1.ttf
-File23=VeraMono-Bold-Italic.ttf
-File24=VeraMono-Italic.ttf
-File25=wijkAgentMain.bal
+File20=res.zip.store
+File21=stationMain.bal
+File22=VeraMono.ttf
+File23=veramono-bold.otf
+File24=veramono-bold.ttf
+File25=veramono-bold1.ttf
+File26=VeraMono-Bold-Italic.ttf
+File27=VeraMono-Italic.ttf
+File28=wijkAgentMain.bal
 File3=clvStation.bal
-File4=favourite_off.png
-File5=favourite_on.png
-File6=itemFoundDetail.bal
-File7=ItemFoundMain.bal
-File8=lokaalNieuwsMain.bal
-File9=lostfound.png
+File4=dossierMain.bal
+File5=favourite_off.png
+File6=favourite_on.png
+File7=itemFoundDetail.bal
+File8=ItemFoundMain.bal
+File9=lokaalNieuwsMain.bal
 FileGroup1=files
-FileGroup10=forms
-FileGroup11=files
-FileGroup12=forms
-FileGroup13=Default Group
-FileGroup14=forms
-FileGroup15=forms
+FileGroup10=Default Group
+FileGroup11=forms
+FileGroup12=files
+FileGroup13=forms
+FileGroup14=Default Group
+FileGroup15=Default Group
 FileGroup16=forms
-FileGroup17=files
+FileGroup17=forms
 FileGroup18=forms
-FileGroup19=Default Group
+FileGroup19=files
 FileGroup2=forms
 FileGroup20=Default Group
-FileGroup21=Default Group
+FileGroup21=forms
 FileGroup22=Default Group
 FileGroup23=Default Group
 FileGroup24=Default Group
-FileGroup25=forms
+FileGroup25=Default Group
+FileGroup26=Default Group
+FileGroup27=Default Group
+FileGroup28=forms
 FileGroup3=forms
-FileGroup4=Default Group
+FileGroup4=forms
 FileGroup5=Default Group
-FileGroup6=forms
+FileGroup6=Default Group
 FileGroup7=forms
 FileGroup8=forms
-FileGroup9=Default Group
+FileGroup9=forms
 Group=Default Group
 Library1=accessibility
 Library10=sql
@@ -64,25 +70,27 @@ Library7=phone
 Library8=preoptimizedclv
 Library9=runtimepermissions
 ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: https://www.b4x.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="29"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~CreateResourceFromFile(Macro, Themes.DarkTheme)~\n~'End of default text.~\n~SetApplicationAttribute(android:icon, "@mipmap/ic_launcher")~\n~CreateResource(mipmap-anydpi-v26, ic_launcher.xml,~\n~<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">~\n~    <background android:drawable="@mipmap/background"/>~\n~    <foreground android:drawable="@mipmap/foreground"/>~\n~</adaptive-icon>~\n~)~\n~SetActivityAttribute(stationMain, android:windowSoftInputMode, adjustResize|stateHidden)~\n~AddPermission(android.permission.INTERNET)~\n~SetApplicationAttribute(android:theme, "@style/LightTheme")~\n~CreateResource(values, colors.xml,~\n~<resources>~\n~    <color name="actionbar">#FF0000FF</color>~\n~   <color name="statusbar">#FF0000FF</color>~\n~   <color name="textColorPrimary">#FF0000FF</color>~\n~   <color name="navigationBar">#FF0000FF</color>~\n~</resources>~\n~)~\n~CreateResource(values-v20, theme.xml,~\n~<resources>~\n~    <style name="LightTheme" parent="@android:style/Theme.Material.Light">~\n~        <item name="android:colorPrimary">@color/actionbar</item>~\n~        <item name="android:colorPrimaryDark">@color/statusbar</item>~\n~        <item name="android:textColorPrimary">@color/textColorPrimary</item>~\n~        <item name="android:navigationBarColor">@color/navigationBar</item>~\n~    </style>~\n~</resources>~\n~)~\n~CreateResource(values-v14, theme.xml,~\n~<resources>~\n~    <style name="LightTheme" parent="@android:style/Theme.Holo.Light">~\n~       <item name="android:actionBarStyle">@style/CustomActionBarStyle</item>~\n~    </style>~\n~   <style name="CustomActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">~\n~       <item name="android:background">@color/actionbar</item>~\n~   </style>~\n~</resources>~\n~)
-Module1=dbFunctions
-Module10=ItemsFound
-Module11=lokaalNieuws
-Module12=newsDetail
-Module13=ParseWijkAgent
-Module14=Starter
-Module15=stationMain
-Module16=wijkAgentMain
-Module2=GenFunctions
-Module3=GetBbCodeViewHeight
-Module4=GetLocalNews
-Module5=GetLocationFromLatLong
-Module6=GetPoliceStations
-Module7=itemFoundDetail
-Module8=ItemOwner
-Module9=itemOwnerDetail
-NumberOfFiles=25
+Module1=ClassDossier
+Module10=ItemOwner
+Module11=itemOwnerDetail
+Module12=ItemsFound
+Module13=lokaalNieuws
+Module14=newsDetail
+Module15=ParseWijkAgent
+Module16=Starter
+Module17=stationMain
+Module18=wijkAgentMain
+Module2=dbFunctions
+Module3=dossierMain
+Module4=GenFunctions
+Module5=GetBbCodeViewHeight
+Module6=GetLocalNews
+Module7=GetLocationFromLatLong
+Module8=GetPoliceStations
+Module9=itemFoundDetail
+NumberOfFiles=28
 NumberOfLibraries=13
-NumberOfModules=16
+NumberOfModules=18
 Version=10.5
 @EndOfDesignText@
 #Region TODO/FIX
@@ -116,6 +124,7 @@ Sub Process_Globals
 	latitude As Double, longtitude As Double, introduction As String)
 	Type foundItemList (pubData As String, title As String, description As String, uid As String, location As String)
 	Type foundItemDetail(description As String, urlTipFormulier As String, question As String, questionOwner As String)
+	Type dossier(uid As String, titel As String, introductie As String, publicatieDatum As String, datedelict As String, plaatsDelict As String)
 	
 	Private xui As XUI
 End Sub
@@ -233,6 +242,7 @@ $"[list]
 [*][Color=#ffff00] Lokaal politie nieuws[/Color]
 [*] Landelijk politie nieuws
 [*][Color=#ffff00] Eigenaar gezocht[/Color]
+[*] Dossiers
 [/list]"$
 	
 	BBWhatsIn.Text = txt

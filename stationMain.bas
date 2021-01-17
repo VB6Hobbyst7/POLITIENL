@@ -32,6 +32,7 @@ Sub Globals
 	Private edtFind, edtDummyForFocus As EditText
 	Private imgFav As ImageView
 	Private btnClose As Button
+	Private lblDossier As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -364,4 +365,8 @@ Sub lvlFav_Click
 	End If
 	
 	
+End Sub
+
+Private Sub lblDossier_Click
+	StartActivity(dossierMain)
 End Sub
