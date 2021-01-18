@@ -40,53 +40,59 @@ Private Sub ParserDossier(data As String) As ResumableSub
 	
 	Starter.dossierOffsetEnd = last
 	
-	Dim opsporingsberichten As List = root.Get("opsporingsberichten")
-	For Each colopsporingsberichten As Map In opsporingsberichten
-		Dim publicatiedatum As String = colopsporingsberichten.Get("publicatiedatum")
-		Dim verdachte As String = colopsporingsberichten.Get("verdachte")
-		Dim displayName As String = colopsporingsberichten.Get("displayName")
-		Dim dossier As Map = colopsporingsberichten.Get("dossier")
-		Dim slachtoffer As String = dossier.Get("slachtoffer")
-		Dim plaatsdelict As String = dossier.Get("plaatsdelict")
-		Dim zaakcontent As List = dossier.Get("zaakcontent")
-		For Each colzaakcontent As Map In zaakcontent
-			Dim titel As String = colzaakcontent.Get("titel")
-			Dim alineatype As String = colzaakcontent.Get("alineatype")
-			Dim opgemaaktetekst As String = colzaakcontent.Get("opgemaaktetekst")
-			Dim bestanden As String = colzaakcontent.Get("bestanden")
-		Next
-		Dim datumdelict As String = dossier.Get("datumdelict")
-		Dim documenttype As String = colopsporingsberichten.Get("documenttype")
-		Dim locaties As List = colopsporingsberichten.Get("locaties")
-		For Each collocaties As Map In locaties
-			Dim latitude As Double = collocaties.Get("latitude")
-			Dim longitude As Double = collocaties.Get("longitude")
-		Next
-		Dim voortvluchtige As String = colopsporingsberichten.Get("voortvluchtige")
-		Dim url As String = colopsporingsberichten.Get("url")
-		Dim omschrijving As String = colopsporingsberichten.Get("omschrijving")
-		Dim uid As String = colopsporingsberichten.Get("uid")
-		Dim titel As String = colopsporingsberichten.Get("titel")
-		Dim meerafbeeldingen As List = colopsporingsberichten.Get("meerafbeeldingen")
-		For Each colmeerafbeeldingen As Map In meerafbeeldingen
-			Dim alttext As String = colmeerafbeeldingen.Get("alttext")
-			Dim url As String = colmeerafbeeldingen.Get("url")
-		Next
-		Dim afbeeldingen As List = colopsporingsberichten.Get("afbeeldingen")
-		For Each colafbeeldingen As Map In afbeeldingen
-			Dim alttext As String = colafbeeldingen.Get("alttext")
-			Dim url As String = colafbeeldingen.Get("url")
-		Next
-		Dim zaaknummer As String = colopsporingsberichten.Get("zaaknummer")
-		Dim introductie As String = colopsporingsberichten.Get("introductie")
-		Dim links As String = colopsporingsberichten.Get("links")
-		Dim availabletranslations As String = colopsporingsberichten.Get("availabletranslations")
-		Dim urltipformulier As String = colopsporingsberichten.Get("urltipformulier")
-		Dim gestolen_gevonden As String = colopsporingsberichten.Get("gestolen-gevonden")
+	Try
+		Dim opsporingsberichten As List = root.Get("opsporingsberichten")
+		For Each colopsporingsberichten As Map In opsporingsberichten
+			Dim publicatiedatum As String = colopsporingsberichten.Get("publicatiedatum")
+			Dim verdachte As String = colopsporingsberichten.Get("verdachte")
+			Dim displayName As String = colopsporingsberichten.Get("displayName")
+			Dim dossier As Map = colopsporingsberichten.Get("dossier")
+			Dim slachtoffer As String = dossier.Get("slachtoffer")
+			Dim plaatsdelict As String = dossier.Get("plaatsdelict")
+			Try
+			Dim zaakcontent As List = dossier.Get("zaakcontent")
+			For Each colzaakcontent As Map In zaakcontent
+				Dim titel As String = colzaakcontent.Get("titel")
+				Dim alineatype As String = colzaakcontent.Get("alineatype")
+				Dim opgemaaktetekst As String = colzaakcontent.Get("opgemaaktetekst")
+				Dim bestanden As String = colzaakcontent.Get("bestanden")
+			Next
+			Catch
+				End Try
+			Dim datumdelict As String = dossier.Get("datumdelict")
+			Dim documenttype As String = colopsporingsberichten.Get("documenttype")
+			Dim locaties As List = colopsporingsberichten.Get("locaties")
+			For Each collocaties As Map In locaties
+				Dim latitude As Double = collocaties.Get("latitude")
+				Dim longitude As Double = collocaties.Get("longitude")
+			Next
+			Dim voortvluchtige As String = colopsporingsberichten.Get("voortvluchtige")
+			Dim url As String = colopsporingsberichten.Get("url")
+			Dim omschrijving As String = colopsporingsberichten.Get("omschrijving")
+			Dim uid As String = colopsporingsberichten.Get("uid")
+			Dim titel As String = colopsporingsberichten.Get("titel")
+			Dim meerafbeeldingen As List = colopsporingsberichten.Get("meerafbeeldingen")
+			For Each colmeerafbeeldingen As Map In meerafbeeldingen
+				Dim alttext As String = colmeerafbeeldingen.Get("alttext")
+				Dim url As String = colmeerafbeeldingen.Get("url")
+			Next
+			Dim afbeeldingen As List = colopsporingsberichten.Get("afbeeldingen")
+			For Each colafbeeldingen As Map In afbeeldingen
+				Dim alttext As String = colafbeeldingen.Get("alttext")
+				Dim url As String = colafbeeldingen.Get("url")
+			Next
+			Dim zaaknummer As String = colopsporingsberichten.Get("zaaknummer")
+			Dim introductie As String = colopsporingsberichten.Get("introductie")
+			Dim links As String = colopsporingsberichten.Get("links")
+			Dim availabletranslations As String = colopsporingsberichten.Get("availabletranslations")
+			Dim urltipformulier As String = colopsporingsberichten.Get("urltipformulier")
+			Dim gestolen_gevonden As String = colopsporingsberichten.Get("gestolen-gevonden")
 	
-	lst.Add(Createdossier(uid, titel, introductie, publicatiedatum, datumdelict, plaatsdelict))
-	Next
-	
+			lst.Add(Createdossier(uid, titel, introductie, publicatiedatum, datumdelict, plaatsdelict))
+		Next
+	Catch
+		Log($"${LastException} ${LastException.Message}"$)
+	End Try
 	Return lst
 End Sub
 

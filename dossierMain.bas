@@ -55,12 +55,27 @@ Private Sub GetData
 	
 	Wait For (ClsDossier.GetData($"${Starter.urlDossier}${Starter.dossierOffset}"$)) Complete(lst As List)
 	
+	SetNextPrevButtons
+	
 	For Each dossierItem As dossier In lst
 		clvDossier.Add(SetData(dossierItem), dossierItem)
 	Next
 	
 	Sleep(200)
 	ProgressDialogHide
+End Sub
+
+Private Sub SetNextPrevButtons
+	If Starter.dossierOffsetEnd = False Then
+		lblNext.Visible = True
+	Else
+		lblNext.Visible = False
+	End If
+If Starter.dossierOffset > 0 and Starter.dossierOffsetEnd = False Then 
+		lblPrev.Visible = True
+	Else
+		lblPrev.Visible = False
+	End If
 End Sub
 
 Private Sub SetData(item As dossier) As Panel
@@ -71,7 +86,11 @@ Private Sub SetData(item As dossier) As Panel
 	TextEngine.Initialize(pnl)
 	TextEngine.KerningEnabled = Not(TextEngine.KerningEnabled)
 	
-	lblLocation.Text = item.plaatsDelict
+	If item.plaatsDelict.Length < 4 Then
+		lblLocation.Text = "Locatie onbekend"
+	Else
+		lblLocation.Text = item.plaatsDelict
+	End If
 	lblTitle.Text = item.titel
 	lblPubDate.Text = $"${GenFunctions.ParseStringDate( item.publicatieDatum, "d")}"$
 	lblDelictDate.Text = $"${GenFunctions.ParseStringDate(item.datedelict, "d")}"$
@@ -82,19 +101,20 @@ Private Sub SetData(item As dossier) As Panel
 	lblShowDetail.Top = pHeight - 40dip
 
 	
-		bbIntroductiontext.Text = GenFunctions.ParseHtmlTextBlock("", item.introductie, "")
+	bbIntroductiontext.Text = GenFunctions.ParseHtmlTextBlock("", item.introductie, "")
 	Return pnl
 End Sub
 
-
-Private Sub GetSetOffset
-	If Starter.dossierOffset = 0 And Starter.dossierOffsetEnd = False Then
-		Starter.dossierOffset = Starter.dossierOffset + 10
-	End If
+Private Sub lblShowDetail_Click
 	
 End Sub
 
+Private Sub lblPrev_Click
+	Starter.dossierOffset = Starter.dossierOffset - 10
+	GetData
+End Sub
 
-Private Sub lblShowDetail_Click
-	
+Private Sub lblNext_Click
+	Starter.dossierOffset = Starter.dossierOffset + 10
+	GetData
 End Sub
