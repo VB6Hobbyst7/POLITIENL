@@ -14,6 +14,7 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
+	Private clsLoadingIndicator As LoadingIndicator
 	Private ClsDossier As ClassDossier
 	Private clsBbHeight As GetBbCodeViewHeight
 	Private TextEngine As BCTextEngine
@@ -28,16 +29,17 @@ Sub Globals
 	Private lblTitle As Label
 	Private pnlDossierItem As Panel
 	Private bbIntroductiontext As BBCodeView
+	
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
+	clsLoadingIndicator.Initialize(Activity)
 	ClsDossier.Initialize
 	clsBbHeight.Initialize
 	Activity.LoadLayout("dossierMain")
 	TextEngine.Initialize(Activity)
-
+	
 	GetData
-
 End Sub
 
 Sub Activity_Resume
@@ -50,7 +52,8 @@ End Sub
 
 Private Sub GetData
 	clvDossier.Clear
-	ProgressDialogShow2("Ophalen dossiers..", False)
+'	ProgressDialogShow2("Ophalen dossiers..", False)
+	clsLoadingIndicator.ShowIndicator("Ophalen dossiers..")
 	Sleep(200)
 	
 	Wait For (ClsDossier.GetData($"${Starter.urlDossier}${Starter.dossierOffset}"$)) Complete(lst As List)
@@ -61,8 +64,9 @@ Private Sub GetData
 		clvDossier.Add(SetData(dossierItem), dossierItem)
 	Next
 	
+	clsLoadingIndicator.HideIndicator
 	Sleep(200)
-	ProgressDialogHide
+	'ProgressDialogHide
 End Sub
 
 Private Sub SetNextPrevButtons
@@ -71,7 +75,7 @@ Private Sub SetNextPrevButtons
 	Else
 		lblNext.Visible = False
 	End If
-If Starter.dossierOffset > 0 and Starter.dossierOffsetEnd = False Then 
+If Starter.dossierOffset > 0 And Starter.dossierOffsetEnd = False Then 
 		lblPrev.Visible = True
 	Else
 		lblPrev.Visible = False
