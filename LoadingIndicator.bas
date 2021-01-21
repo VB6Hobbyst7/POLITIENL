@@ -8,10 +8,8 @@ Sub Class_Globals
 	Private passedActivity As Activity
 	Private xui As XUI
 	Private TextEngine As BCTextEngine
-	
 	Private bbLoadingMessage As BBLabel
-	Private busyIndicator As B4XLoadingIndicator
-	Dim pnl As B4XView 
+	Private pnl As B4XView 
 End Sub
 
 Public Sub Initialize(act As Activity)
@@ -22,24 +20,24 @@ Public Sub Initialize(act As Activity)
 End Sub
 
 Public Sub CreateIndicator
+	Dim aWidth As Long = passedActivity.Width
 	
-	
-	pnl.SetLayoutAnimated(0, 0, 0, passedActivity.Width, 120dip)
+	pnl.SetLayoutAnimated(0, 30dip, 0, aWidth-30dip, 120dip)
 	pnl.LoadLayout("loadingPanel")
 	TextEngine.Initialize(pnl)
 	TextEngine.KerningEnabled = Not(TextEngine.KerningEnabled)
 	
-	passedActivity.AddView(pnl, 0dip, (100%y/2)-60, passedActivity.Width, 120dip)
-	busyIndicator.Show
-	
+	passedActivity.AddView(pnl, 30dip, (100%y/2)-60, aWidth, 120dip)
 End Sub
 
 Public Sub ShowIndicator(msg As String)
 	bbLoadingMessage.Text = msg
-	pnl.Visible = True
-	
+	pnl.SetVisibleAnimated(300, True)
+	Sleep(300)
 End Sub
 
-Public Sub HideIndicator
-	pnl.Visible = False
+Public Sub HideIndicator As ResumableSub
+	pnl.SetVisibleAnimated(300, False)
+	Sleep(300)
+	Return True
 End Sub

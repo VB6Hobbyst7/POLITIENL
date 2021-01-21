@@ -52,8 +52,7 @@ End Sub
 
 Private Sub GetData
 	clvDossier.Clear
-'	ProgressDialogShow2("Ophalen dossiers..", False)
-	clsLoadingIndicator.ShowIndicator("Ophalen dossiers..")
+	clsLoadingIndicator.ShowIndicator("Ophalen dossiers, even geduld..")
 	Sleep(200)
 	
 	Wait For (ClsDossier.GetData($"${Starter.urlDossier}${Starter.dossierOffset}"$)) Complete(lst As List)
@@ -64,9 +63,7 @@ Private Sub GetData
 		clvDossier.Add(SetData(dossierItem), dossierItem)
 	Next
 	
-	clsLoadingIndicator.HideIndicator
-	Sleep(200)
-	'ProgressDialogHide
+	Wait For(clsLoadingIndicator.HideIndicator) complete (done As Boolean)
 End Sub
 
 Private Sub SetNextPrevButtons

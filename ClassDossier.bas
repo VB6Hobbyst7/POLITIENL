@@ -58,6 +58,7 @@ Private Sub ParserDossier(data As String) As ResumableSub
 				Dim bestanden As String = colzaakcontent.Get("bestanden")
 			Next
 			Catch
+				Log(LastException.Message)
 				End Try
 			Dim datumdelict As String = dossier.Get("datumdelict")
 			Dim documenttype As String = colopsporingsberichten.Get("documenttype")
