@@ -22,12 +22,12 @@ End Sub
 Public Sub CreateIndicator
 	Dim aWidth As Long = passedActivity.Width
 	
-	pnl.SetLayoutAnimated(0, 30dip, 0, aWidth-30dip, 120dip)
+	pnl.SetLayoutAnimated(0, 0, 0, aWidth, 120dip)
 	pnl.LoadLayout("loadingPanel")
 	TextEngine.Initialize(pnl)
 	TextEngine.KerningEnabled = Not(TextEngine.KerningEnabled)
 	
-	passedActivity.AddView(pnl, 30dip, (100%y/2)-60, aWidth, 120dip)
+	passedActivity.AddView(pnl, 0dip, (100%y/2)-60, aWidth, 120dip)
 End Sub
 
 Public Sub ShowIndicator(msg As String)
