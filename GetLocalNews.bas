@@ -72,7 +72,7 @@ Private Sub ParseLocalNewsData(data As String) As List
 '		colnewstitel = colnewstitel.Replace("[", "(")
 '		colnewstitel = colnewstitel.Replace("]", ")")
 '		colnewstitel = colnewstitel.ToLowerCase.Replace("video", "Filmpje")
-		lst.Add(CreatelocalNewsHeadline(gebied, GenFunctions.ParseStringDate(publicatiedatum, "d"), colnewstitel, uid, colnieuwsurl, latitude, longitude, GenFunctions.ParseHtmlTextBlock(introductie, "", "")))
+		lst.Add(CreatelocalNewsHeadline(gebied, GenFunctions.ParseStringDate(publicatiedatum, "d"), colnewstitel, uid, colnieuwsurl, latitude, longitude, GenFunctions.ParseHtmlTextBlock(introductie, "", "", "")))
 	Next
 	
 	Return lst
@@ -109,6 +109,7 @@ Private Sub GetDataFromUrl(latitude As Double, longtitude As Double, offset As I
 	Dim strLocalNewsUrl, data As String
 	
 	strLocalNewsUrl = $"https://api.politie.nl/v4/nieuws/lokaal?language=nl&lat=${latitude}&lon=${longtitude}&radius=5.0&maxnumberofitems=10&offset=${offset}"$
+'	Log(strLocalNewsUrl)
 	job.Initialize("", Me)
 	job.Download(strLocalNewsUrl)
 	Wait For (job) jobDone(jobDone As HttpJob)
@@ -128,10 +129,10 @@ Private Sub GetDataFromUrl(latitude As Double, longtitude As Double, offset As I
 End Sub
 
 Private Sub ParseLocalNewsDetail(data As String, uidNewsItem As String) As String 'ignore
+	Dim itemImageSet As Boolean
 	Dim parser As JSONParser
 	Dim alineasText As String = ""
 '	Dim titleFound As Boolean
-	
 	parser.Initialize(data)
 	
 	Dim root As Map = parser.NextObject
@@ -152,7 +153,9 @@ Private Sub ParseLocalNewsDetail(data As String, uidNewsItem As String) As Strin
 		Dim uid As String = colnieuwsberichten.Get("uid")
 '		Dim coltitel As String = colnieuwsberichten.Get("titel")
 '		Dim introductie As String = colnieuwsberichten.Get("introductie")
-'		Dim afbeelding As Map = colnieuwsberichten.Get("afbeelding")
+		Dim afbeelding As Map = colnieuwsberichten.Get("afbeelding")
+		Dim afbeelding_alttext As String = afbeelding.Get("alttext")
+		Dim afbeelding_url As String = afbeelding.Get("url")
 '		Dim alttext As String = afbeelding.Get("alttext")
 '		Dim url As String = afbeelding.Get("url")
 '		Dim links As String = colnieuwsberichten.Get("links")
@@ -161,17 +164,23 @@ Private Sub ParseLocalNewsDetail(data As String, uidNewsItem As String) As Strin
 '		Dim urltipformulier As String = colnieuwsberichten.Get("urltipformulier")
 		
 		If uid = uidNewsItem Then
+			itemImageSet = False
 			For Each colalineas As Map In alineas
 				Dim al_titel As String = colalineas.Get("titel")
 				Dim al_opgemaaktetekst As String = colalineas.Get("opgemaaktetekst")
 				If al_opgemaaktetekst.IndexOf("video") > -1 Then
-				
 					File.WriteString(Starter.filePath, $"video$Time{DateTime.Now}.text"$, al_opgemaaktetekst)
 				End If
 				If al_opgemaaktetekst = "null" Or al_titel = "null" Then
 					Continue
 				End If
-				alineasText = alineasText & GenFunctions.ParseHtmlTextBlock(al_titel.Replace(CRLF, ""), al_opgemaaktetekst, "[color=#00FF00]")
+				If itemImageSet = False Then
+					alineasText = alineasText & GenFunctions.ParseHtmlTextBlock(al_titel.Replace(CRLF, ""), al_opgemaaktetekst, "[color=#00FF00]", afbeelding_url)
+					itemImageSet = True
+				Else
+					alineasText = alineasText & GenFunctions.ParseHtmlTextBlock(al_titel.Replace(CRLF, ""), al_opgemaaktetekst, "[color=#00FF00]", "")
+					
+				End If
 				alineasText = alineasText & CRLF& CRLF
 			Next
 '			If titleFound = False Then

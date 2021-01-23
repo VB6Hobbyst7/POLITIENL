@@ -113,20 +113,22 @@ Sub ShowLocationOnGoogleMaps(lat As Double, lon As Double)
 	StartActivity(gMapIntent)
 End Sub
 
-Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String, color As String) As String
+Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String, color As String, imageUrl As String) As String
+	If imageUrl.Length > 6 Then
+		Log(imageUrl)
+	End If
+	
 	Dim newText As String = alTextBlock
 	newText = newText.Replace("[", "(")
 	newText = newText.Replace("]", ")")
 	If alTitle <> "" Then
 		alTitle = alTitle.Replace("[", "(")
 		alTitle = alTitle.Replace("]", ")")
-'		newText = $"[b]${alTitle}[/b]${""}${newText}"$
-	If color <> "" Then
-			newText = $"${color}${alTitle}[/color]${CRLF}${newText}"$
+		If imageUrl.Length > 6 Then
+			alTitle = $"[alignment=left][img url=${imageUrl} width = 150, height=200/][/alignment]${CRLF}${alTitle}"$
+		End If
 	Else
-			newText = $"${alTitle}${CRLF}${newText}"$
-	End If	
-	
+	'	alTitle = $"[alignment=left][img url=${imageUrl} width = 150, height=200/][/alignment]${CRLF}"$
 	End If
 
 	Try
@@ -136,6 +138,11 @@ Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String, color As String
 	
 		newText = GetAHref(newText)
 		newText = newText.Replace(CRLF, "")
+		If color <> "" Then
+			newText = $"${color}${alTitle}[/color]${CRLF}${newText}"$
+		Else
+			newText = $"${alTitle}${CRLF}${newText}"$
+		End If
 		newText = newText.Replace("<p>", "") ' & alTextBlock.Replace("<p>", "")
 		newText = newText.Replace("<HR>", "") ' & alTextBlock.Replace("<p>", "")
 		newText = newText.Replace("</p>", CRLF)

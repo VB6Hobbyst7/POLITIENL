@@ -102,7 +102,7 @@ Private Sub SetData(item As dossier) As Panel
 	lblShowDetail.Top = pHeight - 40dip
 
 	
-	bbIntroductiontext.Text = GenFunctions.ParseHtmlTextBlock("", item.introductie, "")
+	bbIntroductiontext.Text = GenFunctions.ParseHtmlTextBlock("", item.introductie, "", "")
 	Return pnl
 End Sub
 

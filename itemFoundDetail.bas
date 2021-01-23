@@ -74,9 +74,9 @@ Sub GetItemDetail
 	
 
 	
-	itemDescription = GenFunctions.ParseHtmlTextBlock("", $"${clsItemDetail.itemFoundData.description.Trim}${""}"$, "")
-	itemQuestion = GenFunctions.ParseHtmlTextBlock("", $"${clsItemDetail.itemFoundData.questionOwner.Trim}${""}"$, "")
-	tipUrl = GenFunctions.ParseHtmlTextBlock("", GetSetTipUrl(clsItemDetail.itemFoundData.urlTipFormulier.Trim), "")
+	itemDescription = GenFunctions.ParseHtmlTextBlock("", $"${clsItemDetail.itemFoundData.description.Trim}${""}"$, "", "")
+	itemQuestion = GenFunctions.ParseHtmlTextBlock("", $"${clsItemDetail.itemFoundData.questionOwner.Trim}${""}"$, "", "")
+	tipUrl = GenFunctions.ParseHtmlTextBlock("", GetSetTipUrl(clsItemDetail.itemFoundData.urlTipFormulier.Trim), "", "")
 
 	itemDescription = $"${CreateHeader("Omschrijving")}${itemDescription}"$
 	itemQuestion = $"${CreateHeader("Vraag")}${itemQuestion}"$
