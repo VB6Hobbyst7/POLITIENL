@@ -10,7 +10,7 @@ Version=9.9
 #End Region
 
 Sub Process_Globals
-	Public filePath, itemFoundUid As String
+	Public filePath, itemFoundUid, dossierUid As String
 	Private rp As RuntimePermissions
 	Public sql As SQL
 	Public localNewsOffset, itemsFoundOffset, dossierOffset As Int = 0

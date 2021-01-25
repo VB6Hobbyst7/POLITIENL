@@ -114,9 +114,9 @@ Sub ShowLocationOnGoogleMaps(lat As Double, lon As Double)
 End Sub
 
 Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String, color As String, imageUrl As String) As String
-	If imageUrl.Length > 6 Then
-		Log(imageUrl)
-	End If
+'	If imageUrl.Length > 6 Then
+'		Log(imageUrl)
+'	End If
 	
 	Dim newText As String = alTextBlock
 	newText = newText.Replace("[", "(")
@@ -125,10 +125,10 @@ Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String, color As String
 		alTitle = alTitle.Replace("[", "(")
 		alTitle = alTitle.Replace("]", ")")
 		If imageUrl.Length > 6 Then
-			alTitle = $"[alignment=left][img url=${imageUrl} width = 150, height=200/][/alignment]${CRLF}${alTitle}"$
+			alTitle = $"[alignment=left][img url=${imageUrl} width = 150, height=200/][/alignment]${CRLF}[Alignment=Center][url=${imageUrl}][color=#ffff00]Vergroot[/color][/url][/Alignment]${CRLF}${alTitle}"$
 		End If
-	Else
-	'	alTitle = $"[alignment=left][img url=${imageUrl} width = 150, height=200/][/alignment]${CRLF}"$
+	Else if imageUrl <> "" Then
+		alTitle = $"[img url=${imageUrl} width = 150, height=200/]${CRLF}[Alignment=Center][url=${imageUrl}][color=#ffff00]Vergroot[/color][/url][/Alignment]${CRLF}"$
 	End If
 
 	Try
@@ -277,10 +277,13 @@ Sub GetImageFromText(alTextBlock As String) As String
 			Exit
 		End If
 	Next
-	If imgTextNew.IndexOf("http") = -1 Then Return alTextBlock
+	If imgTextNew.IndexOf("http") = -1 Then
+			imgTextNew = $"https://www.politie.nl${imgTextNew.Replace($"""$, "")}"$
+	End If
 	
 	imgTextNew.Replace($" "$, "")
-	Dim bbString As String = $"[alignment=left][img url=${imgTextNew} width = 150, height=200/][/alignment]${CRLF}"$
+'	Dim bbString As String = $"[alignment=Left][img url=${imgTextNew.Trim} width = 150, height=200/][/alignment]${CRLF}${imgTextNew}"$
+		Dim bbString As String = $"[img url=${imgTextNew.Trim} width = 150, height=200/]${CRLF}[Alignment=Center][url=${imgTextNew}][color=#ffff00]Vergroot[/color][/url][/Alignment]${CRLF}"$
 	
 	
 	alTextBlock =alTextBlock.Replace(imgText, bbString)
@@ -306,6 +309,10 @@ Sub GetHeaderStyle(alTextBlock As String) As String
 	End If
 	
 	endHeader = alTextBlock.ToLowerCase.IndexOf(">")
+	
+	If endHeader < startHeader Then
+		Return alTextBlock
+	End If
 	header = alTextBlock.SubString2(startHeader, endHeader+1)
 	newText = alTextBlock.Replace(header, "")
 	'GET END TAG
@@ -389,4 +396,3 @@ Sub CreateRoundRectBitmap (Input As B4XBitmap, Radius As Float) As B4XBitmap
 	c.Release
 	Return res
 End Sub
-

@@ -1,60 +1,62 @@
 ﻿Build1=Default,nl.pdeg.politie_nl
 File1=arial.ttf
-File10=lokaalNieuwsMain.bal
-File11=lostfound.png
-File12=Main.bal
-File13=materialdesignicons-webfont.ttf
-File14=newsDetail.bal
-File15=output-onlineasciitools(1).png
-File16=pnlDossier.bal
-File17=pnlItemImage.bal
-File18=pnlNewsLocalHeadline.bal
-File19=pnlWijkAgent.bal
+File10=loadingPanel.bal
+File11=lokaalNieuwsMain.bal
+File12=lostfound.png
+File13=Main.bal
+File14=materialdesignicons-webfont.ttf
+File15=newsDetail.bal
+File16=output-onlineasciitools(1).png
+File17=pnlDossier.bal
+File18=pnlItemImage.bal
+File19=pnlNewsLocalHeadline.bal
 File2=clvItemFound.bal
-File20=politie.db
-File21=res.zip.store
-File22=stationMain.bal
-File23=VeraMono.ttf
-File24=veramono-bold.otf
-File25=veramono-bold.ttf
-File26=veramono-bold1.ttf
-File27=VeraMono-Bold-Italic.ttf
-File28=VeraMono-Italic.ttf
-File29=wijkAgentMain.bal
+File20=pnlWijkAgent.bal
+File21=politie.db
+File22=res.zip.store
+File23=stationMain.bal
+File24=VeraMono.ttf
+File25=veramono-bold.otf
+File26=veramono-bold.ttf
+File27=veramono-bold1.ttf
+File28=VeraMono-Bold-Italic.ttf
+File29=VeraMono-Italic.ttf
 File3=clvStation.bal
-File4=dossierMain.bal
-File5=favourite_off.png
-File6=favourite_on.png
-File7=itemFoundDetail.bal
-File8=ItemFoundMain.bal
-File9=loadingPanel.bal
+File30=wijkAgentMain.bal
+File4=dossierDetail.bal
+File5=dossierMain.bal
+File6=favourite_off.png
+File7=favourite_on.png
+File8=itemFoundDetail.bal
+File9=ItemFoundMain.bal
 FileGroup1=files
 FileGroup10=forms
-FileGroup11=Default Group
-FileGroup12=forms
-FileGroup13=files
-FileGroup14=forms
-FileGroup15=Default Group
-FileGroup16=forms
+FileGroup11=forms
+FileGroup12=Default Group
+FileGroup13=forms
+FileGroup14=files
+FileGroup15=forms
+FileGroup16=Default Group
 FileGroup17=forms
 FileGroup18=forms
 FileGroup19=forms
 FileGroup2=forms
-FileGroup20=files
-FileGroup21=Default Group
-FileGroup22=forms
-FileGroup23=Default Group
+FileGroup20=forms
+FileGroup21=files
+FileGroup22=Default Group
+FileGroup23=forms
 FileGroup24=Default Group
 FileGroup25=Default Group
 FileGroup26=Default Group
 FileGroup27=Default Group
 FileGroup28=Default Group
-FileGroup29=forms
+FileGroup29=Default Group
 FileGroup3=forms
+FileGroup30=forms
 FileGroup4=forms
-FileGroup5=Default Group
+FileGroup5=forms
 FileGroup6=Default Group
-FileGroup7=forms
+FileGroup7=Default Group
 FileGroup8=forms
 FileGroup9=forms
 Group=Default Group
@@ -73,27 +75,28 @@ Library8=preoptimizedclv
 Library9=runtimepermissions
 ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: https://www.b4x.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="29"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~CreateResourceFromFile(Macro, Themes.DarkTheme)~\n~'End of default text.~\n~SetApplicationAttribute(android:icon, "@mipmap/ic_launcher")~\n~CreateResource(mipmap-anydpi-v26, ic_launcher.xml,~\n~<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">~\n~    <background android:drawable="@mipmap/background"/>~\n~    <foreground android:drawable="@mipmap/foreground"/>~\n~</adaptive-icon>~\n~)~\n~SetActivityAttribute(stationMain, android:windowSoftInputMode, adjustResize|stateHidden)~\n~AddPermission(android.permission.INTERNET)~\n~SetApplicationAttribute(android:theme, "@style/LightTheme")~\n~CreateResource(values, colors.xml,~\n~<resources>~\n~    <color name="actionbar">#FF0000FF</color>~\n~   <color name="statusbar">#FF0000FF</color>~\n~   <color name="textColorPrimary">#FF0000FF</color>~\n~   <color name="navigationBar">#FF0000FF</color>~\n~</resources>~\n~)~\n~CreateResource(values-v20, theme.xml,~\n~<resources>~\n~    <style name="LightTheme" parent="@android:style/Theme.Material.Light">~\n~        <item name="android:colorPrimary">@color/actionbar</item>~\n~        <item name="android:colorPrimaryDark">@color/statusbar</item>~\n~        <item name="android:textColorPrimary">@color/textColorPrimary</item>~\n~        <item name="android:navigationBarColor">@color/navigationBar</item>~\n~    </style>~\n~</resources>~\n~)~\n~CreateResource(values-v14, theme.xml,~\n~<resources>~\n~    <style name="LightTheme" parent="@android:style/Theme.Holo.Light">~\n~       <item name="android:actionBarStyle">@style/CustomActionBarStyle</item>~\n~    </style>~\n~   <style name="CustomActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">~\n~       <item name="android:background">@color/actionbar</item>~\n~   </style>~\n~</resources>~\n~)
 Module1=ClassDossier
-Module10=ItemOwner
-Module11=itemOwnerDetail
-Module12=ItemsFound
-Module13=LoadingIndicator
-Module14=lokaalNieuws
-Module15=newsDetail
-Module16=ParseWijkAgent
-Module17=Starter
-Module18=stationMain
-Module19=wijkAgentMain
+Module10=itemFoundDetail
+Module11=ItemOwner
+Module12=itemOwnerDetail
+Module13=ItemsFound
+Module14=LoadingIndicator
+Module15=lokaalNieuws
+Module16=newsDetail
+Module17=ParseWijkAgent
+Module18=Starter
+Module19=stationMain
 Module2=dbFunctions
-Module3=dossierMain
-Module4=GenFunctions
-Module5=GetBbCodeViewHeight
-Module6=GetLocalNews
-Module7=GetLocationFromLatLong
-Module8=GetPoliceStations
-Module9=itemFoundDetail
-NumberOfFiles=29
+Module20=wijkAgentMain
+Module3=dossierDetail
+Module4=dossierMain
+Module5=GenFunctions
+Module6=GetBbCodeViewHeight
+Module7=GetLocalNews
+Module8=GetLocationFromLatLong
+Module9=GetPoliceStations
+NumberOfFiles=30
 NumberOfLibraries=13
-NumberOfModules=19
+NumberOfModules=20
 Version=10.5
 @EndOfDesignText@
 #Region TODO/FIX
@@ -128,6 +131,8 @@ Sub Process_Globals
 	Type foundItemList (pubData As String, title As String, description As String, uid As String, location As String)
 	Type foundItemDetail(description As String, urlTipFormulier As String, question As String, questionOwner As String)
 	Type dossier(uid As String, titel As String, introductie As String, publicatieDatum As String, datedelict As String, plaatsDelict As String)
+	Type dossierDetail(titel As String, url As String, introductie As String, publicatieDatum As String, afbeeldingUrl As String, _
+	 dossierDatumDelict As String, dossierPlaatsDelict As String, urlTipFormulier As String, zaakNummer As String, DossierText As String)
 	
 	Private xui As XUI
 End Sub
@@ -260,3 +265,4 @@ public Sub CheckConnected As ResumableSub
 		Return False
 	End If
 End Sub
+

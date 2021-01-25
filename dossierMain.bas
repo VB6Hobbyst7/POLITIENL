@@ -54,7 +54,7 @@ Private Sub GetData
 	clvDossier.Clear
 	clsLoadingIndicator.ShowIndicator("Ophalen dossiers, even geduld..")
 	Sleep(200)
-	
+	Log($"${Starter.urlDossier}${Starter.dossierOffset}"$)
 	Wait For (ClsDossier.GetData($"${Starter.urlDossier}${Starter.dossierOffset}"$)) Complete(lst As List)
 	
 	SetNextPrevButtons
@@ -107,7 +107,10 @@ Private Sub SetData(item As dossier) As Panel
 End Sub
 
 Private Sub lblShowDetail_Click
-	
+	Dim lbl As Label = Sender
+	Dim data As dossier = clvDossier.GetValue(clvDossier.GetItemFromView(lbl.Parent))
+	Starter.dossierUid = data.uid
+	StartActivity(dossierDetail)
 End Sub
 
 Private Sub lblPrev_Click
