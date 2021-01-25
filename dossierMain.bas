@@ -54,7 +54,7 @@ Private Sub GetData
 	clvDossier.Clear
 	clsLoadingIndicator.ShowIndicator("Ophalen dossiers, even geduld..")
 	Sleep(200)
-	Log($"${Starter.urlDossier}${Starter.dossierOffset}"$)
+'	Log($"${Starter.urlDossier}${Starter.dossierOffset}"$)
 	Wait For (ClsDossier.GetData($"${Starter.urlDossier}${Starter.dossierOffset}"$)) Complete(lst As List)
 	
 	SetNextPrevButtons

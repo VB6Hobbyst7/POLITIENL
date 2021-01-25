@@ -23,7 +23,7 @@ Public Sub GetData(url As String) As ResumableSub
 	Wait For (job) jobDone(jobDone As HttpJob)
 	
 	If jobDone.Success Then
-		Log($"$DateTime{DateTime.Now}"$)
+'		Log($"$DateTime{DateTime.Now}"$)
 		wait for (ParserDossier(job.GetString)) Complete (lstDossier As List)
 	End If
 	Return lst
