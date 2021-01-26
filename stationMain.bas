@@ -23,6 +23,7 @@ Sub Globals
 	Private clvStation As CustomListView
 	Private clsStationData As GetPoliceStations
 	Private clsLocalNews As GetLocalNews
+	Private clsLoadingIndicator As LoadingIndicator
 	
 	Private lblStationName, lblAddress, lblZip, lblCity As Label
 	Private lblTwitter, lblFacebook, lblUrl, lblMagni As Label
@@ -32,6 +33,7 @@ Sub Globals
 	Private edtFind, edtDummyForFocus As EditText
 	Private imgFav As ImageView
 	Private btnClose As Button
+	Private lblDossier As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -41,6 +43,7 @@ Sub Activity_Create(FirstTime As Boolean)
 	CardLayoutsCache.Initialize
 	
 	Activity.LoadLayout("stationMain")
+	clsLoadingIndicator.Initialize(Activity)
 	
 	PCLV.Initialize(Me, "PCLV", clvStation)
 	GetStation
@@ -239,18 +242,18 @@ End Sub
 Sub pnlWijkAgent_Click
 	Dim pnl As Panel = Sender
 	Dim stationData As station
-	
-	ProgressDialogShow2("Ophalen gegevens wijkagent(en)..", False)
-	Sleep(300)	
+	clsLoadingIndicator.ShowIndicator("Ophalen gegevens wijkagenten..")
+	'ProgressDialogShow2("Ophalen gegevens wijkagent(en)..", False)
+	'Sleep(300)	
 	stationData = clvStation.GetValue(clvStation.GetItemFromView(pnl))
 	Wait For (clsStationData.GetWijkAgent(stationData.longtitude, stationData.latitude)) Complete (lstWijkAgent As List)
-	ProgressDialogHide
+	'ProgressDialogHide
 	
 	If lstWijkAgent.Size > 0 Then
 		StartActivity(wijkAgentMain)
 		CallSubDelayed3(wijkAgentMain, "GetWijkAgent", lstWijkAgent, stationData.name)
 	End If
-	
+	clsLoadingIndicator.HideIndicator
 End Sub
 
 Sub GetStationData(p As Panel) As station
@@ -364,4 +367,8 @@ Sub lvlFav_Click
 	End If
 	
 	
+End Sub
+
+Private Sub lblDossier_Click
+	StartActivity(dossierMain)
 End Sub

@@ -115,7 +115,7 @@ End Sub
 
 Sub AddOpenhours(ps_id As String, hours As String)
 	qry = $"INSERT INTO openinghours (id, ps_id, opening_hours) VALUES (?, ?, ?)"$
-	Starter.sql.ExecNonQuery2(qry, Array As String(GenFunctions.UUIDv4, ps_id, GenFunctions.ParseHtmlTextBlock("", hours, "").Trim))
+	Starter.sql.ExecNonQuery2(qry, Array As String(GenFunctions.UUIDv4, ps_id, GenFunctions.ParseHtmlTextBlock("", hours, "", "").Trim))
 End Sub
 
 Sub AddSocialmedia(lstPsSocialMedia As List)

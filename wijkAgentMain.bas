@@ -14,6 +14,7 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
+	Private clsLoadingIndicator As LoadingIndicator
 	Private lblStationName, lblAgentNaam, lblWerkGebied, lblTwitter, lblInstagram As Label
 	Private pnlAgent, pnlUrl, pnlImg, pnlFacebook, pnlTwitter As Panel
 	Private clvAgent As CustomListView
@@ -24,6 +25,7 @@ End Sub
 Sub Activity_Create(FirstTime As Boolean)
 	Activity.LoadLayout("wijkAgentMain")
 	GenFunctions.ResetUserFontScale(Activity)
+	clsLoadingIndicator.Initialize(Activity)
 End Sub
 
 Sub Activity_Resume

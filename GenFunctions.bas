@@ -57,17 +57,27 @@ Sub OpenUrl(url As String)
 End Sub
 
 Sub ParseStringDate(strDate As String, dtf As String) As String
-	Dim dateStr() As String = Regex.Split(" ", strDate)
+	If strDate = "" Then
+		Return "onbekend"
+	End If
+	
+	Dim dateStr() As String '= Regex.Split(" ", strDate)
 	Dim dateAsString, timeAsString As String
 	Dim parsedDate As Long
+	
+	If strDate.IndexOf(" ") = -1 Then
+		strDate = $"${strDate} 00:00:00"$
+	End If
+	
+	dateStr = Regex.Split(" ", strDate)
 	
 	dateAsString = dateStr(0)
 	timeAsString = dateStr(1)
 	
 	DateTime.DateFormat = "yy-MM-dd"
 	parsedDate = DateTime.DateParse(dateAsString)
-	DateTime.DateFormat = "dd MMMM yyyy"
-	
+	'DateTime.DateFormat = "dd MMMM yyyy"
+	DateTime.DateFormat = "dd-MM-yyyy"
 	If dtf = "d" Then
 		Return $"$Date{parsedDate}"$
 	Else If dtf = "t" Then
@@ -103,20 +113,22 @@ Sub ShowLocationOnGoogleMaps(lat As Double, lon As Double)
 	StartActivity(gMapIntent)
 End Sub
 
-Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String, color As String) As String
+Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String, color As String, imageUrl As String) As String
+'	If imageUrl.Length > 6 Then
+'		Log(imageUrl)
+'	End If
+	
 	Dim newText As String = alTextBlock
 	newText = newText.Replace("[", "(")
 	newText = newText.Replace("]", ")")
 	If alTitle <> "" Then
 		alTitle = alTitle.Replace("[", "(")
 		alTitle = alTitle.Replace("]", ")")
-'		newText = $"[b]${alTitle}[/b]${""}${newText}"$
-	If color <> "" Then
-			newText = $"${color}${alTitle}[/color]${CRLF}${newText}"$
-	Else
-			newText = $"${alTitle}${CRLF}${newText}"$
-	End If	
-	
+		If imageUrl.Length > 6 Then
+			alTitle = $"[alignment=left][img url=${imageUrl} width = 150, height=200/][/alignment]${CRLF}[Alignment=Center][url=${imageUrl}][color=#ffff00]Vergroot[/color][/url][/Alignment]${CRLF}${alTitle}"$
+		End If
+	Else if imageUrl <> "" Then
+		alTitle = $"[img url=${imageUrl} width = 150, height=200/]${CRLF}[Alignment=Center][url=${imageUrl}][color=#ffff00]Vergroot[/color][/url][/Alignment]${CRLF}"$
 	End If
 
 	Try
@@ -126,6 +138,11 @@ Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String, color As String
 	
 		newText = GetAHref(newText)
 		newText = newText.Replace(CRLF, "")
+		If color <> "" Then
+			newText = $"${color}${alTitle}[/color]${CRLF}${newText}"$
+		Else
+			newText = $"${alTitle}${CRLF}${newText}"$
+		End If
 		newText = newText.Replace("<p>", "") ' & alTextBlock.Replace("<p>", "")
 		newText = newText.Replace("<HR>", "") ' & alTextBlock.Replace("<p>", "")
 		newText = newText.Replace("</p>", CRLF)
@@ -260,10 +277,13 @@ Sub GetImageFromText(alTextBlock As String) As String
 			Exit
 		End If
 	Next
-	If imgTextNew.IndexOf("http") = -1 Then Return alTextBlock
+	If imgTextNew.IndexOf("http") = -1 Then
+			imgTextNew = $"https://www.politie.nl${imgTextNew.Replace($"""$, "")}"$
+	End If
 	
 	imgTextNew.Replace($" "$, "")
-	Dim bbString As String = $"[alignment=left][img url=${imgTextNew} width = 150, height=200/][/alignment]${CRLF}"$
+'	Dim bbString As String = $"[alignment=Left][img url=${imgTextNew.Trim} width = 150, height=200/][/alignment]${CRLF}${imgTextNew}"$
+		Dim bbString As String = $"[img url=${imgTextNew.Trim} width = 150, height=200/]${CRLF}[Alignment=Center][url=${imgTextNew}][color=#ffff00]Vergroot[/color][/url][/Alignment]${CRLF}"$
 	
 	
 	alTextBlock =alTextBlock.Replace(imgText, bbString)
@@ -289,6 +309,10 @@ Sub GetHeaderStyle(alTextBlock As String) As String
 	End If
 	
 	endHeader = alTextBlock.ToLowerCase.IndexOf(">")
+	
+	If endHeader < startHeader Then
+		Return alTextBlock
+	End If
 	header = alTextBlock.SubString2(startHeader, endHeader+1)
 	newText = alTextBlock.Replace(header, "")
 	'GET END TAG
@@ -372,4 +396,3 @@ Sub CreateRoundRectBitmap (Input As B4XBitmap, Radius As Float) As B4XBitmap
 	c.Release
 	Return res
 End Sub
-
