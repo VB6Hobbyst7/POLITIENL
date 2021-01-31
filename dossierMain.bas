@@ -114,11 +114,15 @@ Private Sub lblShowDetail_Click
 End Sub
 
 Private Sub lblPrev_Click
-	Starter.dossierOffset = Starter.dossierOffset - 10
-	GetData
+	GetOffsetData(-10)
 End Sub
 
 Private Sub lblNext_Click
-	Starter.dossierOffset = Starter.dossierOffset + 10
+	GetOffsetData(10)
+End Sub
+
+Private Sub GetOffsetData(offset As Int)
+	Starter.dossierOffset = Starter.dossierOffset + offset
 	GetData
+	
 End Sub

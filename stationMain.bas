@@ -24,6 +24,7 @@ Sub Globals
 	Private clsStationData As GetPoliceStations
 	Private clsLocalNews As GetLocalNews
 	Private clsLoadingIndicator As LoadingIndicator
+	Private clsScollLabel As clsScrollLabel
 	
 	Private lblStationName, lblAddress, lblZip, lblCity As Label
 	Private lblTwitter, lblFacebook, lblUrl, lblMagni As Label
@@ -34,6 +35,9 @@ Sub Globals
 	Private imgFav As ImageView
 	Private btnClose As Button
 	Private lblDossier As Label
+	Private bscr As BBScrollingLabel
+	Private mapScrollFont As Map
+	
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -41,8 +45,12 @@ Sub Activity_Create(FirstTime As Boolean)
 	clsStationData.Initialize
 	clsLocalNews.Initialize
 	CardLayoutsCache.Initialize
+	clsScollLabel.Initialize
+	mapScrollFont.Initialize
+	
 	
 	Activity.LoadLayout("stationMain")
+	mapScrollFont.Put("veramono", xui.CreateFont(Typeface.CreateNew(Typeface.LoadFromAssets("VeraMono.ttf"), Typeface.STYLE_NORMAL), 19)) 'size not important
 	clsLoadingIndicator.Initialize(Activity)
 	
 	PCLV.Initialize(Me, "PCLV", clvStation)
@@ -53,7 +61,7 @@ Sub Activity_Create(FirstTime As Boolean)
 	ime.AddHandleActionEvent(edtFind)
 	edtFind.InputType = Bit.Or(edtFind.InputType, 0x00080000)
 	GenFunctions.ResetUserFontScale(Activity)
-
+	Activity.RequestFocus
 End Sub
 
 Sub Activity_Resume
@@ -88,6 +96,7 @@ Sub GetStation
 	Next
 	PCLV.ShowScrollBar = False
 	PCLV.Commit
+	
 End Sub
 
 Sub PCLV_HintRequested (Index As Int) As Object
@@ -99,6 +108,8 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 	Dim width As Int = clvStation.AsView.Width
 	Dim pnlHeight, pnlTop, pnlCount As Int
 	Dim cs As CSBuilder
+	Dim city As String
+	Dim TextEngine As BCTextEngine
 	
 	pnlCount = 0
 	For Each i As Int In PCLV.VisibleRangeChanged(FirstIndex, LastIndex)
@@ -112,22 +123,34 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 		Dim item As CLVItem = clvStation.GetRawListItem(i)
 		Dim station As station = item.Value
 		Dim pnl As B4XView = xui.CreatePanel("")
-	
+		
+		
 		item.Panel.AddView(pnl, 0, 0, width, pnlHeight)
 		pnl.LoadLayout("clvStation")
+		
+		TextEngine.Initialize(pnl)
+		TextEngine.CustomFonts.Put("veramono",xui.CreateFont(Typeface.CreateNew(Typeface.LoadFromAssets("VeraMono.ttf"), Typeface.STYLE_NORMAL), 19)) 'size not important
+		'TextEngine.CustomFonts.Put(
+		bscr.TextEngine = TextEngine
+		bscr.WidthPerSecond=Rnd(90, 130)
+		bscr.Gap = 100
+		
+		
+		
+		
 		pnlStation.Top = pnlTop
 		cs.Initialize.Color(0xFF00FFFF).Append(station.address).Append(CRLF).Append(station.postalcode).Append(" ").pop
 		cs.Color(Colors.Yellow).Append(station.city).PopAll
-		lblNumber.Text = NumberFormat(i+1,3, 0)
-		lblStationName.Text = station.name
-		lblAddress.Text =  cs'$"${station.address}${CRLF}${station.postalcode} ${station.city}"$
-		lblCity.Text = $"${station.postalcode} ${station.city}"$
 		
-		If lblCity.Text.Length < 5 Then
+'		lblStationName.Text = station.name
+		
+		bscr.Text = $"[font=veramono][color=yellow] [TextSize=19]${station.name}[/textsize][/color][/font]"$
+		lblAddress.Text =  cs
+		city = $"${station.postalcode} ${station.city}"$
+		If city.Length < 5 Then
 			lblAddress.textColor = Colors.Yellow
 			lblAddress.Typeface = Typeface.LoadFromAssets("VeraMono-Italic.ttf")
 			lblAddress.Text = "Geen adresgevens..."
-'			lblAddress.TextColor = Colors.Red
 		End If
 		
 		If station.openHours.Length < 5 Then
@@ -159,7 +182,16 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 		End If
 		SetImgFav(station.fav_id <> Null, imgFav)
 		GenFunctions.ResetUserFontScale(pnl)
+		
 	Next
+	
+End Sub
+
+Private Sub SetScrollLabel(index As Int, text As String, v As Label)
+	clsScollLabel.runMarquee(v, text, "MARQUEE")
+	v.Visible = False
+	clvStation.Refresh
+	v.Visible=True
 End Sub
 
 Sub pnlTwitter_Click

@@ -37,7 +37,6 @@ Public Sub ShowIndicator(msg As String)
 End Sub
 
 Public Sub HideIndicator As ResumableSub
-	pnl.SetVisibleAnimated(300, False)
-	Sleep(300)
+	pnl.SetVisibleAnimated(0, False)
 	Return True
 End Sub

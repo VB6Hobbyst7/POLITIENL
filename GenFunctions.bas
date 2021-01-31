@@ -176,6 +176,7 @@ Sub ParseHtmlTextBlock(alTitle As String, alTextBlock As String, color As String
 '		Log(LastException)
 		newText = "Kan bericht niet openen"
 	End Try
+	
 	Return newText
 End Sub
 
@@ -213,13 +214,26 @@ Sub GetAHref(alTextBlock As String) As String
 	
 	startPosList = alTextBlock.IndexOf(startARefTag)
 	endPosList = alTextBlock.IndexOf(endAhRefTag)
+	
+	If startPosList <= 0 Or endPosList <= 0 Then
+		Return alTextBlock
+	End If
+	
 
 	If startPosList = -1 Then
 		Return alTextBlock
 	End If
-	
-	ahrefString = alTextBlock.SubString2(startPosList, endPosList+endAhRefTag.Length)
-	
+	Try
+		If startPosList > endPosList+endAhRefTag.Length Then
+			'Return alTextBlock
+			If changedText.IndexOf(startARefTag) <> -1 Then
+				Return GetAHref(changedText)
+			End If
+		End If
+		ahrefString = alTextBlock.SubString2(startPosList, endPosList+endAhRefTag.Length)
+	Catch
+		Log(LastException.Message)
+	End Try
 	'GET URL BETWEEN THE 2 "
 	startPosList = ahrefString.IndexOf($"""$)
 	For i = startPosList+1 To ahrefString.Length - 1
@@ -395,4 +409,18 @@ Sub CreateRoundRectBitmap (Input As B4XBitmap, Radius As Float) As B4XBitmap
 	Dim res As B4XBitmap = c.CreateBitmap
 	c.Release
 	Return res
+End Sub
+
+Public Sub shadowLayer(lbl As View, Radius As Float, dx As Float, dy As Float, Color As Int)
+	Dim jo = lbl As JavaObject
+	jo.RunMethod("setShadowLayer", Array(Radius, dx, dy , Color))
+
+End Sub
+
+Sub stringLen(str As String, act As Activity) As Int
+	Dim cnvs As Canvas
+	cnvs.Initialize(act)
+	Dim size As Int
+	size = cnvs.MeasureStringWidth("textwidth", Typeface.LoadFromAssets("VeraMono.ttf"), 19)
+	Return size
 End Sub
