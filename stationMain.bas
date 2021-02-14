@@ -34,17 +34,29 @@ Sub Globals
 	Private imgFav As ImageView
 	Private btnClose As Button
 	Private lblDossier As Label
+	Private bscrStationName As BBScrollingLabel
+	Private ASSegmentedTab1 As ASSegmentedTab
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
 	clsDb.Initialize
-	clsStationData.Initialize
+	clsStationData.Initialize(clsLoadingIndicator, Activity)
 	clsLocalNews.Initialize
 	CardLayoutsCache.Initialize
 	
 	Activity.LoadLayout("stationMain")
 	clsLoadingIndicator.Initialize(Activity)
 	
+	'ASSegmentedTab1.Base.SetColorAndBorder(ASSegmentedTab1.Base.Color,0,0,10dip)
+	ASSegmentedTab1.Base.SetColorAndBorder(0xff000000,0,0,10dip)
+	ASSegmentedTab1.AddTab("",ASSegmentedTab1.FontToBitmap(Chr(0xE88A),True,25,xui.Color_Yellow))
+	ASSegmentedTab1.AddTab("",ASSegmentedTab1.FontToBitmap(Chr(0xE906),True,25,xui.Color_Yellow))
+	ASSegmentedTab1.AddTab("",ASSegmentedTab1.FontToBitmap(Chr(0xE24D),True,25,xui.Color_Yellow))
+	ASSegmentedTab1.AddTab("Test",Null)
+	ASSegmentedTab1.AddTab("",ASSegmentedTab1.FontToBitmap(Chr(0xE238),True,15,xui.Color_Yellow))
+	ASSegmentedTab1.AddTab("",ASSegmentedTab1.FontToBitmap(Chr(0xE23F),True,15,xui.Color_Yellow))
+'	ASSegmentedTab1.SelectionPanel.SetColorAndBorder(ASSegmentedTab1.SelectionPanel.Color,0,0,10dip)'makes the selector rounded
+	ASSegmentedTab1.SelectionPanel.SetColorAndBorder(0xFF0000FF,0,0,10dip)'makes the selector rounded
 	PCLV.Initialize(Me, "PCLV", clvStation)
 	GetStation
 	TextEngine.Initialize(pnlOpenHours)
@@ -53,7 +65,7 @@ Sub Activity_Create(FirstTime As Boolean)
 	ime.AddHandleActionEvent(edtFind)
 	edtFind.InputType = Bit.Or(edtFind.InputType, 0x00080000)
 	GenFunctions.ResetUserFontScale(Activity)
-
+	Activity.RequestFocus
 End Sub
 
 Sub Activity_Resume
@@ -88,6 +100,7 @@ Sub GetStation
 	Next
 	PCLV.ShowScrollBar = False
 	PCLV.Commit
+	
 End Sub
 
 Sub PCLV_HintRequested (Index As Int) As Object
@@ -99,6 +112,7 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 	Dim width As Int = clvStation.AsView.Width
 	Dim pnlHeight, pnlTop, pnlCount As Int
 	Dim cs As CSBuilder
+	Dim city As String
 	
 	pnlCount = 0
 	For Each i As Int In PCLV.VisibleRangeChanged(FirstIndex, LastIndex)
@@ -112,22 +126,25 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 		Dim item As CLVItem = clvStation.GetRawListItem(i)
 		Dim station As station = item.Value
 		Dim pnl As B4XView = xui.CreatePanel("")
-	
+		
+		
 		item.Panel.AddView(pnl, 0, 0, width, pnlHeight)
 		pnl.LoadLayout("clvStation")
+		
+		SetScrollStationName(station.name, pnl, bscrStationName)
+
 		pnlStation.Top = pnlTop
 		cs.Initialize.Color(0xFF00FFFF).Append(station.address).Append(CRLF).Append(station.postalcode).Append(" ").pop
 		cs.Color(Colors.Yellow).Append(station.city).PopAll
-		lblNumber.Text = NumberFormat(i+1,3, 0)
-		lblStationName.Text = station.name
-		lblAddress.Text =  cs'$"${station.address}${CRLF}${station.postalcode} ${station.city}"$
-		lblCity.Text = $"${station.postalcode} ${station.city}"$
 		
-		If lblCity.Text.Length < 5 Then
+'		lblStationName.Text = station.name
+		
+		lblAddress.Text =  cs
+		city = $"${station.postalcode} ${station.city}"$
+		If city.Length < 5 Then
 			lblAddress.textColor = Colors.Yellow
 			lblAddress.Typeface = Typeface.LoadFromAssets("VeraMono-Italic.ttf")
 			lblAddress.Text = "Geen adresgevens..."
-'			lblAddress.TextColor = Colors.Red
 		End If
 		
 		If station.openHours.Length < 5 Then
@@ -160,6 +177,19 @@ Sub clvStation_VisibleRangeChanged (FirstIndex As Int, LastIndex As Int)
 		SetImgFav(station.fav_id <> Null, imgFav)
 		GenFunctions.ResetUserFontScale(pnl)
 	Next
+	
+End Sub
+
+Private Sub SetScrollStationName(name As String, pnl As Panel, scrollLabel As BBScrollingLabel)
+	Dim bbScrTextEngine As BCTextEngine
+	
+	bbScrTextEngine.Initialize(pnl)
+	bbScrTextEngine.CustomFonts.Put("veramono",xui.CreateFont(Typeface.CreateNew(Typeface.LoadFromAssets("VeraMono.ttf"), Typeface.STYLE_NORMAL), 19)) 'size not important
+	scrollLabel.TextEngine = bbScrTextEngine
+	scrollLabel.WidthPerSecond=Rnd(90, 130)
+	scrollLabel.Gap = 100
+	scrollLabel.Text = $"[font=veramono][color=yellow] [TextSize=19]${name}[/textsize][/color][/font]"$
+	scrollLabel.StartPositionDelay = 10
 End Sub
 
 Sub pnlTwitter_Click
@@ -261,10 +291,12 @@ Sub GetStationData(p As Panel) As station
 End Sub
 
 Sub pnlLocalNews_Click
-	Starter.localNewsOffset = 0
 	Dim pnl As Panel = Sender
+'	clsLoadingIndicator.ShowIndicator("Ophalen lokaal nieuws")
+	Starter.localNewsOffset = 0
 	GenFunctions.stationData = clvStation.GetValue(clvStation.GetItemFromView(pnl))
 	StartActivity(lokaalNieuws)	
+'	clsLoadingIndicator.HideIndicator
 End Sub
 
 Sub lblLocation_Click

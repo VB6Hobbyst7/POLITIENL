@@ -16,6 +16,7 @@ Public Sub Initialize
 End Sub
 
 Public Sub GetData(url As String) As ResumableSub
+	
 	Private job As HttpJob
 	job.Initialize("", Me)
 	job.Download(url)
@@ -115,6 +116,7 @@ Private Sub ParserDossier(data As String) As ResumableSub
 			If Starter.dossierUID = "" Then
 				lst.Add(Createdossier(uid, titel, introductie, publicatiedatum, datumdelict, plaatsdelict))
 			Else
+				File.WriteString(Starter.filePath, "t.txt", dossierText)
 				lst.Add(CreatedossierDetail(titel, url, introductie, publicatiedatum, afbeeldingen_url, datumdelict, plaatsdelict, urltipformulier, zaaknummer, dossierText))
 				Exit
 			End If

@@ -38,7 +38,9 @@ End Sub
 
 'Return true to allow the OS default exceptions handler to handle the uncaught exception.
 Sub Application_Error (Error As Exception, StackTrace As String) As Boolean
+#if debug
 	Log(StackTrace)
+#end if	
 	Return True
 End Sub
 

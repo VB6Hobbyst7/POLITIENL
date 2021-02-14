@@ -50,7 +50,7 @@ Sub Activity_KeyPress (KeyCode As Int) As Boolean
 			Return True
 		End If
 	End If
-	
+	Starter.dossierUid = ""
 	Return False
 End Sub
 
@@ -64,12 +64,23 @@ End Sub
 
 Private Sub SetData(dataLst As List)
 	Dim data As dossierDetail = dataLst.Get(0)
+	Dim dossierText As String
 	
 	lblTitel.Text = data.titel
 	lblPlaatsDelict.Text = data.dossierPlaatsDelict
 	lblDelictDate.Text = GenFunctions.ParseStringDate(data.dossierDatumDelict, "d")
 	lblCaseNr.Text = data.zaakNummer
 	bbDossierDetail.Text = GenFunctions.ParseHtmlTextBlock("", data.DossierText, "", data.afbeeldingUrl)
+	
+	If bbDossierDetail.Text = "Kan bericht niet openen" Then
+		If data.afbeeldingUrl <> "" Then
+			dossierText = $"[img url=${data.afbeeldingUrl} width = 150, height=200/]${CRLF}[Alignment=Center][url=${data.afbeeldingUrl}][color=#ffff00]Vergroot[/color][/url][/Alignment]${CRLF}"$
+			dossierText = $"${dossierText}${CRLF}[Alignment=Center]Kan bericht niet openen[/Alignment]${CRLF}[url=${data.url}][Color=#ffff00]Klik hier om de pagina te openen op politie.nl[/color][/url]"$
+		End If
+
+		bbDossierDetail.Text = dossierText
+		
+	End If
 End Sub
 
 Private Sub bbDossierDetail_LinkClicked (url As String)
@@ -86,7 +97,7 @@ Private Sub pnlZoomImage_Click
 End Sub
 
 Private Sub lblClose_Click
-	pnlZoomImage.SetVisibleAnimated(200, false)
+	pnlZoomImage.SetVisibleAnimated(200, False)
 End Sub
 
 Private Sub GetImageForZoomView(imgUrl As String)
