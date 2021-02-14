@@ -14,6 +14,8 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
+	Private clsLoadingIndicator As LoadingIndicator
+	
 	Private textView As BCTextEngine
 	Private BBCodeView1 As BBCodeView
 	Private clsLocalNews As GetLocalNews
@@ -29,12 +31,17 @@ Sub Activity_Create(FirstTime As Boolean)
 	clsLocalNews.Initialize
 	clsBbHeight.Initialize
 	Activity.LoadLayout("lokaalNieuwsMain")
+	clsLoadingIndicator.Initialize(Activity)
+	
 	textView.Initialize(Activity)
 	GenFunctions.ResetUserFontScale(Activity)
 	lblStationName.Text = $"Lokaal Nieuws${CRLF}${GenFunctions.stationData.name}"$
-	showProcessDialog
+
+'	showProcessDialog
+	
 	GetLocalNewsItems
-	HideProcessDialog
+'	HideProcessDialog
+	
 	
 End Sub
 
@@ -46,22 +53,13 @@ Sub Activity_Pause (UserClosed As Boolean)
 
 End Sub
 
-Private Sub showProcessDialog
-	ProgressDialogShow2("Ophalen lokale nieuws items..", False)
-	Sleep(200)
-End Sub
-
-Private Sub HideProcessDialog
-	ProgressDialogHide
-End Sub
-
 Private Sub GetLocalNewsItems
-	showProcessDialog
+	clsLoadingIndicator.ShowIndicator("Ophalen lokaal nieuws")
 	clvLocalNews.Clear
 	wait for (clsLocalNews.GetLocalNewsHeadlines) Complete (lstNews As List)
 	
 	If lstNews.Size = 0 Then
-		HideProcessDialog
+		clsLoadingIndicator.HideIndicator
 		GenFunctions.createCustomToast("Niets gevonden", Colors.Red)
 		Activity.Finish
 	End If
@@ -75,7 +73,7 @@ Private Sub GetLocalNewsItems
 	
 	lblNext.Visible = Not(Starter.localNewsOffsetEnd)
 	lblPrev.Visible = Starter.localNewsOffset >= 10
-	HideProcessDialog
+	clsLoadingIndicator.HideIndicator
 End Sub
 
 Private Sub GenNewsList(item As localNewsHeadline) As Panel

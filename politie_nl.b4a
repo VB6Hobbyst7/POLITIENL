@@ -30,7 +30,7 @@ File7=favourite_on.png
 File8=itemFoundDetail.bal
 File9=ItemFoundMain.bal
 FileGroup1=files
-FileGroup10=forms
+FileGroup10=form_class
 FileGroup11=forms
 FileGroup12=Default Group
 FileGroup13=forms
@@ -44,14 +44,14 @@ FileGroup2=forms
 FileGroup20=forms
 FileGroup21=files
 FileGroup22=Default Group
-FileGroup23=forms
+FileGroup23=station_main
 FileGroup24=Default Group
 FileGroup25=Default Group
 FileGroup26=Default Group
 FileGroup27=Default Group
 FileGroup28=Default Group
 FileGroup29=Default Group
-FileGroup3=forms
+FileGroup3=station_main
 FileGroup30=forms
 FileGroup4=forms
 FileGroup5=forms
@@ -61,20 +61,21 @@ FileGroup8=forms
 FileGroup9=forms
 Group=Default Group
 Library1=accessibility
-Library10=runtimepermissions
-Library11=sql
-Library12=stringutils
-Library13=xui views
-Library14=zoomimageview
-Library15=bbscrollinglabel
-Library2=bctextengine
-Library3=core
-Library4=ime
-Library5=json
-Library6=okhttputils2
-Library7=phone
-Library8=preoptimizedclv
-Library9=reflection
+Library10=preoptimizedclv
+Library11=reflection
+Library12=runtimepermissions
+Library13=sql
+Library14=stringutils
+Library15=xui views
+Library16=zoomimageview
+Library2=assegmentedtab
+Library3=bbscrollinglabel
+Library4=bctextengine
+Library5=core
+Library6=ime
+Library7=json
+Library8=okhttputils2
+Library9=phone
 ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: https://www.b4x.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="29"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~CreateResourceFromFile(Macro, Themes.DarkTheme)~\n~'End of default text.~\n~SetApplicationAttribute(android:icon, "@mipmap/ic_launcher")~\n~CreateResource(mipmap-anydpi-v26, ic_launcher.xml,~\n~<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">~\n~    <background android:drawable="@mipmap/background"/>~\n~    <foreground android:drawable="@mipmap/foreground"/>~\n~</adaptive-icon>~\n~)~\n~SetActivityAttribute(stationMain, android:windowSoftInputMode, adjustResize|stateHidden)~\n~AddPermission(android.permission.INTERNET)~\n~SetApplicationAttribute(android:theme, "@style/LightTheme")~\n~CreateResource(values, colors.xml,~\n~<resources>~\n~    <color name="actionbar">#FF0000FF</color>~\n~   <color name="statusbar">#FF0000FF</color>~\n~   <color name="textColorPrimary">#FF0000FF</color>~\n~   <color name="navigationBar">#FF0000FF</color>~\n~</resources>~\n~)~\n~CreateResource(values-v20, theme.xml,~\n~<resources>~\n~    <style name="LightTheme" parent="@android:style/Theme.Material.Light">~\n~        <item name="android:colorPrimary">@color/actionbar</item>~\n~        <item name="android:colorPrimaryDark">@color/statusbar</item>~\n~        <item name="android:textColorPrimary">@color/textColorPrimary</item>~\n~        <item name="android:navigationBarColor">@color/navigationBar</item>~\n~    </style>~\n~</resources>~\n~)~\n~CreateResource(values-v14, theme.xml,~\n~<resources>~\n~    <style name="LightTheme" parent="@android:style/Theme.Holo.Light">~\n~       <item name="android:actionBarStyle">@style/CustomActionBarStyle</item>~\n~    </style>~\n~   <style name="CustomActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">~\n~       <item name="android:background">@color/actionbar</item>~\n~   </style>~\n~</resources>~\n~)
 Module1=ClassDossier
 Module10=GetPoliceStations
@@ -98,9 +99,9 @@ Module7=GetBbCodeViewHeight
 Module8=GetLocalNews
 Module9=GetLocationFromLatLong
 NumberOfFiles=30
-NumberOfLibraries=15
+NumberOfLibraries=16
 NumberOfModules=21
-Version=10.5
+Version=10.6
 @EndOfDesignText@
 #Region TODO/FIX
 	'News item that contain VIDEO tag
@@ -141,6 +142,7 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
+	Private clsLoading As LoadingIndicator	
 	Private clsDb As dbFunctions
 	Private clsPStations As GetPoliceStations
 	Private lblVerder, lblVersie, lblDisclaimer, lblStationName As Label
@@ -151,11 +153,13 @@ Sub Globals
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
-	clsPStations.Initialize
+	clsPStations.Initialize(clsLoading, Activity)
 	clsDb.Initialize
 	
 	Activity.LoadLayout("Main")
 	textEngine.Initialize(Activity)
+	clsLoading.Initialize(Activity)
+	
 	textEngine.KerningEnabled = Not(textEngine.KerningEnabled)
 	lblVersie.Text = $"v${Application.VersionName}"$
 	SetWhatsIn
@@ -208,14 +212,14 @@ Private Sub GetUpdateStations
 	currDate = DateTime.Now
 	daysBetween = DateUtils.PeriodBetween(currDate, lastUpdatedate)
 
-	If daysBetween.Days > 7 Then
-		Msgbox2Async("Gegevens in de applicatie zijn meer dan 7 dagen oud, wilt u de gegevens bijwerken?", "Politie NL", "Ja", "", "Nee", Application.Icon, False)
+'	If daysBetween.Days >= 7 Then
+		Msgbox2Async("Bureau informatie in de App is meer dan 7 dagen oud, wilt u de gegevens bijwerken?", "Politie NL", "Ja", "", "Nee", Application.Icon, False)
 		Wait For Msgbox_Result (Result As Int)
 		If Result = DialogResponse.NEGATIVE Then
 			Return
 		End If
 		GetStationData
-	End If
+'	End If
 End Sub
 
 Sub lblVerder_Click
@@ -229,12 +233,14 @@ End Sub
 Private Sub GetStationData
 	Dim oldVerderText As String = lblVerder.Text
 	
-	lblVerder.Text = "Bijwerken gegevens.."
 	updatingDb = True
-	lblVerder.TextColor = Colors.red
+	
 	CleanDbs
 	Wait For (clsPStations.GetStationList) Complete (done As Boolean)
 	
+	clsLoading.ShowIndicator($"${clsPStations.stationCount} bureaus geladen"$)
+	Sleep(1000)
+	clsLoading.HideIndicator
 	If done Then
 		updatingDb = False
 		lblVerder.TextColor = Colors.Yellow

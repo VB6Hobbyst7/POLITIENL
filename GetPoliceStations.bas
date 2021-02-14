@@ -8,16 +8,23 @@ Sub Class_Globals
 	Dim parser As JSONParser
 	Dim clsdb As dbFunctions
 	Dim clsWijkAgent As ParseWijkAgent
+	Dim clsLoading As LoadingIndicator
+	Public stationCount As Int = 0
+	
 End Sub
 
 'Initializes the object. You can add parameters to this method if needed.
-Public Sub Initialize
+Public Sub Initialize(loadingClass As LoadingIndicator, act As Activity)
+	clsLoading = loadingClass
 	clsdb.Initialize
 	clsWijkAgent.Initialize
+	clsLoading.Initialize(act)
+	
 End Sub
 
 Sub GetStationList As ResumableSub 'ignore
-'	Log($"$Time{DateTime.now} Start"$)
+	stationCount = 0
+	clsLoading.ShowIndicator("Bijwerken politiebureaus")
 	Private psUrl As String = $"https://api.politie.nl/v4/politiebureaus/all?offset=0"$
 	wait for (RetrieveStation(psUrl)) Complete (done As Boolean)
 	wait for (RetrieveStation($"https://api.politie.nl/v4/politiebureaus/all?offset=100"$)) Complete (done As Boolean)
@@ -58,6 +65,8 @@ Private Sub ParsePsData(data As String) As ResumableSub
 '	Dim offset As Int = iterator.Get("offset")
 	Dim politiebureaus As List = root.Get("politiebureaus")
 	For Each colpolitiebureaus As Map In politiebureaus
+		stationCount = stationCount + 1
+		
 '		Dim publicatiedatum As String = colpolitiebureaus.Get("publicatiedatum")
 		Dim twitterurl As String = colpolitiebureaus.Get("twitterurl")
 		Dim openingstijden As String = colpolitiebureaus.Get("openingstijden")
@@ -90,6 +99,8 @@ Private Sub ParsePsData(data As String) As ResumableSub
 '		Dim links As String = colpolitiebureaus.Get("links")
 '		Dim extrainformatie As String = colpolitiebureaus.Get("extrainformatie")
 '		Dim availabletranslations As String = colpolitiebureaus.Get("availabletranslations")
+		clsLoading.ShowIndicator($"Ophalen politiebureaus ${NumberFormat(stationCount, 3, 0)}"$)
+		Sleep(1)
 		
 		lstPsBase.Add(CreatepsStation(naam, uid, longitude, latitude, openingstijden))
 		
@@ -100,7 +111,8 @@ Private Sub ParsePsData(data As String) As ResumableSub
 		lstPsAddress.Add(CreatepsAdress(uid, "visit", bezoekadres_postadres, bezoekadres_postcode, bezoekadres_plaats))
 		lstPsAddress.Add(CreatepsAdress(uid, "post", Post_postadres, post_postcode, post_plaats))
 	Next
-	
+	clsLoading.ShowIndicator($"Database bijwerken"$)
+	Sleep(1)
 	clsdb.AddPoliceStations(lstPsBase)
 	clsdb.AddSocialmedia(lstPsSocialMedia)
 	clsdb.AddAdress(lstPsAddress)

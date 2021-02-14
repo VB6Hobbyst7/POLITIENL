@@ -9,7 +9,11 @@ Sub Class_Globals
 	Private xui As XUI
 	Private TextEngine As BCTextEngine
 	Private bbLoadingMessage As BBLabel
-	Private pnl As B4XView 
+	Private pnl As B4XView
+	
+	Public loadingText As String 
+	
+	Private lblDateTime As Label
 End Sub
 
 Public Sub Initialize(act As Activity)
@@ -31,9 +35,13 @@ Public Sub CreateIndicator
 End Sub
 
 Public Sub ShowIndicator(msg As String)
-	bbLoadingMessage.Text = msg
-	pnl.SetVisibleAnimated(300, True)
-	Sleep(300)
+	lblDateTime.Text = $"$DateTime{DateTime.Now}"$
+	loadingText = msg
+	bbLoadingMessage.Text = loadingText
+	If pnl.Visible = False Then
+		pnl.SetVisibleAnimated(0, True)
+		End If
+	Sleep(1)
 End Sub
 
 Public Sub HideIndicator As ResumableSub
